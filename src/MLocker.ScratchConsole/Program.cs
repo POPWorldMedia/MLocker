@@ -1,5 +1,5 @@
 ﻿using System;
-using MLocker.Core.Files;
+using MLocker.Core.Services;
 using File = System.IO.File;
 
 namespace MLocker.ScratchConsole
@@ -10,7 +10,7 @@ namespace MLocker.ScratchConsole
 		{
 			var path = @"D:\Music\Amazon MP3\Absofacto\Thousand Peaces\01-01- Dissolve.mp3";
 			var bytes = File.ReadAllBytes(path);
-			var ingester = new Ingester();
+			var ingester = new FileParsingService();
 			ingester.ReadFileData("Dissolve.mp3", bytes);
 		}
 	}

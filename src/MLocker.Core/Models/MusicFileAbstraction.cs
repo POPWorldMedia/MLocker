@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace MLocker.Core.Models
+namespace MLocker.Core.Services.Models
 {
 	public class MusicFileAbstraction : TagLib.File.IFileAbstraction
 	{
