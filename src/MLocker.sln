@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{E27DB0FE
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLocker.ScratchConsole", "MLocker.ScratchConsole\MLocker.ScratchConsole.csproj", "{AB56ADD5-4F56-45AE-979A-A8D2BA888231}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLocker.WebApp", "MLocker.WebApp\MLocker.WebApp.csproj", "{1F9C483F-3238-4F3C-8565-1CA494D5CCCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{F113EC02-C883-4638-AFC3-8BD7D7E87BA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F113EC02-C883-4638-AFC3-8BD7D7E87BA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F113EC02-C883-4638-AFC3-8BD7D7E87BA8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB56ADD5-4F56-45AE-979A-A8D2BA888231}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB56ADD5-4F56-45AE-979A-A8D2BA888231}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB56ADD5-4F56-45AE-979A-A8D2BA888231}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB56ADD5-4F56-45AE-979A-A8D2BA888231}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F9C483F-3238-4F3C-8565-1CA494D5CCCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F9C483F-3238-4F3C-8565-1CA494D5CCCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F9C483F-3238-4F3C-8565-1CA494D5CCCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F9C483F-3238-4F3C-8565-1CA494D5CCCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

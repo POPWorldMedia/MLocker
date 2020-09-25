@@ -1,0 +1,30 @@
+﻿@page "/Upload"
+@using MLocker.Core.Services
+<h1>Upload</h1>
+
+<p>Add files to your library:</p>
+
+<p>
+    <InputFile OnChange="@OnInputFileChange" multiple />
+</p>
+
+@code {
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            if (file.ContentType == "audio/mpeg" || file.ContentType == "audio/mp4")
+            {
+                var parsingService = new FileParsingService();
+                var stream = file.OpenReadStream();
+                var length = (int)stream.Length;
+                var bytes = new byte[length];
+                await stream.ReadAsync(bytes, 0, length);
+                var fileData = parsingService.ReadFileData(file.Name, bytes);
+            }
+        }
+    }
+
+}
