@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MLocker.Database": {
+      "commandName": "Project",
+      "commandLineArgs": "server=localhost;Database=MLocker;Trusted_Connection=True;"
+    }
+  }
+}

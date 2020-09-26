@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{E27DB0FE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLocker.WebApp", "MLocker.WebApp\MLocker.WebApp.csproj", "{1F9C483F-3238-4F3C-8565-1CA494D5CCCB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLocker.Functions", "MLocker.Functions\MLocker.Functions.csproj", "{25CF2535-8996-47F0-A4D5-0DBA03322D88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLocker.Database", "MLocker.Database\MLocker.Database.csproj", "{8D4DCCE6-E7E5-4E00-B975-92FBE687A37E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{1F9C483F-3238-4F3C-8565-1CA494D5CCCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F9C483F-3238-4F3C-8565-1CA494D5CCCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F9C483F-3238-4F3C-8565-1CA494D5CCCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25CF2535-8996-47F0-A4D5-0DBA03322D88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25CF2535-8996-47F0-A4D5-0DBA03322D88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25CF2535-8996-47F0-A4D5-0DBA03322D88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25CF2535-8996-47F0-A4D5-0DBA03322D88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D4DCCE6-E7E5-4E00-B975-92FBE687A37E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D4DCCE6-E7E5-4E00-B975-92FBE687A37E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D4DCCE6-E7E5-4E00-B975-92FBE687A37E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D4DCCE6-E7E5-4E00-B975-92FBE687A37E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

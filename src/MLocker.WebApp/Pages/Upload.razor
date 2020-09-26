@@ -1,28 +1,35 @@
 ﻿@page "/Upload"
 @using MLocker.Core.Services
+@using MLocker.WebApp.Services
+@inject IUploadService UploadService
 <h1>Upload</h1>
 
 <p>Add files to your library:</p>
 
 <p>
-    <InputFile OnChange="@OnInputFileChange" multiple />
+    <InputFile OnChange="@OnInputFileChange" webkitdirectory directory multiple accept="audio/*" />
 </p>
 
+<p>@_uploadMessage</p>
+
 @code {
+    string _uploadMessage;
 
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
-        var files = e.GetMultipleFiles();
+        var files = e.GetMultipleFiles(1000000);
         foreach (var file in files)
         {
-            if (file.ContentType == "audio/mpeg" || file.ContentType == "audio/mp4")
+           // if (file.ContentType == "audio/mpeg" || file.ContentType == "audio/mp4")
             {
                 var parsingService = new FileParsingService();
-                var stream = file.OpenReadStream();
+                var stream = file.OpenReadStream(100000000);
                 var length = (int)stream.Length;
-                var bytes = new byte[length];
-                await stream.ReadAsync(bytes, 0, length);
-                var fileData = parsingService.ReadFileData(file.Name, bytes);
+                var fileData = new byte[length];
+                await stream.ReadAsync(fileData, 0, length);
+                var songData = parsingService.ReadFileData(file.Name, fileData);
+                _uploadMessage = $"Uploading {file.Name}";
+                await UploadService.Upload(songData, fileData);
             }
         }
     }
