@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
-using MLocker.Core.Models;
+﻿using System.IO;
+using System.Threading.Tasks;
 using MLocker.WebApp.Repositories;
 
 namespace MLocker.WebApp.Services
 {
     public interface IUploadService
     {
-        Task Upload(SongData songData, byte[] fileData);
+        Task Upload(string fileName, Stream stream);
     }
 
     public class UploadService : IUploadService
@@ -18,15 +18,9 @@ namespace MLocker.WebApp.Services
             _uploadRepository = uploadRepository;
         }
 
-        public async Task Upload(SongData songData, byte[] fileData)
+        public async Task Upload(string fileName, Stream stream)
         {
-            var container = new UploadContainer
-            {
-                File = fileData,
-                Picture = songData.Picture,
-                Song = songData
-            };
-            await _uploadRepository.UploadFile(container);
+            await _uploadRepository.UploadFile(fileName, stream);
         }
     }
 }

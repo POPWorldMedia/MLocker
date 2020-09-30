@@ -28,5 +28,11 @@ namespace MLocker.Core.Services
 			};
 			return fileData;
 		}
+
+        public string ParseStorageFileName(SongData songData)
+        {
+            var name = $"{songData.AlbumArtist}/{songData.Album}/{songData.Disc}-{songData.Track}- {songData.Title}";
+            return name;
+        }
 	}
 }

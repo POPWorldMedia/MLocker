@@ -1,5 +1,4 @@
 ﻿@page "/Upload"
-@using MLocker.Core.Services
 @using MLocker.WebApp.Services
 @inject IUploadService UploadService
 <h1>Upload</h1>
@@ -22,14 +21,8 @@
         {
            // if (file.ContentType == "audio/mpeg" || file.ContentType == "audio/mp4")
             {
-                var parsingService = new FileParsingService();
-                var stream = file.OpenReadStream(100000000);
-                var length = (int)stream.Length;
-                var fileData = new byte[length];
-                await stream.ReadAsync(fileData, 0, length);
-                var songData = parsingService.ReadFileData(file.Name, fileData);
                 _uploadMessage = $"Uploading {file.Name}";
-                await UploadService.Upload(songData, fileData);
+                await UploadService.Upload(file.Name, file.OpenReadStream(100000000));
             }
         }
     }

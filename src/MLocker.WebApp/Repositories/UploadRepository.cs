@@ -1,13 +1,14 @@
-﻿using System.Net.Http;
-using System.Text.Json;
+﻿using System;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using MLocker.Core.Models;
 
 namespace MLocker.WebApp.Repositories
 {
     public interface IUploadRepository
     {
-        Task UploadFile(UploadContainer container);
+        Task UploadFile(string fileName, Stream stream);
     }
 
     public class UploadRepository : IUploadRepository
@@ -19,10 +20,13 @@ namespace MLocker.WebApp.Repositories
             _httpClient = httpClient;
         }
 
-        public async Task UploadFile(UploadContainer container)
+        public async Task UploadFile(string fileName, Stream stream)
         {
-            var payload = JsonSerializer.Serialize(container);
-            await _httpClient.PostAsync("http://localhost:7071/api/Upload", new StringContent(payload));
+            var content = new MultipartFormDataContent();
+            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+            content.Add(new StreamContent(stream, Convert.ToInt32(stream.Length)), "file", fileName);
+
+            await _httpClient.PostAsync("https://localhost:44314/upload", content);
         }
     }
 }
