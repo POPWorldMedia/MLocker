@@ -4,6 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using MLocker.Api.Repositories;
+using MLocker.Api.Services;
+using MLocker.Core.Services;
 
 namespace MLocker.Api
 {
@@ -22,6 +25,19 @@ namespace MLocker.Api
             services.AddCors();
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "MLocker.Api", Version = "v1"}); });
+
+            SetupDependencyInjection(services);
+        }
+
+        private static void SetupDependencyInjection(IServiceCollection services)
+        {
+            services.AddTransient<IConfig, Config>();
+
+            services.AddTransient<IFileParsingService, FileParsingService>();
+            services.AddTransient<ISongService, SongService>();
+
+            services.AddTransient<ISongRepository, SongRepository>();
+            services.AddTransient<IFileRepository, FileRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

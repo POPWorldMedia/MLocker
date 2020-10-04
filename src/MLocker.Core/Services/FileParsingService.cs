@@ -2,8 +2,13 @@
 
 namespace MLocker.Core.Services
 {
-	public class FileParsingService
-	{
+    public interface IFileParsingService
+    {
+        SongData ReadFileData(string fileName, byte[] fileBytes);
+    }
+
+    public class FileParsingService : IFileParsingService
+    {
 		public SongData ReadFileData(string fileName, byte[] fileBytes)
 		{
 			var container = new MusicFileAbstraction(fileName, fileBytes);
@@ -16,11 +21,11 @@ namespace MLocker.Core.Services
 				Album = file.Tag.Album,
 				Composer = file.Tag.FirstComposer,
 				Genre = file.Tag.FirstGenre,
-				Year = file.Tag.Year,
-				Track = file.Tag.Track,
-				TrackCount = file.Tag.TrackCount,
-				Disc = file.Tag.Disc,
-				DiscCount = file.Tag.DiscCount,
+				Year = (int?)file.Tag.Year,
+				Track = (int?)file.Tag.Track,
+				TrackCount = (int?)file.Tag.TrackCount,
+				Disc = (int?)file.Tag.Disc,
+				DiscCount = (int?)file.Tag.DiscCount,
 				Length = file.Properties.Duration,
 				Picture = file.Tag.Pictures?[0]?.Data?.Data,
 				PictureMimeType = file.Tag.Pictures?[0]?.MimeType,
@@ -28,11 +33,5 @@ namespace MLocker.Core.Services
 			};
 			return fileData;
 		}
-
-        public string ParseStorageFileName(SongData songData)
-        {
-            var name = $"{songData.AlbumArtist}/{songData.Album}/{songData.Disc}-{songData.Track}- {songData.Title}";
-            return name;
-        }
 	}
 }

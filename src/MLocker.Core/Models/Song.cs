@@ -9,11 +9,11 @@
         public string Album { get; set; }
         public string Composer { get; set; }
         public string Genre { get; set; }
-        public uint? Year { get; set; }
-        public uint? Track { get; set; }
-        public uint? TrackCount { get; set; }
-        public uint? Disc { get; set; }
-        public uint? DiscCount { get; set; }
+        public int? Year { get; set; }
+        public int? Track { get; set; }
+        public int? TrackCount { get; set; }
+        public int? Disc { get; set; }
+        public int? DiscCount { get; set; }
         public long Ticks { get; set; }
         public int PlayCount { get; set; }
         public string PictureMimeType { get; set; }
