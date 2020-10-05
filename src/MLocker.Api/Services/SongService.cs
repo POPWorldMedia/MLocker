@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MLocker.Api.Repositories;
 using MLocker.Core.Models;
 
@@ -8,6 +9,7 @@ namespace MLocker.Api.Services
     {
         Task PersistSong(SongData songData, byte[] bytes);
         string ParseStorageFileName(SongData songData);
+        Task<IEnumerable<Song>> GetAll();
     }
 
     public class SongService : ISongService
@@ -33,6 +35,11 @@ namespace MLocker.Api.Services
         {
             var name = $"files/{songData.AlbumArtist}/{songData.Album}/{songData.Disc}-{songData.Track}- {songData.Title}";
             return name;
+        }
+
+        public async Task<IEnumerable<Song>> GetAll()
+        {
+            return await _songRepository.GetAll();
         }
     }
 }
