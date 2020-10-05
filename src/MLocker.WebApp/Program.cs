@@ -23,10 +23,12 @@ namespace MLocker.WebApp
             builder.Services.AddScoped<IConfig, Config>();
 
             // services
-            builder.Services.AddScoped<IUploadService, UploadService>();
+            builder.Services.AddTransient<IUploadService, UploadService>();
+            builder.Services.AddTransient<IMusicService, MusicService>();
 
             // repos
-            builder.Services.AddScoped<IUploadRepository, UploadRepository>();
+            builder.Services.AddTransient<IUploadRepository, UploadRepository>();
+            builder.Services.AddTransient<ISongRepository, SongRepository>();
 
             await builder.Build().RunAsync();
         }

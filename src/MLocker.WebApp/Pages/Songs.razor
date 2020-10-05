@@ -1,0 +1,28 @@
+﻿@page "/Songs"
+@using MLocker.WebApp.Services
+@using MLocker.Core.Models
+@inject IMusicService MusicService
+<h1>Songs</h1>
+
+@if (_songList != null)
+{
+    <table class="table">
+        <tbody>
+        @foreach (var item in _songList)
+        {
+            <tr>
+                <td>@item.Title</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    IEnumerable<Song> _songList = new List<Song>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _songList = await MusicService.GetAllSongs();
+    }
+}
