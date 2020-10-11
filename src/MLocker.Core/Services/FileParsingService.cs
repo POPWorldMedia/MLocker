@@ -13,6 +13,8 @@ namespace MLocker.Core.Services
 		{
 			var container = new MusicFileAbstraction(fileName, fileBytes);
 			var file = TagLib.File.Create(container);
+            byte[] pictureData = file.Tag.Pictures.Length > 0 ? file.Tag.Pictures?[0]?.Data?.Data : null;
+            string pictureMimeTime = file.Tag.Pictures.Length > 0 ? file.Tag.Pictures?[0]?.MimeType : null;
 			var fileData = new SongData
 			{
 				Title = file.Tag.Title ?? fileName,
@@ -27,8 +29,8 @@ namespace MLocker.Core.Services
 				Disc = (int?)file.Tag.Disc,
 				DiscCount = (int?)file.Tag.DiscCount,
 				Length = file.Properties.Duration,
-				Picture = file.Tag.Pictures?[0]?.Data?.Data,
-				PictureMimeType = file.Tag.Pictures?[0]?.MimeType,
+				Picture = pictureData,
+				PictureMimeType = pictureMimeTime,
 				FileName = fileName
 			};
 			return fileData;

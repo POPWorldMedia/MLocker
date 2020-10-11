@@ -6,6 +6,11 @@
 <h1>Songs</h1>
 
 <div>
+    @if (_currentSong != null)
+    {
+        <h3>@_currentSong.Title</h3>
+        <h4>@_currentSong.Artist - @_currentSong.Album</h4>
+    }
     <audio id="player" src="@_source" controls></audio>
 </div>
 
@@ -27,7 +32,8 @@
 
 @code {
     IEnumerable<Song> _songList = new List<Song>();
-    string _source = null;
+    string _source;
+    Song _currentSong;
 
     protected override async Task OnInitializedAsync()
     {
@@ -38,5 +44,6 @@
     {
         _source = await MusicService.GetSongUrl(fileID);
         await JsRuntime.InvokeAsync<string>("StartPlayer");
+        _currentSong = _songList.Single(x => x.FileID == fileID);
     }
 }
