@@ -9,6 +9,7 @@ namespace MLocker.WebApp.Repositories
     public interface ISongRepository
     {
         Task<IEnumerable<Song>> GetAllSongs();
+        Task<string> GetSongUrl(int fileID);
     }
 
     public class SongRepository : ISongRepository
@@ -28,6 +29,13 @@ namespace MLocker.WebApp.Repositories
             var response = await _httpClient.GetStringAsync($"{baseUrl}/GetAllSongs");
             var allSongs = JsonSerializer.Deserialize<IEnumerable<Song>>(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
             return allSongs;
+        }
+
+        public async Task<string> GetSongUrl(int fileID)
+        {
+            var baseUrl = await _config.GetBaseApiUrl();
+            var url = $"{baseUrl}/GetSong/{fileID}";
+            return url;
         }
     }
 }

@@ -2,7 +2,12 @@
 @using MLocker.WebApp.Services
 @using MLocker.Core.Models
 @inject IMusicService MusicService
+@inject IJSRuntime JsRuntime
 <h1>Songs</h1>
+
+<div>
+    <audio id="player" src="@_source" controls></audio>
+</div>
 
 @if (_songList != null)
 {
@@ -11,7 +16,9 @@
         @foreach (var item in _songList)
         {
             <tr>
+                <td><button @onclick="@(() => PlaySong(item.FileID))">|&gt;</button></td>
                 <td>@item.Title</td>
+                <td>@item.Artist</td>
             </tr>
         }
         </tbody>
@@ -20,9 +27,16 @@
 
 @code {
     IEnumerable<Song> _songList = new List<Song>();
+    string _source = null;
 
     protected override async Task OnInitializedAsync()
     {
         _songList = await MusicService.GetAllSongs();
+    }
+
+    public async Task PlaySong(int fileID)
+    {
+        _source = await MusicService.GetSongUrl(fileID);
+        await JsRuntime.InvokeAsync<string>("StartPlayer");
     }
 }

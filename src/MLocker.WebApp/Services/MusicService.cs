@@ -8,6 +8,7 @@ namespace MLocker.WebApp.Services
     public interface IMusicService
     {
         Task<IEnumerable<Song>> GetAllSongs();
+        Task<string> GetSongUrl(int fileID);
     }
 
     public class MusicService : IMusicService
@@ -30,6 +31,11 @@ namespace MLocker.WebApp.Services
             if (_songs == null)
                 await UpdateSongs();
             return _songs;
+        }
+
+        public async Task<string> GetSongUrl(int fileID)
+        {
+            return await _songRepository.GetSongUrl(fileID);
         }
     }
 }

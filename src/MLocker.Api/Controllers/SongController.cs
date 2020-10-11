@@ -26,6 +26,8 @@ namespace MLocker.Api.Controllers
         public async Task<IActionResult> GetSong(int id)
         {
             var (stream, song) = await _songService.GetSong(id);
+            if (stream == null || song == null)
+                return StatusCode(404);
             var mediaType = song.FileName.EndsWith("mp3") ? "audio/mpeg" : "audio/mp4";
             return File(stream, mediaType);
         }
