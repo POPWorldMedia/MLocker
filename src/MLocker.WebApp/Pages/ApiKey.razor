@@ -1,0 +1,20 @@
+﻿@page "/ApiKey"
+@inject IConfig Config
+
+<h1>Your API Key</h1>
+
+<input @bind-value="CurrentApiKey" @oninput="OnChange" />
+
+@code {
+    private string CurrentApiKey { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CurrentApiKey = await Config.GetApiKey();
+    }
+
+    private async Task OnChange(ChangeEventArgs e)
+    {
+        await Config.SetApiKey(e.Value?.ToString());
+    }
+}

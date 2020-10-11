@@ -5,28 +5,28 @@ namespace MLocker.WebApp
 {
     public interface IConfig
     {
-        Task<string> GetBaseApiUrl();
-        Task SetBaseApiUrl(string baseApiUrl);
+        Task<string> GetApiKey();
+        Task SetApiKey(string baseApiUrl);
     }
 
     public class Config : IConfig
     {
         private readonly ILocalStorageService _localStorageService;
-        private const string BaseApiUrlKey = "BaseApiUrl";
+        private const string ApiKeyKey = "ApiKeyKey";
 
         public Config(ILocalStorageService localStorageService)
         {
             _localStorageService = localStorageService;
         }
 
-        public async Task<string> GetBaseApiUrl()
+        public async Task<string> GetApiKey()
         {
-            return await _localStorageService.GetItemAsStringAsync(BaseApiUrlKey);
+            return await _localStorageService.GetItemAsStringAsync(ApiKeyKey);
         }
 
-        public async Task SetBaseApiUrl(string baseApiUrl)
+        public async Task SetApiKey(string baseApiUrl)
         {
-            await _localStorageService.SetItemAsync(BaseApiUrlKey, baseApiUrl);
+            await _localStorageService.SetItemAsync(ApiKeyKey, baseApiUrl);
         }
     }
 }

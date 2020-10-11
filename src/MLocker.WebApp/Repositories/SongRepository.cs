@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using MLocker.Core.Models;
@@ -25,16 +26,16 @@ namespace MLocker.WebApp.Repositories
 
         public async Task<IEnumerable<Song>> GetAllSongs()
         {
-            var baseUrl = await _config.GetBaseApiUrl();
-            var response = await _httpClient.GetStringAsync($"{baseUrl}/GetAllSongs");
+            var apiKey = await _config.GetApiKey();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
+            var response = await _httpClient.GetStringAsync("/GetAllSongs");
             var allSongs = JsonSerializer.Deserialize<IEnumerable<Song>>(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
             return allSongs;
         }
 
         public async Task<string> GetSongUrl(int fileID)
         {
-            var baseUrl = await _config.GetBaseApiUrl();
-            var url = $"{baseUrl}/GetSong/{fileID}";
+            var url = $"/GetSong/{fileID}";
             return url;
         }
     }

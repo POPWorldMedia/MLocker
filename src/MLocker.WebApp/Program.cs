@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -16,11 +17,14 @@ namespace MLocker.WebApp
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient {BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)});
-
             builder.Services.AddBlazoredLocalStorage();
 
             builder.Services.AddScoped<IConfig, Config>();
+
+            builder.Services.AddScoped(sp => new HttpClient
+            {
+                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+            });
 
             // services
             builder.Services.AddTransient<IUploadService, UploadService>();
