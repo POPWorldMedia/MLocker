@@ -42,7 +42,7 @@
 
     public async Task PlaySong(int fileID)
     {
-        _source = await MusicService.GetSongUrl(fileID);
+        _source = MusicService.GetSongUrl(fileID);
         await JsRuntime.InvokeAsync<string>("StartPlayer");
         _currentSong = _songList.Single(x => x.FileID == fileID);
     }

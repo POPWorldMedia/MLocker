@@ -10,7 +10,7 @@ namespace MLocker.WebApp.Repositories
     public interface ISongRepository
     {
         Task<IEnumerable<Song>> GetAllSongs();
-        Task<string> GetSongUrl(int fileID);
+        string GetSongUrl(int fileID);
     }
 
     public class SongRepository : ISongRepository
@@ -33,7 +33,7 @@ namespace MLocker.WebApp.Repositories
             return allSongs;
         }
 
-        public async Task<string> GetSongUrl(int fileID)
+        public string GetSongUrl(int fileID)
         {
             var url = $"/GetSong/{fileID}";
             return url;

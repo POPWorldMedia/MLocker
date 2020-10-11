@@ -29,7 +29,7 @@ namespace MLocker.Api.Controllers
             if (stream == null || song == null)
                 return StatusCode(404);
             var mediaType = song.FileName.EndsWith("mp3") ? "audio/mpeg" : "audio/mp4";
-            return File(stream, mediaType);
+            return File(stream, mediaType, true);
         }
     }
 }

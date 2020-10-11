@@ -21,7 +21,8 @@ namespace MLocker.WebApp
 
         public async Task<string> GetApiKey()
         {
-            return await _localStorageService.GetItemAsStringAsync(ApiKeyKey);
+            var key = await _localStorageService.GetItemAsStringAsync(ApiKeyKey);
+            return key ?? string.Empty;
         }
 
         public async Task SetApiKey(string baseApiUrl)

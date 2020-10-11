@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Dynamic;
+using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 
@@ -34,8 +35,9 @@ namespace MLocker.Api.Repositories
             var serviceClient = new BlobServiceClient(_config.StorageConnectionString);
             var containerClient = serviceClient.GetBlobContainerClient(ContainerName);
             var blobClient = containerClient.GetBlobClient(fileName);
-            var stream = await blobClient.OpenReadAsync();
-            return stream;
+            var memoryStream = new MemoryStream();
+            await blobClient.DownloadToAsync(memoryStream);
+            return memoryStream;
         }
     }
 }
