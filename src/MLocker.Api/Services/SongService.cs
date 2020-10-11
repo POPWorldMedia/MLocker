@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using MLocker.Api.Repositories;
 using MLocker.Core.Models;
@@ -8,8 +10,9 @@ namespace MLocker.Api.Services
     public interface ISongService
     {
         Task PersistSong(SongData songData, byte[] bytes);
-        string ParseStorageFileName(SongData songData);
+        string ParseStorageFileName(Song songData);
         Task<IEnumerable<Song>> GetAll();
+        Task<Tuple<Stream, Song>> GetSong(int songID);
     }
 
     public class SongService : ISongService
@@ -31,7 +34,7 @@ namespace MLocker.Api.Services
             // TODO: persist image logic, should be one per album, so that's not straight forward yet
         }
 
-        public string ParseStorageFileName(SongData songData)
+        public string ParseStorageFileName(Song songData)
         {
             var name = $"files/{songData.AlbumArtist}/{songData.Album}/{songData.Disc}-{songData.Track}- {songData.Title}";
             return name;
@@ -40,6 +43,16 @@ namespace MLocker.Api.Services
         public async Task<IEnumerable<Song>> GetAll()
         {
             return await _songRepository.GetAll();
+        }
+
+        public async Task<Tuple<Stream, Song>> GetSong(int songID)
+        {
+            var song = await _songRepository.GetSong(songID);
+            if (song == null)
+                return null;
+            var fileName = ParseStorageFileName(song);
+            var stream = await _fileRepository.GetFile(fileName);
+            return Tuple.Create(stream, song);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace MLocker.Api.Repositories
     {
         Task SaveSong(Song song);
         Task<IEnumerable<Song>> GetAll();
+        Task<Song> GetSong(int fileID);
     }
 
     public class SongRepository : ISongRepository
@@ -33,6 +34,13 @@ namespace MLocker.Api.Repositories
             await using var connection = new SqlConnection(_config.ConnectionString);
             var allSongs = await connection.QueryAsync<Song>("SELECT * FROM Songs");
             return allSongs;
+        }
+
+        public async Task<Song> GetSong(int fileID)
+        {
+            await using var connection = new SqlConnection(_config.ConnectionString);
+            var song = await connection.QuerySingleOrDefaultAsync<Song>("SELECT * FROM Songs WHERE FileID = @FileID", new { FileID = fileID});
+            return song;
         }
     }
 }

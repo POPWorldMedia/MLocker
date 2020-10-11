@@ -7,6 +7,7 @@ namespace MLocker.Api.Repositories
     public interface IFileRepository
     {
         Task SaveFile(string fileName, byte[] bytes);
+        Task<Stream> GetFile(string fileName);
     }
 
     public class FileRepository : IFileRepository
@@ -26,6 +27,15 @@ namespace MLocker.Api.Repositories
             var containerClient = serviceClient.GetBlobContainerClient(ContainerName);
             await containerClient.DeleteBlobIfExistsAsync(fileName);
             await containerClient.UploadBlobAsync(fileName, memoryStream);
+        }
+
+        public async Task<Stream> GetFile(string fileName)
+        {
+            var serviceClient = new BlobServiceClient(_config.StorageConnectionString);
+            var containerClient = serviceClient.GetBlobContainerClient(ContainerName);
+            var blobClient = containerClient.GetBlobClient(fileName);
+            var stream = await blobClient.OpenReadAsync();
+            return stream;
         }
     }
 }
