@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLocker.WebApp", "MLocker.W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLocker.Database", "MLocker.Database\MLocker.Database.csproj", "{8D4DCCE6-E7E5-4E00-B975-92FBE687A37E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLocker.Api", "MLocker.Api\MLocker.Api.csproj", "{D4DF3F42-82B3-450E-8438-EF4CB153AF3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLocker.Api", "MLocker.Api\MLocker.Api.csproj", "{D4DF3F42-82B3-450E-8438-EF4CB153AF3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
