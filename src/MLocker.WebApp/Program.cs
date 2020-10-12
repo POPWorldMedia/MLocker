@@ -27,7 +27,6 @@ namespace MLocker.WebApp
             });
 
             // services
-            builder.Services.AddTransient<IUploadService, UploadService>();
             builder.Services.AddTransient<IMusicService, MusicService>();
             builder.Services.AddTransient<IFileParsingService, FileParsingService>();
 

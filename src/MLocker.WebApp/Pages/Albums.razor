@@ -1,0 +1,31 @@
+﻿@page "/Albums"
+@using MLocker.WebApp.Services
+@using MLocker.Core.Models
+@using MLocker.Core.Services
+@using Microsoft.AspNetCore.WebUtilities
+@inject IMusicService MusicService
+<h1>Albums</h1>
+
+@if (_albumList != null)
+{
+    <table class="table">
+        <tbody>
+        @foreach (var item in _albumList)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.AlbumArtist</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    IEnumerable<Album> _albumList = new List<Album>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _albumList = await MusicService.GetAlbums();
+    }
+}
