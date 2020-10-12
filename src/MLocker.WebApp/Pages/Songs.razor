@@ -1,8 +1,11 @@
 ﻿@page "/Songs"
 @using MLocker.WebApp.Services
 @using MLocker.Core.Models
+@using MLocker.Core.Services
+@using Microsoft.AspNetCore.WebUtilities
 @inject IMusicService MusicService
 @inject IJSRuntime JsRuntime
+@inject IFileParsingService FileParsingService
 <h1>Songs</h1>
 
 <div>
@@ -22,6 +25,12 @@
         {
             <tr>
                 <td><button @onclick="@(() => PlaySong(item.FileID))">|&gt;</button></td>
+                <td>
+                    @if (item.PictureMimeType != null)
+                    {
+                        <img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item)))" class="songImage"/>
+                    }
+                </td>
                 <td>@item.Title</td>
                 <td>@item.Artist</td>
             </tr>

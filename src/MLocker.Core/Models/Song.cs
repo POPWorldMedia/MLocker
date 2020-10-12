@@ -18,5 +18,6 @@
         public int PlayCount { get; set; }
         public string PictureMimeType { get; set; }
         public string FileName { get; set; }
+        public string FileType { get; set; }
 	}
 }

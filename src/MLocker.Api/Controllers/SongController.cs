@@ -31,5 +31,14 @@ namespace MLocker.Api.Controllers
             var mediaType = song.FileName.EndsWith("mp3") ? "audio/mpeg" : "audio/mp4";
             return File(stream, mediaType, true);
         }
+
+        [HttpGet("/GetImage")]
+        public async Task<IActionResult> GetImage(string fileName)
+        {
+            var (stream, contentType) = await _songService.GetImage(fileName);
+            if (stream == null || contentType == null)
+                return StatusCode(404);
+            return File(stream, contentType);
+        }
     }
 }

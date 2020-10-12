@@ -26,7 +26,7 @@ namespace MLocker.Api.Repositories
         public async Task SaveSong(Song song)
         {
             await using var connection = new SqlConnection(_config.ConnectionString);
-            await connection.ExecuteAsync("INSERT INTO Songs (Title, Artist, AlbumArtist, Album, Composer, Genre, Year, Track, TrackCount, Disc, DiscCount, Ticks, PlayCount, PictureMimeType, FileName) VALUES (@Title, @Artist, @AlbumArtist, @Album, @Composer, @Genre, @Year, @Track, @TrackCount, @Disc, @DiscCount, @Ticks, @PlayCount, @PictureMimeType, @FileName)", song);
+            await connection.ExecuteAsync("INSERT INTO Songs (Title, Artist, AlbumArtist, Album, Composer, Genre, Year, Track, TrackCount, Disc, DiscCount, Ticks, PlayCount, PictureMimeType, FileName, FileType) VALUES (@Title, @Artist, @AlbumArtist, @Album, @Composer, @Genre, @Year, @Track, @TrackCount, @Disc, @DiscCount, @Ticks, @PlayCount, @PictureMimeType, @FileName, @FileType)", song);
         }
 
         public async Task<IEnumerable<Song>> GetAll()

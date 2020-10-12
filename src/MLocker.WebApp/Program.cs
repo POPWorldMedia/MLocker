@@ -1,10 +1,10 @@
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using MLocker.Core.Services;
 using MLocker.WebApp.Repositories;
 using MLocker.WebApp.Services;
 
@@ -29,6 +29,7 @@ namespace MLocker.WebApp
             // services
             builder.Services.AddTransient<IUploadService, UploadService>();
             builder.Services.AddTransient<IMusicService, MusicService>();
+            builder.Services.AddTransient<IFileParsingService, FileParsingService>();
 
             // repos
             builder.Services.AddTransient<IUploadRepository, UploadRepository>();

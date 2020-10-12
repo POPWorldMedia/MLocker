@@ -14,6 +14,7 @@
 	[Ticks] [bigint] NOT NULL,
 	[PlayCount] [int] NOT NULL,
 	[PictureMimeType] [nvarchar](50) NULL,
-	[FileName] [nvarchar](256) NOT NULL
+	[FileName] [nvarchar](256) NOT NULL,
+	[FileType] [nvarchar](6) NOT NULL
 )
 GO
