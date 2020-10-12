@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using MLocker.Core.Models;
 using MLocker.WebApp.Repositories;
@@ -9,16 +10,19 @@ namespace MLocker.WebApp.Services
     {
         Task<IEnumerable<Song>> GetAllSongs();
         string GetSongUrl(int fileID);
+        Task Upload(string fileName, Stream stream);
     }
 
     public class MusicService : IMusicService
     {
         private readonly ISongRepository _songRepository;
+        private readonly IUploadRepository _uploadRepository;
         private static IEnumerable<Song> _songs;
 
-        public MusicService(ISongRepository songRepository)
+        public MusicService(ISongRepository songRepository, IUploadRepository uploadRepository)
         {
             _songRepository = songRepository;
+            _uploadRepository = uploadRepository;
         }
 
         public async Task UpdateSongs()
@@ -36,6 +40,12 @@ namespace MLocker.WebApp.Services
         public string GetSongUrl(int fileID)
         {
             return _songRepository.GetSongUrl(fileID);
+        }
+
+        public async Task Upload(string fileName, Stream stream)
+        {
+            await _uploadRepository.UploadFile(fileName, stream);
+            await UpdateSongs();
         }
     }
 }

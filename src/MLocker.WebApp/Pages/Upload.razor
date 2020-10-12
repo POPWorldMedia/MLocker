@@ -1,6 +1,6 @@
 ﻿@page "/Upload"
 @using MLocker.WebApp.Services
-@inject IUploadService UploadService
+@inject IMusicService MusicService
 <h1>Upload</h1>
 
 <p>Add files to your library:</p>
@@ -22,7 +22,7 @@
            // if (file.ContentType == "audio/mpeg" || file.ContentType == "audio/mp4")
             {
                 _uploadMessage = $"Uploading {file.Name}";
-                await UploadService.Upload(file.Name, file.OpenReadStream(100000000));
+                await MusicService.Upload(file.Name, file.OpenReadStream(100000000));
             }
         }
     }
