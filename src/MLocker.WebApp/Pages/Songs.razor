@@ -6,19 +6,7 @@
 @inject IMusicService MusicService
 @inject IJSRuntime JsRuntime
 @inject IFileParsingService FileParsingService
-
-<div>
-    @if (_currentSong != null)
-    {
-        if (_currentSong.PictureMimeType != null)
-        {
-            <p class="text-center"><img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(_currentSong)))" class="nowPlayingImage img-fluid" /></p>
-        }
-        <h3>@_currentSong.Title</h3>
-        <h4>@_currentSong.Artist - @_currentSong.Album</h4>
-    }
-    <audio id="player" src="@_source" controls></audio>
-</div>
+@inject IPlayerService PlayerService
 
 @if (_songList != null)
 {
@@ -27,7 +15,7 @@
         @foreach (var item in _songList)
         {
             <tr>
-                <td><button @onclick="@(() => PlaySong(item.FileID))">|&gt;</button></td>
+                <td><button @onclick="@(() => PlaySong(item))">|&gt;</button></td>
                 <td>
                     @if (item.PictureMimeType != null)
                     {
@@ -44,18 +32,14 @@
 
 @code {
     IEnumerable<Song> _songList = new List<Song>();
-    string _source;
-    Song _currentSong;
 
     protected override async Task OnInitializedAsync()
     {
         _songList = await MusicService.GetAllSongs();
     }
 
-    public async Task PlaySong(int fileID)
+    public void PlaySong(Song song)
     {
-        _source = MusicService.GetSongUrl(fileID);
-        await JsRuntime.InvokeAsync<string>("StartPlayer");
-        _currentSong = _songList.Single(x => x.FileID == fileID);
+        PlayerService.PlaySong(song);
     }
 }

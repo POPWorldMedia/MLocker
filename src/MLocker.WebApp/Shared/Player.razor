@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.WebUtilities
+@using MLocker.Core.Services
+@using MLocker.WebApp.Services
+@inject IFileParsingService FileParsingService
+@inject IJSRuntime JsRuntime
+@inject IPlayerService PlayerService
+@inject IMusicService MusicService
+<div class="container">
+    @if (PlayerService.CurrentSong != null)
+    {
+        if (PlayerService.CurrentSong.PictureMimeType != null)
+        {
+            <p class="text-center"><img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(PlayerService.CurrentSong)))" class="nowPlayingImage img-fluid" /></p>
+        }
+        <h3>@PlayerService.CurrentSong.Title</h3>
+        <h4>@PlayerService.CurrentSong.Artist - @PlayerService.CurrentSong.Album</h4>
+    }
+    <p class="text-center"><audio id="player" src="@_source" controls></audio></p>
+</div>
+
+@code
+{
+    string _source;
+
+    protected override void OnInitialized()
+    {
+        PlayerService.OnChange += () =>
+        {
+            _source = MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
+            InvokeAsync(StateHasChanged);
+        };
+    }
+}
