@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using MLocker.Core.Models;
 using MLocker.WebApp.Repositories;
@@ -33,8 +32,8 @@ namespace MLocker.WebApp.Services
         public async Task UpdateSongs()
         {
             var songs = await _songRepository.GetAllSongs();
-            _songs = songs.ToList();
-            PopulateAlbums();
+            _songs = songs.OrderBy(x => x.Title).ToList();
+            await PopulateAlbums();
         }
 
         public async Task<List<Song>> GetAllSongs()
@@ -62,7 +61,7 @@ namespace MLocker.WebApp.Services
             await UpdateSongs();
         }
 
-        private void PopulateAlbums()
+        private async Task PopulateAlbums()
         {
             AlbumGroupingType GetGroupingType(Song song)
             {
@@ -78,6 +77,15 @@ namespace MLocker.WebApp.Services
                 .Select(x => new Album {AlbumArtist = x.Key.AlbumArtist, Title = x.Key.Album, AlbumGroupingType = x.Key.AlbumGroupingType})
                 .OrderBy(x => x.Title)
                 .ToList();
+            // this is janky and probably slow, but I couldn't figure out how to do it in the linq query above
+            foreach (var album in _albums)
+            {
+                var songs = await GetAlbum(album.AlbumArtist, album.Title, album.AlbumGroupingType);
+                if (songs.Any(x => x.PictureMimeType != null))
+                {
+                    album.FirstSong = songs.First();
+                }
+            }
         }
 
         public async Task<List<Song>> GetAlbum(string albumArtist, string title, AlbumGroupingType albumGroupingType)

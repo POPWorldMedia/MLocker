@@ -4,7 +4,7 @@
     {
         public string AlbumArtist { get; set; }
         public string Title { get; set; }
-        public bool HasImage { get; set; }
+        public Song FirstSong { get; set; }
         public AlbumGroupingType AlbumGroupingType { get; set; }
     }
 }

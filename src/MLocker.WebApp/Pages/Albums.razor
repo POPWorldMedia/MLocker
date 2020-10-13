@@ -4,6 +4,7 @@
 @using MLocker.Core.Services
 @using Microsoft.AspNetCore.WebUtilities
 @inject IMusicService MusicService
+@inject IFileParsingService FileParsingService
 
 @if (_albumList != null)
 {
@@ -12,6 +13,13 @@
         @foreach (var item in _albumList)
         {
             <tr>
+                <td>
+                    @if (item.FirstSong != null)
+                    {
+                        <img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage"/>
+
+                    }
+                </td>
                 <td>@item.Title</td>
                 <td>@item.AlbumArtist</td>
             </tr>

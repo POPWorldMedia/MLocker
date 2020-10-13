@@ -12,7 +12,7 @@
     {
         if (_currentSong.PictureMimeType != null)
         {
-            <p><img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(_currentSong)))" class="nowPlayingImage" /></p>
+            <p class="text-center"><img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(_currentSong)))" class="nowPlayingImage img-fluid" /></p>
         }
         <h3>@_currentSong.Title</h3>
         <h4>@_currentSong.Artist - @_currentSong.Album</h4>
