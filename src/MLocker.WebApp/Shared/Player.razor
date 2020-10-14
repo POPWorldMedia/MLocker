@@ -26,33 +26,53 @@
 
 @code
 {
-    string _source;
-    string _imageClass;
-    string _titleClass;
-    bool _isBig = false;
+	string _source;
+	string _imageClass;
+	string _titleClass;
+	bool _isBig = false;
 
-    protected override void OnInitialized()
-    {
-        _imageClass = "";
-        PlayerService.OnChange += () =>
-        {
-            _source = MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
-            InvokeAsync(StateHasChanged);
-        };
-    }
+	protected override void OnInitialized()
+	{
+		_imageClass = "";
+		PlayerService.OnChange += () =>
+		{
+			_source = MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
+			InvokeAsync(StateHasChanged);
+		};
 
-    private void ShrinkToggle()
-    {
-        if (_isBig)
-        {
-            _imageClass = "";
-            _titleClass = "";
-        }
-        else
-        {
-            _imageClass = "nowPlayingShrink";
-            _titleClass = "songDetailsShrink";
-        }
-        _isBig = !_isBig;
-    }
+		action = UpdateMessage;
+	}
+
+	private async Task Alert()
+	{
+		await JsRuntime.InvokeAsync<bool>("alert", "boom");
+	}
+
+	private void ShrinkToggle()
+	{
+		if (_isBig)
+		{
+			_imageClass = "";
+			_titleClass = "";
+		}
+		else
+		{
+			_imageClass = "nowPlayingShrink";
+			_titleClass = "songDetailsShrink";
+		}
+		_isBig = !_isBig;
+	}
+
+	private static Action action;
+
+	private void UpdateMessage()
+	{
+		// TODO: handle when a song ends and play next in the queue
+	}
+
+	[JSInvokable]
+	public static void SongEnded()
+	{
+		action.Invoke();
+	}
 }

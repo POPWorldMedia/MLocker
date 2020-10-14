@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.WebUtilities
+@using MLocker.Core.Models
+@using MLocker.Core.Services
+@inject IFileParsingService FileParsingService
+
+@if (AlbumList != null)
+{
+    <table class="table">
+        <tbody>
+            <Virtualize Context="item" Items="@AlbumList" TItem="Album">
+                <tr>
+                    <td>
+                        @if (item.FirstSong != null)
+                        {
+                            <img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
+                        }
+                    </td>
+                    <td>@item.Title</td>
+                    <td>@item.AlbumArtist</td>
+                </tr>
+            </Virtualize>
+        </tbody>
+    </table>
+}
+
+@code
+{
+    [CascadingParameter]
+    protected List<Album> AlbumList { get; set; }
+
+}
