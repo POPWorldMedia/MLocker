@@ -12,26 +12,25 @@
 {
     <table class="table">
         <tbody>
-        @foreach (var item in _songList)
-        {
-            <tr>
-                <td><button @onclick="@(() => PlaySong(item))">|&gt;</button></td>
-                <td>
-                    @if (item.PictureMimeType != null)
-                    {
-                        <img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item)))" class="songImage"/>
-                    }
-                </td>
-                <td>@item.Title</td>
-                <td>@item.Artist</td>
-            </tr>
-        }
+            <Virtualize Context="song" Items="@_songList" TItem="Song">
+                <tr>
+                    <td><button @onclick="@(() => PlaySong(song))">|&gt;</button></td>
+                    <td>
+                        @if (song.PictureMimeType != null)
+                        {
+                            <img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(song)))" class="songImage" />
+                        }
+                    </td>
+                    <td>@song.Title</td>
+                    <td>@song.Artist</td>
+                </tr>
+            </Virtualize>
         </tbody>
     </table>
 }
 
 @code {
-    IEnumerable<Song> _songList = new List<Song>();
+    IList<Song> _songList = new List<Song>();
 
     protected override async Task OnInitializedAsync()
     {
