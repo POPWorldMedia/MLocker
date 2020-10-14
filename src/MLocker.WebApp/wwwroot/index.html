@@ -5,10 +5,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>MLocker.WebApp</title>
-    <base href="/" /><!-- CSS only -->
+    <base href="/" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous"><!-- JavaScript Bundle with Popper.js -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js" integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD" crossorigin="anonymous"></script>
-    <link href="_framework/scoped.styles.css" rel="stylesheet" />
     <script>
         window.StartPlayer = function () {
             var player = document.getElementById('player');
@@ -20,14 +19,58 @@
             max-height: 40px;
         }
 
+        #playerInfo {
+            min-height: 100px;
+        }
         .nowPlayingImage {
-            max-height: 600px;
+            height: 100px; width: 100px;
+            margin-left: 0;
+            transition: all .5s ease-in-out;
+        }
+        .nowPlayingImage.nowPlayingShrink {
+            height: 600px; width: 600px;
+            margin-left: calc(50% - 300px);
+        }
+        .songDetails {
+            margin-top: -80px;
+            margin-left: 120px;
+            transition: all .5s ease-in-out;
+        }
+        .songDetails.songDetailsShrink {
+            margin-top: 0;
+            margin-left: 0;
+        }
+
+
+
+        #blazor-error-ui {
+            background: lightyellow;
+            bottom: 0;
+            box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+            display: none;
+            left: 0;
+            padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+        #blazor-error-ui .dismiss {
+            cursor: pointer;
+            position: absolute;
+            right: 0.75rem;
+            top: 0.5rem;
         }
     </style>
 </head>
 
 <body>
-<div id="app">Loading...</div>
+    <div id="app">Loading...</div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
 
     <script src="_framework/blazor.webassembly.js"></script>
 </body>

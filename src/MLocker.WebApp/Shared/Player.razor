@@ -5,29 +5,53 @@
 @inject IJSRuntime JsRuntime
 @inject IPlayerService PlayerService
 @inject IMusicService MusicService
-<div class="container">
+
+<div class="container" id="playerInfo">
     @if (PlayerService.CurrentSong != null)
     {
         if (PlayerService.CurrentSong.PictureMimeType != null)
         {
-            <p class="text-center"><img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(PlayerService.CurrentSong)))" class="nowPlayingImage img-fluid" /></p>
+            <img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(PlayerService.CurrentSong)))" class="nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)" />
         }
-        <h3>@PlayerService.CurrentSong.Title</h3>
-        <h4>@PlayerService.CurrentSong.Artist - @PlayerService.CurrentSong.Album</h4>
+        <div class="songDetails @_titleClass">
+            <h3>@PlayerService.CurrentSong.Title</h3>
+            <h4>@PlayerService.CurrentSong.Artist - @PlayerService.CurrentSong.Album</h4>
+        </div>
     }
+</div>
+<div>
     <p class="text-center"><audio id="player" src="@_source" controls></audio></p>
 </div>
 
 @code
 {
     string _source;
+    string _imageClass;
+    string _titleClass;
+    bool _isBig = false;
 
     protected override void OnInitialized()
     {
+        _imageClass = "";
         PlayerService.OnChange += () =>
         {
             _source = MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
             InvokeAsync(StateHasChanged);
         };
+    }
+
+    private void ShrinkToggle()
+    {
+        if (_isBig)
+        {
+            _imageClass = "";
+            _titleClass = "";
+        }
+        else
+        {
+            _imageClass = "nowPlayingShrink";
+            _titleClass = "songDetailsShrink";
+        }
+        _isBig = !_isBig;
     }
 }

@@ -17,9 +17,8 @@ namespace MLocker.WebApp.Services
     public class PlayerService : IPlayerService
     {
         private readonly IJSRuntime _jsRuntime;
-        private List<Song> _queue;
+        private readonly List<Song> _queue;
         private Song _currentSong;
-        private string _songUrl;
 
         public PlayerService(IJSRuntime jsRuntime)
         {
