@@ -7,22 +7,37 @@
 
 @if (_isDetail)
 {
-	<Albums_Detail/>
+	<p><a @onclick="@BackToAll">&lt;- all albums</a></p>
+	<CascadingValue Value="_currentAlbum">
+		<Albums_Detail/>
+	</CascadingValue>
 }
 else
 {
 	<CascadingValue Value="_albumList">
-		<Albums_All/>
+		<Albums_All OnClick="@LoadAlbum"/>
 	</CascadingValue>
 }
 
 @code {
 	List<Album> _albumList = new List<Album>();
-	private readonly bool _isDetail = false;
+	Album _currentAlbum = null;
+	private bool _isDetail = false;
 
 	protected override async Task OnInitializedAsync()
 	{
 		_albumList = await MusicService.GetAlbums();
 	}
 
+	protected void LoadAlbum(Album album)
+	{
+		_currentAlbum = album;
+		_isDetail = true;
+	}
+
+	protected void BackToAll()
+	{
+		_isDetail = false;
+		_currentAlbum = null;
+	}
 }

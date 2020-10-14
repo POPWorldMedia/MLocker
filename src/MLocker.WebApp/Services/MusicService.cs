@@ -13,7 +13,7 @@ namespace MLocker.WebApp.Services
         string GetSongUrl(int fileID);
         Task Upload(string fileName, Stream stream);
         Task<List<Album>> GetAlbums();
-        Task<List<Song>> GetAlbum(string albumArtist, string title, AlbumGroupingType albumGroupingType);
+        Task<List<Song>> GetAlbum(Album album);
     }
 
     public class MusicService : IMusicService
@@ -80,7 +80,7 @@ namespace MLocker.WebApp.Services
             // this is janky and probably slow, but I couldn't figure out how to do it in the linq query above
             foreach (var album in _albums)
             {
-                var songs = await GetAlbum(album.AlbumArtist, album.Title, album.AlbumGroupingType);
+                var songs = await GetAlbum(album);
                 if (songs.Any(x => x.PictureMimeType != null))
                 {
                     album.FirstSong = songs.First();
@@ -88,15 +88,15 @@ namespace MLocker.WebApp.Services
             }
         }
 
-        public async Task<List<Song>> GetAlbum(string albumArtist, string title, AlbumGroupingType albumGroupingType)
+        public async Task<List<Song>> GetAlbum(Album album)
         {
             if (_songs == null)
                 await UpdateSongs();
-            var unsorted = albumGroupingType switch
+            var unsorted = album.AlbumGroupingType switch
             {
-                AlbumGroupingType.AlbumArtist => _songs.Where(x => x.Album == title && x.AlbumArtist == albumArtist),
-                AlbumGroupingType.Artist => _songs.Where(x => x.Album == title && x.Artist == albumArtist),
-                _ => _songs.Where(x => x.Album == title && x.AlbumArtist == null && x.Artist == null)
+                AlbumGroupingType.AlbumArtist => _songs.Where(x => x.Album == album.Title && x.AlbumArtist == album.AlbumArtist),
+                AlbumGroupingType.Artist => _songs.Where(x => x.Album == album.Title && x.Artist == album.AlbumArtist),
+                _ => _songs.Where(x => x.Album == album.Title && x.AlbumArtist == null && x.Artist == null)
             };
             var songs = unsorted
                 .OrderBy(x => x.Disc)

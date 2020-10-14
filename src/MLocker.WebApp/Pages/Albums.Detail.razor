@@ -1,7 +1,42 @@
 ﻿@using MLocker.Core.Models
+@using MLocker.Core.Services
+@using MLocker.WebApp.Services
+@using Microsoft.AspNetCore.WebUtilities
+@inject IMusicService MusicService
+@inject IFileParsingService FileParsingService
+@inject IPlayerService PlayerService
 
+<table class="table">
+	<tbody>
+		<Virtualize Context="song" Items="@_songList" TItem="Song">
+			<tr>
+				<td><button @onclick="@(() => PlaySong(song))">|&gt;</button></td>
+				<td>
+					@if (song.PictureMimeType != null)
+					{
+						<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(song)))" class="songImage" />
+					}
+				</td>
+				<td>@song.Title</td>
+				<td>@song.Artist</td>
+			</tr>
+		</Virtualize>
+	</tbody>
+</table>
 
 @code {
-    [CascadingParameter]
-    protected Album Album { get; set; }
+	[CascadingParameter]
+	protected Album Album { get; set; }
+
+	IList<Song> _songList = new List<Song>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		_songList = await MusicService.GetAlbum(Album);
+	}
+
+	public void PlaySong(Song song)
+	{
+		PlayerService.PlaySong(song);
+	}
 }
