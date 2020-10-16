@@ -40,6 +40,7 @@ namespace MLocker.Api
 
             services.AddTransient<ISongRepository, SongRepository>();
             services.AddTransient<IFileRepository, FileRepository>();
+            services.AddTransient<IPlaylistRepository, PlaylistRepository>();
 
             services.AddResponseCompression(options =>
             {

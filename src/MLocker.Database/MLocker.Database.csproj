@@ -7,9 +7,11 @@
 
   <ItemGroup>
     <None Remove="Scripts\Script001 - seed with songs.sql" />
+    <None Remove="Scripts\Script002 - playlists.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\Script002 - playlists.sql" />
     <EmbeddedResource Include="Scripts\Script001 - seed with songs.sql" />
   </ItemGroup>
 
