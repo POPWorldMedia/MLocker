@@ -50,7 +50,7 @@ namespace MLocker.WebApp.Services
         public void PlayNextSong()
         {
 	        _queueIndex++;
-	        if (_queue == null || _queueIndex > _queue.Count)
+	        if (_queue == null || _queueIndex >= _queue.Count)
 	        {
 		        _queue = null;
 		        _queueIndex = 0;

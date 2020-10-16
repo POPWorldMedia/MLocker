@@ -40,7 +40,8 @@
 		_imageClass = "";
 		PlayerService.OnChange += () =>
 		{
-			_source = MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
+			if (PlayerService.CurrentSong != null)
+				_source = MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
 			InvokeAsync(StateHasChanged);
 		};
 
