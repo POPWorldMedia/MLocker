@@ -6,6 +6,8 @@
 @inject IFileParsingService FileParsingService
 @inject IPlayerService PlayerService
 
+<h2>@Album.AlbumArtist - @Album.Title</h2>
+
 <table class="table">
 	<tbody>
 		<Virtualize Context="song" Items="@_songList" TItem="Song">
