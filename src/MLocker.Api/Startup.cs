@@ -1,5 +1,7 @@
+using System.IO.Compression;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,11 +40,22 @@ namespace MLocker.Api
 
             services.AddTransient<ISongRepository, SongRepository>();
             services.AddTransient<IFileRepository, FileRepository>();
+
+            services.AddResponseCompression(options =>
+            {
+	            options.Providers.Add<BrotliCompressionProvider>();
+	            options.Providers.Add<GzipCompressionProvider>();
+                options.EnableForHttps = true;
+            });
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+            services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+	        app.UseResponseCompression();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

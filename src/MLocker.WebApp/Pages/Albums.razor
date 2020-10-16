@@ -7,7 +7,7 @@
 
 @if (_isDetail)
 {
-	<p><a @onclick="@BackToAll">&lt;- all albums</a></p>
+	<p @onclick="@BackToAll"><span class="backButton"></span> all albums</p>
 	<CascadingValue Value="_currentAlbum">
 		<Albums_Detail/>
 	</CascadingValue>
