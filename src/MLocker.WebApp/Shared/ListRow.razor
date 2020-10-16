@@ -6,14 +6,17 @@
 @inject IPlayerService PlayerService
 
 <tr>
-	<td><button @onclick="@(() => PlaySong(Song))">|&gt;</button></td>
-	<td>
+	<td class="songImageCell">
 		@if (Song.PictureMimeType != null)
 		{
-			<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(Song)))" class="songImage" />
+			<img @onclick="@(() => PlaySong(Song))" src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(Song)))" class="songImage" />
+		}
+		else
+		{
+			<div @onclick="@(() => PlaySong(Song))" class="coverPlaceholder songImage"> </div>
 		}
 	</td>
-	<td>@Song.Title</td>
+	<td @onclick="@(() => PlaySong(Song))" class="clickyText">@Song.Title</td>
 	<td>@Song.Artist</td>
 </tr>
 

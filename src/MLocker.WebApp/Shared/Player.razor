@@ -13,6 +13,10 @@
         {
             <img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(PlayerService.CurrentSong)))" class="nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)" />
         }
+        else
+        {
+	        <div class="coverPlaceholder nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)"> </div>
+        }
         <div class="songDetails @_titleClass">
             <h3>@PlayerService.CurrentSong.Title</h3>
             <h4>@PlayerService.CurrentSong.Artist - @PlayerService.CurrentSong.Album</h4>
@@ -41,11 +45,6 @@
 		};
 
 		action = UpdateMessage;
-	}
-
-	private async Task Alert()
-	{
-		await JsRuntime.InvokeAsync<bool>("alert", "boom");
 	}
 
 	private void ShrinkToggle()

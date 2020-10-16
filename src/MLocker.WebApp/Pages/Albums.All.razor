@@ -9,13 +9,17 @@
         <tbody>
             <Virtualize Context="item" Items="@AlbumList" TItem="Album">
                 <tr>
-                    <td>
+                    <td @onclick="@(() => OnClick.InvokeAsync(item))">
                         @if (item.FirstSong != null)
                         {
                             <img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
                         }
+                        else
+                        {
+	                        <div class="coverPlaceholder songImage"> </div>
+                        }
                     </td>
-	                <td><a @onclick="@(() => OnClick.InvokeAsync(item))">@item.Title</a></td>
+	                <td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item.Title</td>
                     <td>@item.AlbumArtist</td>
                 </tr>
             </Virtualize>
