@@ -8,22 +8,24 @@ namespace MLocker.WebApp.Services
     public interface IPlayerService
     {
         Song CurrentSong { get; }
-        List<Song> Queue { get; }
+        Dictionary<int, Song> Queue { get; }
+        void PlaySong(Song song, Dictionary<int, Song> dictionary, int index);
+        void PlayNextSong();
         void EnqueueSong(Song song);
-        void PlaySong(Song song);
         event Action OnChange;
+        Dictionary<int, Song> GetIndexedList(List<Song> songs);
     }
 
     public class PlayerService : IPlayerService
     {
         private readonly IJSRuntime _jsRuntime;
-        private readonly List<Song> _queue;
+        private Dictionary<int, Song> _queue;
+        private int _queueIndex;
         private Song _currentSong;
 
         public PlayerService(IJSRuntime jsRuntime)
         {
             _jsRuntime = jsRuntime;
-            _queue = new List<Song>();
         }
 
         public Song CurrentSong
@@ -31,16 +33,35 @@ namespace MLocker.WebApp.Services
             get => _currentSong;
         }
 
-        public List<Song> Queue
+        public Dictionary<int, Song> Queue
         {
             get => _queue;
         }
 
-        public void PlaySong(Song song)
+        public void PlaySong(Song song, Dictionary<int, Song> dictionary, int index)
         {
             _currentSong = song;
+            _queue = dictionary;
+            _queueIndex = index;
             Notify();
             _jsRuntime.InvokeAsync<string>("StartPlayer");
+        }
+
+        public void PlayNextSong()
+        {
+	        _queueIndex++;
+	        if (_queue == null || _queueIndex > _queue.Count)
+	        {
+		        _queue = null;
+		        _queueIndex = 0;
+		        _currentSong = null;
+		        Notify();
+		        return;
+	        }
+
+	        _currentSong = _queue[_queueIndex];
+	        Notify();
+	        _jsRuntime.InvokeAsync<string>("StartPlayer");
         }
 
         public void EnqueueSong(Song song)
@@ -50,5 +71,17 @@ namespace MLocker.WebApp.Services
 
         public event Action OnChange;
         private void Notify() => OnChange?.Invoke();
+
+        public Dictionary<int, Song> GetIndexedList(List<Song> songs)
+        {
+	        var x = 0;
+	        var dictionary = new Dictionary<int, Song>();
+	        foreach (var item in songs)
+	        {
+		        dictionary.Add(x, item);
+		        x++;
+	        }
+	        return dictionary;
+        }
     }
 }

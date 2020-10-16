@@ -8,23 +8,26 @@
 
 <tr>
 	<td class="songImageCell">
-		@if (Song.PictureMimeType != null)
+		@if (Song.Value.PictureMimeType != null)
 		{
-			<div @onclick="@(() => PlaySong(Song))" style="background-image: url(@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(Song))))" class="songImage playButton @_nowPlayingClass"></div>
+			<div @onclick="@(() => PlaySong(Song))" style="background-image: url(@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(Song.Value))))" class="songImage playButton @_nowPlayingClass"></div>
 		}
 		else
 		{
 			<div @onclick="@(() => PlaySong(Song))" class="coverPlaceholder songImage playButton @_nowPlayingClass"> </div>
 		}
 	</td>
-	<td @onclick="@(() => PlaySong(Song))" class="clickyText">@Song.Title</td>
-	<td>@Song.Artist</td>
+	<td @onclick="@(() => PlaySong(Song))" class="clickyText">@Song.Value.Title</td>
+	<td>@Song.Value.Artist</td>
+	<td>@(new TimeSpan(Song.Value.Ticks).ToString(@"m\:ss"))</td>
 </tr>
 
 @code {
 
 	[Parameter]
-	public Song Song { get; set; }
+	public KeyValuePair<int, Song> Song { get; set; }
+	[Parameter]
+	public Dictionary<int, Song> ListContext { get; set; }
 
 	private string _nowPlayingClass;
 
@@ -34,14 +37,14 @@
 		RecalcNowPlaying();
 	}
 
-	public void PlaySong(Song song)
+	public void PlaySong(KeyValuePair<int, Song> song)
 	{
-		PlayerService.PlaySong(song);
+		PlayerService.PlaySong(song.Value, ListContext, song.Key);
 	}
 
 	private void RecalcNowPlaying()
 	{
-		_nowPlayingClass = Song.FileID == PlayerService.CurrentSong?.FileID ? "eq" : string.Empty;
+		_nowPlayingClass = Song.Value.FileID == PlayerService.CurrentSong?.FileID ? "eq" : string.Empty;
 		InvokeAsync(StateHasChanged);
 	}
 

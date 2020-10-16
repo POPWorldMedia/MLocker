@@ -1,7 +1,6 @@
 ﻿@using MLocker.Core.Models
 @using MLocker.Core.Services
 @using MLocker.WebApp.Services
-@using Microsoft.AspNetCore.WebUtilities
 @inject IMusicService MusicService
 @inject IFileParsingService FileParsingService
 @inject IPlayerService PlayerService
@@ -10,8 +9,8 @@
 
 <table class="table">
 	<tbody>
-		<Virtualize Context="song" Items="@_songList" TItem="Song">
-			<ListRow Song="song" />
+		<Virtualize Context="pair" Items="@_songList" TItem="KeyValuePair<int, Song>">
+			<ListRow Song="pair" ListContext="_songList" />
 		</Virtualize>
 	</tbody>
 </table>
@@ -20,10 +19,11 @@
 	[CascadingParameter]
 	protected Album Album { get; set; }
 
-	IList<Song> _songList = new List<Song>();
+	Dictionary<int, Song> _songList;
 
 	protected override async Task OnInitializedAsync()
 	{
-		_songList = await MusicService.GetAlbum(Album);
+		var songs = await MusicService.GetAlbum(Album);
+		_songList = PlayerService.GetIndexedList(songs);
 	}
 }
