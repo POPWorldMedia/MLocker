@@ -41,7 +41,7 @@
 
 	private void RecalcNowPlaying()
 	{
-		_nowPlayingClass = Song.FileID == PlayerService.CurrentSong.FileID ? "eq" : string.Empty;
+		_nowPlayingClass = Song.FileID == PlayerService.CurrentSong?.FileID ? "eq" : string.Empty;
 		InvokeAsync(StateHasChanged);
 	}
 
