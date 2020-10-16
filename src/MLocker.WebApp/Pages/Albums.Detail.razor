@@ -9,17 +9,7 @@
 <table class="table">
 	<tbody>
 		<Virtualize Context="song" Items="@_songList" TItem="Song">
-			<tr>
-				<td><button @onclick="@(() => PlaySong(song))">|&gt;</button></td>
-				<td>
-					@if (song.PictureMimeType != null)
-					{
-						<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(song)))" class="songImage" />
-					}
-				</td>
-				<td>@song.Title</td>
-				<td>@song.Artist</td>
-			</tr>
+			<ListRow Song="song" />
 		</Virtualize>
 	</tbody>
 </table>
@@ -33,10 +23,5 @@
 	protected override async Task OnInitializedAsync()
 	{
 		_songList = await MusicService.GetAlbum(Album);
-	}
-
-	public void PlaySong(Song song)
-	{
-		PlayerService.PlaySong(song);
 	}
 }
