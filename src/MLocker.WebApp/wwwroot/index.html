@@ -116,6 +116,16 @@
 				DotNet.invokeMethodAsync('MLocker.WebApp', 'SongEnded');
 			};
 		}
+
+		window.OpenApiModal = function() {
+			var myModal = new bootstrap.Modal(document.getElementById('apiModal'));
+			myModal.show();
+		}
+
+		window.CloseApiModal = function () {
+			var myModal = new bootstrap.Modal(document.getElementById('apiModal'));
+			myModal.hide();
+		}
 	</script>
 </body>
 

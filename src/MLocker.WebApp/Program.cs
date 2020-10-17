@@ -34,6 +34,7 @@ namespace MLocker.WebApp
             // repos
             builder.Services.AddTransient<IUploadRepository, UploadRepository>();
             builder.Services.AddTransient<ISongRepository, SongRepository>();
+            builder.Services.AddTransient<ITestRepository, TestRepository>();
 
             await builder.Build().RunAsync();
         }

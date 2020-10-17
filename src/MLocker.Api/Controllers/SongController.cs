@@ -15,6 +15,7 @@ namespace MLocker.Api.Controllers
             _songService = songService;
         }
 
+        [ApiAuth]
         [HttpGet("/GetAllSongs")]
         public async Task<IActionResult> GetAll()
         {

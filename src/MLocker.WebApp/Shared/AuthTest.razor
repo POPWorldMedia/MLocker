@@ -1,0 +1,55 @@
+﻿@using MLocker.WebApp.Repositories
+@inject IConfig Config
+@inject ITestRepository TestRepository
+@inject IJSRuntime JsRuntime
+
+<div class="modal fade" id="apiModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="staticBackdropLabel">API Key Required</h5>
+				<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<input class="form-control" @bind-value="CurrentApiKey" />
+				<div class="alert @AlertClass my-3">@TestResult</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-dark" @onclick="Save">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	private string CurrentApiKey { get; set; }
+	private string TestResult { get; set; }
+	private string AlertClass { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		CurrentApiKey = await Config.GetApiKey();
+		var (isSuccess, statusCode) = await TestRepository.IsTestSuccess();
+		if (!isSuccess)
+		{
+			AlertClass = "alert-danger";
+			TestResult = statusCode.ToString();
+			await JsRuntime.InvokeAsync<string>("OpenApiModal");
+		}
+	}
+
+	private async Task Save()
+	{
+		await Config.SetApiKey(CurrentApiKey);
+		var (isSuccess, statusCode) = await TestRepository.IsTestSuccess();
+		if (!isSuccess)
+			TestResult = statusCode.ToString();
+		else
+		{
+			AlertClass = "alert-success";
+			TestResult = statusCode.ToString();
+			// TODO: broken in Bootstrap 5
+			//await JsRuntime.InvokeAsync<string>("CloseApiModal");
+		}
+	}
+}
