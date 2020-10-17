@@ -15,6 +15,7 @@ namespace MLocker.WebApp.Services
         Task<List<Album>> GetAlbums();
         Task<List<Song>> GetAlbum(Album album);
         Task UpdateSongs();
+        Task IncrementPlayCount(int fileID);
     }
 
     public class MusicService : IMusicService
@@ -103,6 +104,13 @@ namespace MLocker.WebApp.Services
                 .ThenBy(x => x.Track)
                 .ToList();
             return songs;
+        }
+
+        public async Task IncrementPlayCount(int fileID)
+        {
+	        var song = _songs.Single(x => x.FileID == fileID);
+	        song.PlayCount++;
+	        await _songRepository.IncrementPlayCount(fileID);
         }
     }
 }

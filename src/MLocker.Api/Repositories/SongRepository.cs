@@ -12,6 +12,7 @@ namespace MLocker.Api.Repositories
         Task SaveSong(Song song);
         Task<IEnumerable<Song>> GetAll();
         Task<Song> GetSong(int fileID);
+        Task IncrementPlayCount(int fileID);
     }
 
     public class SongRepository : ISongRepository
@@ -41,6 +42,12 @@ namespace MLocker.Api.Repositories
             await using var connection = new SqlConnection(_config.ConnectionString);
             var song = await connection.QuerySingleOrDefaultAsync<Song>("SELECT * FROM Songs WHERE FileID = @FileID", new { FileID = fileID});
             return song;
+        }
+
+        public async Task IncrementPlayCount(int fileID)
+        {
+	        await using var connection = new SqlConnection(_config.ConnectionString);
+	        await connection.ExecuteScalarAsync("UPDATE Songs SET PlayCount = PlayCount + 1 WHERE FileID = @FileID", new { FileID = fileID});
         }
     }
 }

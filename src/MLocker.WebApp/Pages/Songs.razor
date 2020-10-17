@@ -9,7 +9,18 @@
 
 @if (_songList != null)
 {
-    <table class="table">
+    <table class="table table-hover">
+	    <thead>
+	    <tr>
+		    <th></th>
+		    <th>Song</th>
+		    <th></th>
+		    <th>Artist</th>
+		    <th>Album</th>
+		    <th>Length</th>
+		    <th>Plays</th>
+	    </tr>
+	    </thead>
         <tbody>
             <Virtualize Context="song" Items="@_songList" TItem="KeyValuePair<int, Song>">
 	            <ListRow Song="song" ListContext="@null"/>

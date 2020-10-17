@@ -41,5 +41,18 @@ namespace MLocker.Api.Controllers
                 return StatusCode(404);
             return File(stream, contentType);
         }
+
+        [ApiAuth]
+        [HttpPost("/IncrementPlayCount")]
+        public async Task<IActionResult> IncrementPlayCount(Incrementer incrementer)
+        {
+	        await _songService.IncrementPlayCount(incrementer.FileID);
+	        return Ok();
+        }
+
+        public class Incrementer
+        {
+            public int FileID { get; set; }
+        }
     }
 }

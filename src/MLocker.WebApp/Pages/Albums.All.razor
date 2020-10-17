@@ -5,26 +5,33 @@
 
 @if (AlbumList != null)
 {
-    <table class="table">
-        <tbody>
-            <Virtualize Context="item" Items="@AlbumList" TItem="Album">
-                <tr>
-                    <td @onclick="@(() => OnClick.InvokeAsync(item))">
-                        @if (item.FirstSong != null)
-                        {
-                            <img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
-                        }
-                        else
-                        {
-	                        <div class="coverPlaceholder songImage"> </div>
-                        }
-                    </td>
-	                <td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item.Title</td>
-                    <td>@item.AlbumArtist</td>
-                </tr>
-            </Virtualize>
-        </tbody>
-    </table>
+	<table class="table table-hover">
+		<thead>
+		<tr>
+			<th></th>
+			<th>Album</th>
+			<th>Artist</th>
+		</tr>
+		</thead>
+		<tbody>
+		<Virtualize Context="item" Items="@AlbumList" TItem="Album">
+			<tr>
+				<td @onclick="@(() => OnClick.InvokeAsync(item))">
+					@if (item.FirstSong != null)
+					{
+						<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage"/>
+					}
+					else
+					{
+						<div class="coverPlaceholder songImage"> </div>
+					}
+				</td>
+				<td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item.Title</td>
+				<td>@item.AlbumArtist</td>
+			</tr>
+		</Virtualize>
+		</tbody>
+	</table>
 }
 
 @code

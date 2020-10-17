@@ -16,6 +16,7 @@ namespace MLocker.Api.Services
         Task<IEnumerable<Song>> GetAll();
         Task<Tuple<Stream, Song>> GetSong(int songID);
         Task<Tuple<Stream, string>> GetImage(string imageName);
+        Task IncrementPlayCount(int fileID);
     }
 
     public class SongService : ISongService
@@ -75,6 +76,11 @@ namespace MLocker.Api.Services
             // if this were a real production thing where you didn't want people poking around your container, you would parse this
             var stream = await _fileRepository.GetFileWithContentType(imageName);
             return stream;
+        }
+
+        public async Task IncrementPlayCount(int fileID)
+        {
+	        await _songRepository.IncrementPlayCount(fileID);
         }
     }
 }

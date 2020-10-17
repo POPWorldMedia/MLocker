@@ -24,7 +24,11 @@
     }
 </div>
 <div>
-    <p class="text-center"><audio id="player" src="@_source" controls></audio></p>
+	<div id="queueButton" class="float-left" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></div>
+	<p class="text-center"><audio id="player" src="@_source" controls></audio></p>
+</div>
+<div id="queueList" class="collapse" aria-labelledby="queueButton" data-parent="#queueButton">
+	q
 </div>
 <hr />
 
@@ -41,7 +45,10 @@
 		PlayerService.OnChange += () =>
 		{
 			if (PlayerService.CurrentSong != null)
+			{
 				_source = MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
+				MusicService.IncrementPlayCount(PlayerService.CurrentSong.FileID);
+			}
 			InvokeAsync(StateHasChanged);
 		};
 

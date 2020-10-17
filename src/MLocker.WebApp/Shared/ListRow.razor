@@ -18,8 +18,13 @@
 		}
 	</td>
 	<td @onclick="@(() => PlaySong(Song))" class="clickyText">@Song.Value.Title</td>
+	<td>
+		<div class="contextButton"></div>
+	</td>
 	<td>@Song.Value.Artist</td>
+	<td>@Song.Value.Album</td>
 	<td>@(new TimeSpan(Song.Value.Ticks).ToString(@"m\:ss"))</td>
+	<td>@Song.Value.PlayCount</td>
 </tr>
 
 @code {
