@@ -27,9 +27,9 @@
 <div class="container">
 	<div class="row d-flex flex-nowrap" id="playerRow">
 		<div class="col-md-2"><div id="queueButton" class="playerButton" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></div></div>
-		<div class="col-md-2 text-right"><div class="previousButton playerButton" @onclick="PlayPrevious"></div></div>
+		<div class="col-md-2 text-right"><div class="@_previousClass playerButton" @onclick="PlayPrevious"></div></div>
 		<div class="col-md-4 text-center"><audio id="player" src="@_source" controls></audio></div>
-		<div class="col-md-2"><div class="nextButton playerButton" @onclick="PlayNext"></div></div>
+		<div class="col-md-2"><div class="@_nextClass playerButton" @onclick="PlayNext"></div></div>
 		<div class="col-md-2"></div>
 	</div>
 </div>
@@ -69,6 +69,8 @@
 	string _source;
 	string _imageClass;
 	string _titleClass;
+	string _nextClass;
+	string _previousClass;
 	bool _isBig = false;
 
 	protected override void OnInitialized()
@@ -81,6 +83,14 @@
 				_source = MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
 				MusicService.IncrementPlayCount(PlayerService.CurrentSong.FileID);
 			}
+			_previousClass = PlayerService.CurrentSong == null 
+			             || PlayerService.Queue.Count == 0 
+			             || PlayerService.QueueIndex == 0 
+				? "previousButtonOff" : "previousButton";
+			_nextClass = PlayerService.CurrentSong == null 
+			             ||PlayerService.Queue.Count == 0 
+			             || PlayerService.QueueIndex >= PlayerService.Queue.Count - 1 
+				? "nextButtonOff" : "nextButton";
 			InvokeAsync(StateHasChanged);
 		};
 

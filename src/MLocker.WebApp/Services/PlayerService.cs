@@ -9,6 +9,7 @@ namespace MLocker.WebApp.Services
     {
         Song CurrentSong { get; }
         Dictionary<int, Song> Queue { get; }
+        int QueueIndex { get; }
         void PlaySong(Song song, Dictionary<int, Song> dictionary, int index);
         void PlayNextSong();
         void PlayPreviousSong();
@@ -30,15 +31,11 @@ namespace MLocker.WebApp.Services
             _jsRuntime = jsRuntime;
         }
 
-        public Song CurrentSong
-        {
-            get => _currentSong;
-        }
+        public Song CurrentSong => _currentSong;
 
-        public Dictionary<int, Song> Queue
-        {
-            get => _queue;
-        }
+        public Dictionary<int, Song> Queue => _queue;
+
+        public int QueueIndex => _queueIndex;
 
         public void PlaySong(Song song, Dictionary<int, Song> dictionary, int index)
         {
@@ -62,7 +59,7 @@ namespace MLocker.WebApp.Services
 	        _queueIndex++;
 	        if (_queue == null || _queueIndex >= _queue.Count)
 	        {
-		        _queue = null;
+		        _queue = new Dictionary<int, Song>();
 		        _queueIndex = 0;
 		        _currentSong = null;
 		        Notify();
