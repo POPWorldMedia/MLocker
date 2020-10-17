@@ -126,13 +126,12 @@
 		}
 
 		window.OpenApiModal = function() {
-			var myModal = new bootstrap.Modal(document.getElementById('apiModal'));
+			var myModal = new bootstrap.Modal(document.getElementById('apiModal'), {keyboard: false, backdrop: 'static'});
 			myModal.show();
 		}
 
-		window.CloseApiModal = function () {
-			var myModal = new bootstrap.Modal(document.getElementById('apiModal'));
-			myModal.hide();
+		window.Reload = function () {
+			location.reload();
 		}
 	</script>
 </body>
