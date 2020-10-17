@@ -23,7 +23,7 @@
 	    </thead>
         <tbody>
             <Virtualize Context="song" Items="@_songList" TItem="KeyValuePair<int, Song>">
-	            <ListRow Song="song" ListContext="@null"/>
+	            <ListRow Song="song" ListContext="@null" WillRequeue="true"/>
             </Virtualize>
         </tbody>
     </table>

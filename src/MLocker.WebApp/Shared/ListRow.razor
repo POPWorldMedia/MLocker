@@ -33,6 +33,8 @@
 	public KeyValuePair<int, Song> Song { get; set; }
 	[Parameter]
 	public Dictionary<int, Song> ListContext { get; set; }
+	[Parameter]
+	public bool WillRequeue { get; set; }
 
 	private string _nowPlayingClass;
 
@@ -44,7 +46,14 @@
 
 	public void PlaySong(KeyValuePair<int, Song> song)
 	{
-		PlayerService.PlaySong(song.Value, ListContext, song.Key);
+		if (WillRequeue)
+		{
+			if (ListContext == null)
+				ListContext = new Dictionary<int, Song> {{0, song.Value}};
+			PlayerService.PlaySong(song.Value, ListContext, song.Key);
+		}
+		else
+			PlayerService.SkipToSong(song.Key);
 	}
 
 	private void RecalcNowPlaying()

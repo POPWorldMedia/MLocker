@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.WebUtilities
+@using MLocker.Core.Models
 @using MLocker.Core.Services
 @using MLocker.WebApp.Services
 @inject IFileParsingService FileParsingService
@@ -23,12 +24,43 @@
         </div>
     }
 </div>
-<div>
-	<div id="queueButton" class="float-left" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></div>
-	<p class="text-center"><audio id="player" src="@_source" controls></audio></p>
+<div class="container">
+	<div class="row d-flex flex-nowrap" id="playerRow">
+		<div class="col-md-2"><div id="queueButton" class="playerButton" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></div></div>
+		<div class="col-md-2 text-right"><div class="previousButton playerButton" @onclick="PlayPrevious"></div></div>
+		<div class="col-md-4 text-center"><audio id="player" src="@_source" controls></audio></div>
+		<div class="col-md-2"><div class="nextButton playerButton" @onclick="PlayNext"></div></div>
+		<div class="col-md-2"></div>
+	</div>
 </div>
-<div id="queueList" class="collapse" aria-labelledby="queueButton" data-parent="#queueButton">
-	q
+<div id="queueList" class="container collapse" aria-labelledby="queueButton" data-parent="#queueButton">
+	@if (PlayerService.Queue != null && PlayerService.Queue.Count > 0)
+	{
+		<table class="table table-hover">
+			<thead>
+			<tr>
+				<th></th>
+				<th>Queue</th>
+				<th></th>
+				<th>Artist</th>
+				<th>Album</th>
+				<th>Length</th>
+				<th>Plays</th>
+			</tr>
+			</thead>
+			<tbody>
+			<Virtualize Context="pair" Items="@PlayerService.Queue" TItem="KeyValuePair<int, Song>">
+				<ListRow Song="pair" ListContext="null" WillRequeue="false"/>
+			</Virtualize>
+			</tbody>
+		</table>
+	}
+	else
+	{
+		<div class="alert" role="alert">
+			The queue is empty
+		</div>
+	}
 </div>
 <hr />
 
@@ -68,6 +100,16 @@
 			_titleClass = "songDetailsShrink";
 		}
 		_isBig = !_isBig;
+	}
+
+	private void PlayNext()
+	{
+		PlayerService.PlayNextSong();
+	}
+
+	private void PlayPrevious()
+	{
+		PlayerService.PlayPreviousSong();
 	}
 
 	private static Action action;
