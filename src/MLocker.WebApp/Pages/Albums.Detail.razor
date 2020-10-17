@@ -5,7 +5,7 @@
 @inject IFileParsingService FileParsingService
 @inject IPlayerService PlayerService
 
-<h2>@Album.AlbumArtist - @Album.Title</h2>
+<h2><div id="playAlbumButton" @onclick="PlayAlbum"></div> @Album.AlbumArtist - @Album.Title</h2>
 
 <table class="table">
 	<tbody>
@@ -25,5 +25,10 @@
 	{
 		var songs = await MusicService.GetAlbum(Album);
 		_songList = PlayerService.GetIndexedList(songs);
+	}
+
+	private void PlayAlbum()
+	{
+		PlayerService.PlaySong(_songList[0], _songList, 0);
 	}
 }
