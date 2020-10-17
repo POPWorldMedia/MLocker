@@ -2,28 +2,59 @@
 @using MLocker.WebApp.Services
 @inject IMusicService MusicService
 
-<p>Add files to your library:</p>
+<p>Add songs to your library:</p>
 
-<p>
-    <InputFile OnChange="@OnInputFileChange" webkitdirectory directory multiple accept="audio/*" />
-</p>
+<div class="form-file">
+	<InputFile OnChange="@OnInputFileChange" webkitdirectory directory multiple accept="audio/*" class="form-file-input" />
+	<label class="form-file-label" for="customFile">
+		<span class="form-file-text">Choose file...</span>
+		<span class="form-file-button">Browse</span>
+	</label>
+</div>
 
-<p>@_uploadMessage</p>
+<div class="progress my-3" style="height: 2em;">
+	<div class="progress-bar bg-danger progress-bar-animated" role="progressbar" style="width: @($"{_percentage}%")" aria-valuenow="@(_percentage)" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+
+@if (_showErrors)
+{
+	<h3 class="mt-3">Errors</h3>
+	<ul class="list-group my-3">
+		@foreach (var item in _errors)
+		{
+			<li class="list-group-item">@item</li>
+		}
+	</ul>
+}
 
 @code {
-    string _uploadMessage;
+	int _percentage = 0;
+	List<string> _errors = new List<string>();
+	bool _showErrors = false;
 
-    private async Task OnInputFileChange(InputFileChangeEventArgs e)
-    {
-        var files = e.GetMultipleFiles(1000000);
-        foreach (var file in files)
-        {
-           // if (file.ContentType == "audio/mpeg" || file.ContentType == "audio/mp4")
-            {
-                _uploadMessage = $"Uploading {file.Name}";
-                await MusicService.Upload(file.Name, file.OpenReadStream(100000000));
-            }
-        }
-    }
+	private async Task OnInputFileChange(InputFileChangeEventArgs e)
+	{
+		var count = e.FileCount;
+		var current = 1;
+		var files = e.GetMultipleFiles(1000000);
+		foreach (var file in files)
+		{
+			// if (file.ContentType == "audio/mpeg" || file.ContentType == "audio/mp4")
+			{
+				_percentage = Convert.ToInt32(Math.Round((decimal)current / count * 100, MidpointRounding.ToPositiveInfinity));
+				await InvokeAsync(StateHasChanged);
+				var isSuccess = await MusicService.Upload(file.Name, file.OpenReadStream(100000000));
+				if (!isSuccess)
+				{
+					_showErrors = true;
+					_errors.Add(file.Name);
+					await InvokeAsync(StateHasChanged);
+				}
+				current++;
+			}
+		}
+		await MusicService.UpdateSongs();
+		_percentage = 0;
+	}
 
 }

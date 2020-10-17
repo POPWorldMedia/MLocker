@@ -8,7 +8,7 @@ namespace MLocker.WebApp.Repositories
 {
     public interface IUploadRepository
     {
-        Task UploadFile(string fileName, Stream stream);
+	    Task<bool> UploadFile(string fileName, Stream stream);
     }
 
     public class UploadRepository : IUploadRepository
@@ -22,15 +22,18 @@ namespace MLocker.WebApp.Repositories
             _config = config;
         }
 
-        public async Task UploadFile(string fileName, Stream stream)
+        public async Task<bool> UploadFile(string fileName, Stream stream)
         {
+	        if (stream.Length == 0)
+		        return false;
             var content = new MultipartFormDataContent();
             content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
             content.Add(new StreamContent(stream, Convert.ToInt32(stream.Length)), "file", fileName);
 
             var apiKey = await _config.GetApiKey();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
-            await _httpClient.PostAsync("/upload", content);
+            var response = await _httpClient.PostAsync("/upload", content);
+            return response.IsSuccessStatusCode;
         }
     }
 }

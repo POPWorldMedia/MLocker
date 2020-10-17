@@ -11,9 +11,10 @@ namespace MLocker.WebApp.Services
     {
         Task<List<Song>> GetAllSongs();
         string GetSongUrl(int fileID);
-        Task Upload(string fileName, Stream stream);
+        Task<bool> Upload(string fileName, Stream stream);
         Task<List<Album>> GetAlbums();
         Task<List<Song>> GetAlbum(Album album);
+        Task UpdateSongs();
     }
 
     public class MusicService : IMusicService
@@ -55,10 +56,9 @@ namespace MLocker.WebApp.Services
             return _songRepository.GetSongUrl(fileID);
         }
 
-        public async Task Upload(string fileName, Stream stream)
+        public async Task<bool> Upload(string fileName, Stream stream)
         {
-            await _uploadRepository.UploadFile(fileName, stream);
-            await UpdateSongs();
+            return await _uploadRepository.UploadFile(fileName, stream);
         }
 
         private async Task PopulateAlbums()
