@@ -125,6 +125,15 @@
 			cursor: default !important;
 		}
 
+		.searchIcon {
+			background-image: url("data:image/svg+xml,<svg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-search' fill='currentColor' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z'/><path fill-rule='evenodd' d='M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z'/></svg>") !important;
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+			height: 1em; width: 1em;
+			display: inline-block;
+			margin: .4em;
+		}
+
 	    .contextButton {
 		    content: "";
 		    background-image: url("data:image/svg+xml,<svg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-three-dots-vertical' fill='currentColor' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z'/></svg>") !important;
@@ -136,6 +145,11 @@
 		    cursor: pointer;
 		    margin: auto .5em;
 	    }
+
+		.searchClearButton {
+			margin-top: .6em !important;
+			margin-left: -30px !important;
+		}
 
 
 	    #blazor-error-ui {

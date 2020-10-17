@@ -1,44 +1,67 @@
 ﻿@using Microsoft.AspNetCore.WebUtilities
 @using MLocker.Core.Models
 @using MLocker.Core.Services
+@using MLocker.WebApp.Services
 @inject IFileParsingService FileParsingService
+@inject IPlayerService PlayerService
 
 @if (AlbumList != null)
 {
+	<div class="input-group mb-4">
+		<span class="input-group-text"><div class="searchIcon"></div></span>
+		<input type="text" class="form-control" placeholder="Search albums" aria-label="Search songs" @bind-value="_searchTerm" @bind-value:event="oninput">
+		<span class="input-group-text" @onclick="ClearSearch"><button type="button" class="btn-close" aria-label="Close"></button></span>
+	</div>
+
 	<table class="table table-hover">
 		<thead>
-		<tr>
-			<th></th>
-			<th>Album</th>
-			<th>Artist</th>
-		</tr>
+			<tr>
+				<th></th>
+				<th>Album</th>
+				<th>Artist</th>
+			</tr>
 		</thead>
 		<tbody>
-		<Virtualize Context="item" Items="@AlbumList" TItem="Album">
-			<tr>
-				<td @onclick="@(() => OnClick.InvokeAsync(item))">
-					@if (item.FirstSong != null)
-					{
-						<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage"/>
-					}
-					else
-					{
-						<div class="coverPlaceholder songImage"> </div>
-					}
-				</td>
-				<td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item.Title</td>
-				<td>@item.AlbumArtist</td>
-			</tr>
-		</Virtualize>
+			<Virtualize Context="item" Items="@_filteredList" TItem="Album">
+				<tr>
+					<td @onclick="@(() => OnClick.InvokeAsync(item))">
+						@if (item.FirstSong != null)
+						{
+							<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
+						}
+						else
+						{
+							<div class="coverPlaceholder songImage"> </div>
+						}
+					</td>
+					<td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item.Title</td>
+					<td>@item.AlbumArtist</td>
+				</tr>
+			</Virtualize>
 		</tbody>
 	</table>
 }
 
 @code
 {
-    [CascadingParameter]
-    protected List<Album> AlbumList { get; set; }
+	[CascadingParameter]
+	protected List<Album> AlbumList { get; set; }
 
 	[Parameter]
 	public EventCallback<Album> OnClick { get; set; }
+
+	private string _searchTerm = string.Empty;
+	private List<Album> _filteredList => ReduceList();
+
+	private List<Album> ReduceList()
+	{
+		var term = _searchTerm.Trim();
+		var filteredList = AlbumList.Where(x => x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase) || x.AlbumArtist.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
+		return filteredList;
+	}
+
+	private void ClearSearch()
+	{
+		_searchTerm = string.Empty;
+	}
 }

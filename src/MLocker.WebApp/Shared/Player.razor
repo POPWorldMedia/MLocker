@@ -84,11 +84,11 @@
 				MusicService.IncrementPlayCount(PlayerService.CurrentSong.FileID);
 			}
 			_previousClass = PlayerService.CurrentSong == null 
-			             || PlayerService.Queue.Count == 0 
+			             || PlayerService.Queue.Count <= 1 
 			             || PlayerService.QueueIndex == 0 
 				? "previousButtonOff" : "previousButton";
 			_nextClass = PlayerService.CurrentSong == null 
-			             ||PlayerService.Queue.Count == 0 
+			             || PlayerService.Queue.Count <= 1 
 			             || PlayerService.QueueIndex >= PlayerService.Queue.Count - 1 
 				? "nextButtonOff" : "nextButton";
 			InvokeAsync(StateHasChanged);
