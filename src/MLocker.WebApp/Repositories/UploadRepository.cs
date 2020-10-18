@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using MLocker.Core.Models;
 
 namespace MLocker.WebApp.Repositories
 {
@@ -32,7 +33,7 @@ namespace MLocker.WebApp.Repositories
 
             var apiKey = await _config.GetApiKey();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
-            var response = await _httpClient.PostAsync("/upload", content);
+            var response = await _httpClient.PostAsync(ApiPaths.Upload, content);
             return response.IsSuccessStatusCode;
         }
     }

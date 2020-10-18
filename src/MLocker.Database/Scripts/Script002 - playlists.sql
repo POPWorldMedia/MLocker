@@ -4,29 +4,30 @@
 )
 GO
 
-CREATE TABLE [dbo].[PlaylistFile](
+CREATE TABLE [dbo].[PlaylistFiles](
 	[PlaylistID] [int] NOT NULL,
-	[FileID] [int] NOT NULL
+	[FileID] [int] NOT NULL,
+	[SortOrder] [int] NOT NULL
 )
 GO
 
-CREATE CLUSTERED INDEX [IX_PlaylistFile_PlaylistID] ON [dbo].[PlaylistFile]
+CREATE CLUSTERED INDEX [IX_PlaylistFiles_PlaylistID] ON [dbo].[PlaylistFiles]
 (
 	[PlaylistID] ASC
 )
 GO
 
-ALTER TABLE [dbo].[PlaylistFile]  WITH CHECK ADD  CONSTRAINT [FK_PlaylistFile_FileID] FOREIGN KEY([FileID])
+ALTER TABLE [dbo].[PlaylistFiles]  WITH CHECK ADD  CONSTRAINT [FK_PlaylistFiles_FileID] FOREIGN KEY([FileID])
 REFERENCES [dbo].[Songs] ([FileID])
 GO
 
-ALTER TABLE [dbo].[PlaylistFile] CHECK CONSTRAINT [FK_PlaylistFile_FileID]
+ALTER TABLE [dbo].[PlaylistFiles] CHECK CONSTRAINT [FK_PlaylistFiles_FileID]
 GO
 
-ALTER TABLE [dbo].[PlaylistFile]  WITH CHECK ADD  CONSTRAINT [FK_PlaylistFile_PlaylistID] FOREIGN KEY([PlaylistID])
+ALTER TABLE [dbo].[PlaylistFiles]  WITH CHECK ADD  CONSTRAINT [FK_PlaylistFiles_PlaylistID] FOREIGN KEY([PlaylistID])
 REFERENCES [dbo].[Playlists] ([PlaylistID])
 GO
 
-ALTER TABLE [dbo].[PlaylistFile] CHECK CONSTRAINT [FK_PlaylistFile_PlaylistID]
+ALTER TABLE [dbo].[PlaylistFiles] CHECK CONSTRAINT [FK_PlaylistFiles_PlaylistID]
 GO
 

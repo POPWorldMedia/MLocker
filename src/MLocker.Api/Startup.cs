@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using MLocker.Api.Controllers;
 using MLocker.Api.Repositories;
 using MLocker.Api.Services;
 using MLocker.Core.Services;
@@ -38,6 +37,7 @@ namespace MLocker.Api
 
             services.AddTransient<IFileParsingService, FileParsingService>();
             services.AddTransient<ISongService, SongService>();
+            services.AddTransient<IPlaylistService, PlaylistService>();
 
             services.AddTransient<ISongRepository, SongRepository>();
             services.AddTransient<IFileRepository, FileRepository>();

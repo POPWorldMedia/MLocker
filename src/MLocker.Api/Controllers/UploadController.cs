@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MLocker.Api.Services;
+using MLocker.Core.Models;
 using MLocker.Core.Services;
 
 namespace MLocker.Api.Controllers
@@ -19,7 +20,7 @@ namespace MLocker.Api.Controllers
             _songService = songService;
         }
 
-        [HttpPost("/upload")]
+        [HttpPost(ApiPaths.Upload)]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Upload(IFormFile file)
         {

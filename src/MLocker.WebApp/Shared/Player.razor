@@ -12,7 +12,7 @@
     {
         if (PlayerService.CurrentSong.PictureMimeType != null)
         {
-            <img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(PlayerService.CurrentSong)))" class="nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)" />
+            <img src="@(QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", FileParsingService.ParseImageFileName(PlayerService.CurrentSong)))" class="nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)" />
         }
         else
         {

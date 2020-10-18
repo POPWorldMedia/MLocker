@@ -30,14 +30,14 @@ namespace MLocker.WebApp.Repositories
         {
             var apiKey = await _config.GetApiKey();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
-            var response = await _httpClient.GetStringAsync("/GetAllSongs");
+            var response = await _httpClient.GetStringAsync(ApiPaths.GetAllSongs);
             var allSongs = JsonSerializer.Deserialize<IEnumerable<Song>>(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
             return allSongs;
         }
 
         public string GetSongUrl(int fileID)
         {
-            var url = $"/GetSong/{fileID}";
+            var url = $"{ApiPaths.GetSong}/{fileID}";
             return url;
         }
 
@@ -46,7 +46,7 @@ namespace MLocker.WebApp.Repositories
 	        var apiKey = await _config.GetApiKey();
 	        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
 	        var data = new {FileID = fileID};
-	        await _httpClient.PostAsJsonAsync("/IncrementPlayCount", data);
+	        await _httpClient.PostAsJsonAsync(ApiPaths.IncrementPlayCount, data);
         }
     }
 }

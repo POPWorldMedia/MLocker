@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MLocker.Api.Services;
+using MLocker.Core.Models;
 
 namespace MLocker.Api.Controllers
 {
@@ -16,14 +17,14 @@ namespace MLocker.Api.Controllers
         }
 
         [ApiAuth]
-        [HttpGet("/GetAllSongs")]
+        [HttpGet(ApiPaths.GetAllSongs)]
         public async Task<IActionResult> GetAll()
         {
             var allSongs = await _songService.GetAll();
             return Ok(allSongs);
         }
 
-        [HttpGet("/GetSong/{id}")]
+        [HttpGet(ApiPaths.GetSong + "/{id}")]
         public async Task<IActionResult> GetSong(int id)
         {
             var (stream, song) = await _songService.GetSong(id);
@@ -33,7 +34,7 @@ namespace MLocker.Api.Controllers
             return File(stream, mediaType, true);
         }
 
-        [HttpGet("/GetImage")]
+        [HttpGet(ApiPaths.GetImage)]
         public async Task<IActionResult> GetImage(string fileName)
         {
             var (stream, contentType) = await _songService.GetImage(fileName);
@@ -43,7 +44,7 @@ namespace MLocker.Api.Controllers
         }
 
         [ApiAuth]
-        [HttpPost("/IncrementPlayCount")]
+        [HttpPost(ApiPaths.IncrementPlayCount)]
         public async Task<IActionResult> IncrementPlayCount(Incrementer incrementer)
         {
 	        await _songService.IncrementPlayCount(incrementer.FileID);

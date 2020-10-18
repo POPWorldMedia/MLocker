@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using MLocker.Core.Models;
 
 namespace MLocker.WebApp.Repositories
 {
@@ -28,7 +29,7 @@ namespace MLocker.WebApp.Repositories
 			if (string.IsNullOrEmpty(apiKey))
 				return Tuple.Create(false, HttpStatusCode.Unauthorized);
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
-			var response = await _httpClient.GetAsync("/Test");
+			var response = await _httpClient.GetAsync(ApiPaths.Test);
 			return Tuple.Create(response.IsSuccessStatusCode, response.StatusCode);
 		}
 	}
