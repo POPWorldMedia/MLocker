@@ -22,7 +22,6 @@ namespace MLocker.WebApp.Services
     {
         private readonly ISongRepository _songRepository;
         private readonly IUploadRepository _uploadRepository;
-        private static List<Song> _songs;
         private static List<Album> _albums;
 
         public MusicService(ISongRepository songRepository, IUploadRepository uploadRepository)
@@ -34,21 +33,18 @@ namespace MLocker.WebApp.Services
         public async Task UpdateSongs()
         {
 	        await _songRepository.UpdateSongs();
-            var songs = await _songRepository.GetAllSongs();
-            _songs = songs.OrderBy(x => x.Title).ToList();
             await PopulateAlbums();
         }
 
         public async Task<List<Song>> GetAllSongs()
         {
-	        if (_songs == null)
-		        await UpdateSongs();
-	        return _songs;
+	        var songs = await _songRepository.GetAllSongs();
+	        return songs;
         }
 
         public async Task<List<Album>> GetAlbums()
         {
-            if (_songs == null)
+            if (_albums == null)
                 await UpdateSongs();
             return _albums;
         }
@@ -72,7 +68,8 @@ namespace MLocker.WebApp.Services
                 return AlbumGroupingType.VariousArtists;
             }
 
-            _albums = _songs.GroupBy(x => new { AlbumArtist = x.AlbumArtist ?? x.Artist ?? "Various Artists",
+            var allSongs = await _songRepository.GetAllSongs();
+            _albums = allSongs.GroupBy(x => new { AlbumArtist = x.AlbumArtist ?? x.Artist ?? "Various Artists",
                     x.Album,
                     AlbumGroupingType = GetGroupingType(x)
             })
@@ -92,13 +89,14 @@ namespace MLocker.WebApp.Services
 
         public async Task<List<Song>> GetAlbum(Album album)
         {
-            if (_songs == null)
+            if (_albums == null)
                 await UpdateSongs();
+            var allSongs = await _songRepository.GetAllSongs();
             var unsorted = album.AlbumGroupingType switch
             {
-                AlbumGroupingType.AlbumArtist => _songs.Where(x => x.Album == album.Title && x.AlbumArtist == album.AlbumArtist),
-                AlbumGroupingType.Artist => _songs.Where(x => x.Album == album.Title && x.Artist == album.AlbumArtist),
-                _ => _songs.Where(x => x.Album == album.Title && x.AlbumArtist == null && x.Artist == null)
+                AlbumGroupingType.AlbumArtist => allSongs.Where(x => x.Album == album.Title && x.AlbumArtist == album.AlbumArtist),
+                AlbumGroupingType.Artist => allSongs.Where(x => x.Album == album.Title && x.Artist == album.AlbumArtist),
+                _ => allSongs.Where(x => x.Album == album.Title && x.AlbumArtist == null && x.Artist == null)
             };
             var songs = unsorted
                 .OrderBy(x => x.Disc)
@@ -109,8 +107,6 @@ namespace MLocker.WebApp.Services
 
         public async Task IncrementPlayCount(int fileID)
         {
-	        var song = _songs.Single(x => x.FileID == fileID);
-	        song.PlayCount++;
 	        await _songRepository.IncrementPlayCount(fileID);
         }
     }

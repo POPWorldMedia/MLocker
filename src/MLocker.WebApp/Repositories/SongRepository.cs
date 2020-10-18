@@ -43,7 +43,7 @@ namespace MLocker.WebApp.Repositories
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
             var response = await _httpClient.GetStringAsync(ApiPaths.GetAllSongs);
             var allSongs = JsonSerializer.Deserialize<IEnumerable<Song>>(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-            _allSongs = allSongs.ToList();
+            _allSongs = allSongs.OrderBy(x => x.Title).ToList();
             return _allSongs;
         }
 
