@@ -7,56 +7,14 @@
 @inject IFileParsingService FileParsingService
 @inject IPlayerService PlayerService
 
-@if (_songList != null)
-{
-	<div class="input-group mb-4">
-		<span class="input-group-text"><div class="searchIcon"></div></span>
-		<input type="text" class="form-control" placeholder="Search songs" aria-label="Search songs" @bind-value="_searchTerm" @bind-value:event="oninput">
-		<span class="input-group-text" @onclick="ClearSearch"><button type="button" class="btn-close" aria-label="Close"></button></span>
-	</div>
-	
-	<SongContextMenu/>
-
-    <table class="table table-hover">
-	    <thead>
-	    <tr>
-		    <th></th>
-		    <th>Song</th>
-		    <th></th>
-		    <th>Artist</th>
-		    <th>Album</th>
-		    <th>Length</th>
-		    <th>Plays</th>
-	    </tr>
-	    </thead>
-        <tbody>
-            <Virtualize Context="song" Items="@_songList" TItem="KeyValuePair<int, Song>">
-	            <ListRow Song="song" ListContext="@null" WillRequeue="true"/>
-            </Virtualize>
-        </tbody>
-    </table>
-}
+<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="false" ShowSearch="true" />
 
 @code {
-	private Dictionary<int, Song> _songList => ReduceList();
-	private List<Song> _allSongs = new List<Song>();
-	private string _searchTerm = string.Empty;
+	Dictionary<int, Song> _songList;
 
 	protected override async Task OnInitializedAsync()
 	{
-		_allSongs = await MusicService.GetAllSongs();
-	}
-
-	private Dictionary<int, Song> ReduceList()
-	{
-		var term = _searchTerm.Trim();
-		var filteredList = _allSongs.Where(x => x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase) || x.Artist.Contains(term, StringComparison.InvariantCultureIgnoreCase) || x.Album.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
-		var dictionary = PlayerService.GetIndexedList(filteredList);
-		return dictionary;
-	}
-
-	private void ClearSearch()
-	{
-		_searchTerm = string.Empty;
+		var songs = await MusicService.GetAllSongs();
+		_songList = PlayerService.GetIndexedList(songs);
 	}
 }

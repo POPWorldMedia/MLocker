@@ -19,14 +19,14 @@
 			<div @onclick="@(() => PlaySong(Song))" class="coverPlaceholder songImage playButton @_nowPlayingClass"> </div>
 		}
 	</td>
-	<td @onclick="@(() => PlaySong(Song))" class="clickyText">@Song.Value.Title</td>
+	<td>@Song.Value.Title</td>
 	<td>
-		<div @onclick="OpenContext"><div id="context@(Song.Value.FileID)" class="contextButton"></div></div>
+		<div class="text-right" @onclick="OpenContext"><div id="@_contextMenuID" class="contextButton"></div></div>
 	</td>
-	<td>@Song.Value.Artist</td>
-	<td>@Song.Value.Album</td>
-	<td>@(new TimeSpan(Song.Value.Ticks).ToString(@"m\:ss"))</td>
-	<td>@Song.Value.PlayCount</td>
+	<td class="songSecondaryCell">@Song.Value.Artist</td>
+	<td class="songSecondaryCell">@Song.Value.Album</td>
+	<td class="songLengthPlayCell">@(new TimeSpan(Song.Value.Ticks).ToString(@"m\:ss"))</td>
+	<td class="songLengthPlayCell">@Song.Value.PlayCount</td>
 </tr>
 
 @code {
@@ -36,19 +36,21 @@
 	[Parameter]
 	public Dictionary<int, Song> ListContext { get; set; }
 	[Parameter]
-	public bool WillRequeue { get; set; }
+	public bool WillClearQueueOnPlay { get; set; }
 
 	private string _nowPlayingClass;
+	private string _contextMenuID;
 
 	protected override void OnInitialized()
 	{
+		_contextMenuID = "songRow" + Guid.NewGuid().ToString("N").Substring(8,8);
 		PlayerService.OnChange += RecalcNowPlaying;
 		RecalcNowPlaying();
 	}
 
 	public void PlaySong(KeyValuePair<int, Song> song)
 	{
-		if (WillRequeue)
+		if (WillClearQueueOnPlay)
 		{
 			if (ListContext == null)
 				ListContext = new Dictionary<int, Song> {{0, song.Value}};
@@ -68,10 +70,11 @@
 	{
 		PlayerService.OnChange -= RecalcNowPlaying;
 	}
-    
+
 	private void OpenContext()
 	{
+		SongContextStateService.ContextMenuID = _contextMenuID;
 		SongContextStateService.Song = Song.Value;
-		JsRuntime.InvokeVoidAsync("OpenSongContext", Song.Value.FileID);
+		JsRuntime.InvokeVoidAsync("OpenSongContext", _contextMenuID);
 	}
 }

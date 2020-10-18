@@ -1,0 +1,72 @@
+﻿@using MLocker.Core.Models
+@using MLocker.WebApp.Services
+@inject IPlayerService PlayerService
+
+@if (SongDictionary != null)
+{
+	if (ShowSearch)
+	{
+		<div class="input-group mb-4">
+			<span class="input-group-text"><span class="searchIcon"></span></span>
+			<input type="text" class="form-control" placeholder="Search songs" aria-label="Search songs" @bind-value="_searchTerm" @bind-value:event="oninput">
+			<span class="input-group-text" @onclick="ClearSearch"><button type="button" class="btn-close" aria-label="Close"></button></span>
+		</div>
+	}
+
+	<SongContextMenu/>
+
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th></th>
+				<th>Song</th>
+				<th></th>
+				<th>Artist</th>
+				<th>Album</th>
+				<th>Length</th>
+				<th>Plays</th>
+			</tr>
+		</thead>
+		<tbody>
+			<Virtualize Context="song" Items="@_songList" TItem="KeyValuePair<int, Song>">
+				<ListRow Song="song" ListContext="@_listContextDictionary" WillClearQueueOnPlay="@WillClearQueueOnPlay"/>
+			</Virtualize>
+		</tbody>
+	</table>
+}
+
+@code {
+	[Parameter]
+	public Dictionary<int, Song> SongDictionary { get; set; }
+	[Parameter]
+	public bool WillClearQueueOnPlay { get; set; }
+	[Parameter]
+	public bool WillQueueListOnPlay { get; set; }
+	[Parameter]
+	public bool ShowSearch { get; set; }
+
+	private Dictionary<int, Song> _songList => ReduceList();
+	private string _searchTerm = string.Empty;
+	private Dictionary<int, Song> _listContextDictionary;
+
+	protected override void OnInitialized()
+	{
+		_listContextDictionary = WillQueueListOnPlay ? SongDictionary : null;
+	}
+
+	private Dictionary<int, Song> ReduceList()
+	{
+		var term = _searchTerm.Trim();
+		var filteredList = SongDictionary.Select(x => x.Value)
+			.Where(x => x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase)
+						|| x.Artist.Contains(term, StringComparison.InvariantCultureIgnoreCase)
+						|| x.Album.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
+		var dictionary = PlayerService.GetIndexedList(filteredList);
+		return dictionary;
+	}
+
+	private void ClearSearch()
+	{
+		_searchTerm = string.Empty;
+	}
+}

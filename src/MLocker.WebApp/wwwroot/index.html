@@ -29,6 +29,12 @@
 		.songImageCell {
 			width: 60px;
 		}
+		.songSecondaryCell {
+			width: 250px;
+		}
+		.songLengthPlayCell {
+			width: 80px;
+		}
 
 		.clickyText {
 			cursor: pointer;
@@ -177,6 +183,7 @@
 
 		#songContextMenu {
 			display: none;
+			z-index: 100;
 		}
 		#songContextMenu[data-show] {
 			display: block;
@@ -238,9 +245,9 @@
 			location.reload();
 		}
 
-		window.OpenSongContext = (fileID) => {
+		window.OpenSongContext = (contextMenuId) => {
 			var menu = document.querySelector('#songContextMenu');
-			var button = document.querySelector('#context' + fileID);
+			var button = document.querySelector('#' + contextMenuId);
 			var instance = Popper.createPopper(button, menu, {
 				placement: 'right-start'
 			});
@@ -248,8 +255,13 @@
 			var hideEvents = ['mouseleave', 'blur'];
 			hideEvents.forEach(event => {
 				menu.addEventListener(event, () => {
-					menu.removeAttribute('data-show');
-					instance.destroy();
+					if (menu)
+						menu.removeAttribute('data-show');
+					if (instance)
+						instance.destroy();
+					instance = null;
+					menu = null;
+					button = null;
 				});
 			});
 		}

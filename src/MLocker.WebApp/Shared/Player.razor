@@ -36,24 +36,7 @@
 <div id="queueList" class="container collapse" aria-labelledby="queueButton" data-parent="#queueButton">
 	@if (PlayerService.Queue != null && PlayerService.Queue.Count > 0)
 	{
-		<table class="table table-hover">
-			<thead>
-			<tr>
-				<th></th>
-				<th>Queue</th>
-				<th></th>
-				<th>Artist</th>
-				<th>Album</th>
-				<th>Length</th>
-				<th>Plays</th>
-			</tr>
-			</thead>
-			<tbody>
-			<Virtualize Context="pair" Items="@PlayerService.Queue" TItem="KeyValuePair<int, Song>">
-				<ListRow Song="pair" ListContext="null" WillRequeue="false"/>
-			</Virtualize>
-			</tbody>
-		</table>
+		<SongList SongDictionary="_songList" WillClearQueueOnPlay="false" WillQueueListOnPlay="false" ShowSearch="false" />
 	}
 	else
 	{
@@ -66,6 +49,7 @@
 
 @code
 {
+	private Dictionary<int, Song> _songList;
 	string _source;
 	string _imageClass;
 	string _titleClass;
@@ -93,6 +77,7 @@
 						 || PlayerService.Queue.Count <= 1
 						 || PlayerService.QueueIndex >= PlayerService.Queue.Count - 1
 				? "nextButtonOff" : "nextButton";
+			_songList = PlayerService.Queue;
 			InvokeAsync(StateHasChanged);
 		};
 
