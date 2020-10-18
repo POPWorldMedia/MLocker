@@ -4,6 +4,8 @@
 @using MLocker.WebApp.Services
 @inject IFileParsingService FileParsingService
 @inject IPlayerService PlayerService
+@inject IJSRuntime JsRuntime
+@inject ISongContextStateService SongContextStateService
 @implements IDisposable
 
 <tr>
@@ -19,7 +21,7 @@
 	</td>
 	<td @onclick="@(() => PlaySong(Song))" class="clickyText">@Song.Value.Title</td>
 	<td>
-		<div class="contextButton"></div>
+		<div @onclick="OpenContext"><div id="context@(Song.Value.FileID)" class="contextButton"></div></div>
 	</td>
 	<td>@Song.Value.Artist</td>
 	<td>@Song.Value.Album</td>
@@ -66,5 +68,10 @@
 	{
 		PlayerService.OnChange -= RecalcNowPlaying;
 	}
-
+    
+	private void OpenContext()
+	{
+		SongContextStateService.Song = Song.Value;
+		JsRuntime.InvokeVoidAsync("OpenSongContext", Song.Value.FileID);
+	}
 }

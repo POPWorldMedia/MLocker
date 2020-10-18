@@ -86,7 +86,16 @@ namespace MLocker.WebApp.Services
 
         public void EnqueueSong(Song song)
         {
-
+	        if (_queue == null || _queue.Count == 0)
+	        {
+		        var dictionary = new Dictionary<int, Song> {{0, song}};
+		        PlaySong(song, dictionary, 0);
+	        }
+	        else
+	        {
+		        _queue.Add(_queue.Count, song);
+				Notify();
+	        }
         }
 
         public event Action OnChange;

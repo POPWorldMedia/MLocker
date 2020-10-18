@@ -1,0 +1,19 @@
+﻿@using MLocker.WebApp.Services
+@inject ISongContextStateService SongContextStateService
+@inject IPlayerService PlayerService
+
+<div id="songContextMenu">
+	<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+		<li><a class="dropdown-item" @onclick="AddToQueue">Add to queue</a></li>
+		<li><a class="dropdown-item">Add to playlist</a></li>
+	</ul>
+</div>
+
+@code {
+
+	protected void AddToQueue()
+	{
+		var song = SongContextStateService.Song;
+		PlayerService.EnqueueSong(song);
+	}
+}
