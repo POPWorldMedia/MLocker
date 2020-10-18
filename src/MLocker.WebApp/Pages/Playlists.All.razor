@@ -2,11 +2,13 @@
 @using MLocker.Core.Models
 @inject IPlaylistService PlaylistService
 
-<button type="button" class="btn btn-dark float-right" data-toggle="modal" data-target="#addModal" title="New playlist">
-	<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-		<path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-	</svg>
-</button>
+<div class="my-3 text-right">
+	<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#addModal" title="New playlist">
+		<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+			<path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+		</svg>
+	</button>
+</div>
 
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -29,20 +31,26 @@
 
 @if (PlaylistList != null && PlaylistList.Count > 0)
 {
+	<div class="input-group mb-4">
+		<span class="input-group-text"><div class="searchIcon"></div></span>
+		<input type="text" class="form-control" placeholder="Search playlists" aria-label="Search songs" @bind-value="_searchTerm" @bind-value:event="oninput">
+		<span class="input-group-text" @onclick="ClearSearch"><button type="button" class="btn-close" aria-label="Close"></button></span>
+	</div>
+
 	<table class="table table-hover">
 		<thead>
-		<tr>
-			<th>Playlist</th>
-			<th class="text-right">Songs</th>
-		</tr>
+			<tr>
+				<th>Playlist</th>
+				<th class="text-right">Songs</th>
+			</tr>
 		</thead>
 		<tbody>
-		<Virtualize Context="item" Items="@_filteredList" TItem="Playlist">
-			<tr>
-				<td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item.Title</td>
-				<td class="text-right">@item.Songs.Count</td>
-			</tr>
-		</Virtualize>
+			<Virtualize Context="item" Items="@_filteredList" TItem="Playlist">
+				<tr>
+					<td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item.Title</td>
+					<td class="text-right">@item.Songs.Count</td>
+				</tr>
+			</Virtualize>
 		</tbody>
 	</table>
 }
