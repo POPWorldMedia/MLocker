@@ -33,6 +33,7 @@ namespace MLocker.WebApp.Services
 
         public async Task UpdateSongs()
         {
+	        await _songRepository.UpdateSongs();
             var songs = await _songRepository.GetAllSongs();
             _songs = songs.OrderBy(x => x.Title).ToList();
             await PopulateAlbums();
@@ -40,9 +41,9 @@ namespace MLocker.WebApp.Services
 
         public async Task<List<Song>> GetAllSongs()
         {
-            if (_songs == null)
-                await UpdateSongs();
-            return _songs;
+	        if (_songs == null)
+		        await UpdateSongs();
+	        return _songs;
         }
 
         public async Task<List<Album>> GetAlbums()

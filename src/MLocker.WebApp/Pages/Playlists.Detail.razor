@@ -1,10 +1,8 @@
 ﻿@using MLocker.Core.Models
-@using MLocker.Core.Services
 @using MLocker.WebApp.Services
-@inject IMusicService MusicService
 @inject IPlayerService PlayerService
 
-<h2><div id="playAlbumButton" @onclick="PlayAlbum"></div> @Album.AlbumArtist - @Album.Title</h2>
+<h2><div id="playAlbumButton" @onclick="PlayPlaylist"></div> @Playlist.Title</h2>
 
 <table class="table table-hover">
 	<thead>
@@ -27,18 +25,18 @@
 
 @code {
 	[CascadingParameter]
-	protected Album Album { get; set; }
+	protected Playlist Playlist { get; set; }
 
 	Dictionary<int, Song> _songList;
 
-	protected override async Task OnInitializedAsync()
+	protected override void OnInitialized()
 	{
-		var songs = await MusicService.GetAlbum(Album);
-		_songList = PlayerService.GetIndexedList(songs);
+		_songList = PlayerService.GetIndexedList(Playlist.Songs);
 	}
 
-	private void PlayAlbum()
+	private void PlayPlaylist()
 	{
-		PlayerService.PlaySong(_songList[0], _songList, 0);
+		if (Playlist.Songs.Any())
+			PlayerService.PlaySong(_songList[0], _songList, 0);
 	}
 }

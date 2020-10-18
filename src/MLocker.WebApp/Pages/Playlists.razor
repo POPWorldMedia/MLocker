@@ -1,0 +1,47 @@
+﻿@page "/"
+@using MLocker.WebApp.Services
+@using MLocker.Core.Models
+@inject IPlaylistService PlaylistService
+
+@if (_isDetail)
+{
+	<p @onclick="@BackToAll"><span class="backButton"></span> all playlists</p>
+	<CascadingValue Value="_currentPlaylist">
+		<Playlists_Detail/>
+	</CascadingValue>
+}
+else
+{
+	<CascadingValue Value="_playlistList">
+		<Playlists_All OnClick="@LoadPlaylist" OnNew="@RefreshList" />
+	</CascadingValue>
+}
+
+@code {
+	List<Playlist> _playlistList = new List<Playlist>();
+	Playlist _currentPlaylist = null;
+	private bool _isDetail = false;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_playlistList = await PlaylistService.GetAllPlaylists();
+	}
+
+	protected async Task RefreshList()
+	{
+		_playlistList = await PlaylistService.GetAllPlaylists();
+		await InvokeAsync(StateHasChanged);
+	}
+
+	protected void LoadPlaylist(Playlist playlist)
+	{
+		_currentPlaylist = playlist;
+		_isDetail = true;
+	}
+
+	protected void BackToAll()
+	{
+		_isDetail = false;
+		_currentPlaylist = null;
+	}
+}

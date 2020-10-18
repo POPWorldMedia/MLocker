@@ -1,0 +1,83 @@
+﻿@using MLocker.WebApp.Services
+@using MLocker.Core.Models
+@inject IPlaylistService PlaylistService
+
+<button type="button" class="btn btn-dark float-right" data-toggle="modal" data-target="#addModal" title="New playlist">
+	<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+		<path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+	</svg>
+</button>
+
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">New playlist</h5>
+				<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="mb-3">
+					<input type="text" class="form-control" @bind-value="_newPlaylistName" placeholder="Playlist name">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-dark" data-dismiss="modal" @onclick="SaveNewPlaylist">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@if (PlaylistList != null && PlaylistList.Count > 0)
+{
+	<table class="table table-hover">
+		<thead>
+		<tr>
+			<th>Playlist</th>
+			<th class="text-right">Songs</th>
+		</tr>
+		</thead>
+		<tbody>
+		<Virtualize Context="item" Items="@_filteredList" TItem="Playlist">
+			<tr>
+				<td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item.Title</td>
+				<td class="text-right">@item.Songs.Count</td>
+			</tr>
+		</Virtualize>
+		</tbody>
+	</table>
+}
+
+@code
+{
+	[CascadingParameter]
+	protected List<Playlist> PlaylistList { get; set; }
+	[Parameter]
+	public EventCallback<Playlist> OnClick { get; set; }
+	[Parameter]
+	public EventCallback OnNew { get; set; }
+
+	private string _newPlaylistName;
+	private string _searchTerm = string.Empty;
+	private List<Playlist> _filteredList => ReduceList();
+
+	private List<Playlist> ReduceList()
+	{
+		var term = _searchTerm.Trim();
+		var filteredList = PlaylistList.Where(x => x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
+		return filteredList;
+	}
+
+	private void ClearSearch()
+	{
+		_searchTerm = string.Empty;
+	}
+
+	private async Task SaveNewPlaylist()
+	{
+		if (string.IsNullOrEmpty(_newPlaylistName))
+			return;
+		await PlaylistService.CreateNewPlaylistDefinition(_newPlaylistName);
+		_newPlaylistName = string.Empty;
+		await OnNew.InvokeAsync();
+	}
+}

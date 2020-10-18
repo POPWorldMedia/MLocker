@@ -30,11 +30,14 @@ namespace MLocker.WebApp
             builder.Services.AddTransient<IMusicService, MusicService>();
             builder.Services.AddTransient<IFileParsingService, FileParsingService>();
             builder.Services.AddSingleton<IPlayerService, PlayerService>();
+            builder.Services.AddTransient<IPlaylistTransformer, PlaylistTransformer>();
+            builder.Services.AddTransient<IPlaylistService, PlaylistService>();
 
             // repos
             builder.Services.AddTransient<IUploadRepository, UploadRepository>();
             builder.Services.AddTransient<ISongRepository, SongRepository>();
             builder.Services.AddTransient<ITestRepository, TestRepository>();
+            builder.Services.AddTransient<IPlaylistRepository, PlaylistRepository>();
 
             await builder.Build().RunAsync();
         }

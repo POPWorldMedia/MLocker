@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -10,7 +11,8 @@ namespace MLocker.WebApp.Repositories
 {
     public interface ISongRepository
     {
-        Task<IEnumerable<Song>> GetAllSongs();
+        Task UpdateSongs();
+        Task<List<Song>> GetAllSongs();
         string GetSongUrl(int fileID);
         Task IncrementPlayCount(int fileID);
     }
@@ -19,6 +21,7 @@ namespace MLocker.WebApp.Repositories
     {
         private readonly HttpClient _httpClient;
         private readonly IConfig _config;
+        private static List<Song> _allSongs;
 
         public SongRepository(HttpClient httpClient, IConfig config)
         {
@@ -26,13 +29,22 @@ namespace MLocker.WebApp.Repositories
             _config = config;
         }
 
-        public async Task<IEnumerable<Song>> GetAllSongs()
+        public async Task UpdateSongs()
         {
+	        _allSongs = null;
+	        await GetAllSongs();
+        }
+
+        public async Task<List<Song>> GetAllSongs()
+        {
+	        if (_allSongs != null)
+		        return _allSongs;
             var apiKey = await _config.GetApiKey();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
             var response = await _httpClient.GetStringAsync(ApiPaths.GetAllSongs);
             var allSongs = JsonSerializer.Deserialize<IEnumerable<Song>>(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-            return allSongs;
+            _allSongs = allSongs.ToList();
+            return _allSongs;
         }
 
         public string GetSongUrl(int fileID)
@@ -43,6 +55,9 @@ namespace MLocker.WebApp.Repositories
 
         public async Task IncrementPlayCount(int fileID)
         {
+	        var song = _allSongs.SingleOrDefault(x => x.FileID == fileID);
+	        if (song != null)
+		        song.PlayCount++;
 	        var apiKey = await _config.GetApiKey();
 	        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
 	        var data = new {FileID = fileID};

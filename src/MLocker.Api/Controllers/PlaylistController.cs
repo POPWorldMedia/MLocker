@@ -16,7 +16,7 @@ namespace MLocker.Api.Controllers
 
 		[ApiAuth]
 		[HttpPost(ApiPaths.CreatePlaylist)]
-		public async Task<IActionResult> CreatePlaylist(PlaylistDefinition playlistDefinition)
+		public async Task<IActionResult> CreatePlaylist([FromBody]PlaylistDefinition playlistDefinition)
 		{
 			var result = await _playlistService.CreatePlaylistDefinition(playlistDefinition);
 			return Json(result);

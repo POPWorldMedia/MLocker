@@ -78,18 +78,20 @@
 		_imageClass = "";
 		PlayerService.OnChange += () =>
 		{
+			if (PlayerService.CurrentSong == null)
+				_source = string.Empty;
 			if (PlayerService.CurrentSong != null)
 			{
 				_source = MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
 				MusicService.IncrementPlayCount(PlayerService.CurrentSong.FileID);
 			}
-			_previousClass = PlayerService.CurrentSong == null 
-			             || PlayerService.Queue.Count <= 1 
-			             || PlayerService.QueueIndex == 0 
+			_previousClass = PlayerService.CurrentSong == null
+						 || PlayerService.Queue.Count <= 1
+						 || PlayerService.QueueIndex == 0
 				? "previousButtonOff" : "previousButton";
-			_nextClass = PlayerService.CurrentSong == null 
-			             || PlayerService.Queue.Count <= 1 
-			             || PlayerService.QueueIndex >= PlayerService.Queue.Count - 1 
+			_nextClass = PlayerService.CurrentSong == null
+						 || PlayerService.Queue.Count <= 1
+						 || PlayerService.QueueIndex >= PlayerService.Queue.Count - 1
 				? "nextButtonOff" : "nextButton";
 			InvokeAsync(StateHasChanged);
 		};
