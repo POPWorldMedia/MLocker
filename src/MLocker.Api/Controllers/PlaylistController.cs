@@ -16,7 +16,7 @@ namespace MLocker.Api.Controllers
 
 		[ApiAuth]
 		[HttpPost(ApiPaths.CreatePlaylist)]
-		public async Task<IActionResult> CreatePlaylist([FromBody]PlaylistDefinition playlistDefinition)
+		public async Task<IActionResult> CreatePlaylist([FromBody] PlaylistDefinition playlistDefinition)
 		{
 			var result = await _playlistService.CreatePlaylistDefinition(playlistDefinition);
 			return Json(result);
@@ -28,6 +28,14 @@ namespace MLocker.Api.Controllers
 		{
 			var result = await _playlistService.GetAllPlaylistDefinitions();
 			return Json(result);
+		}
+
+		[ApiAuth]
+		[HttpPost(ApiPaths.CreatePlaylistFile)]
+		public async Task<IActionResult> CreatePlaylistFile([FromBody] PlaylistFile playlistFile)
+		{
+			await _playlistService.CreatePlaylistFile(playlistFile);
+			return Ok();
 		}
 	}
 }

@@ -13,5 +13,6 @@
 		public const string GetImage = "/GetImage";
 		public const string IncrementPlayCount = "/IncrementPlayCount";
 		public const string Upload = "/Upload";
+		public const string CreatePlaylistFile = "/CreatePlaylistFile";
 	}
 }

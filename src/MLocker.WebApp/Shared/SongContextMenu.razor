@@ -1,19 +1,69 @@
 ﻿@using MLocker.WebApp.Services
+@using MLocker.Core.Models
 @inject ISongContextStateService SongContextStateService
 @inject IPlayerService PlayerService
+@inject IJSRuntime JsRuntime
+@inject IPlaylistService PlaylistService
 
 <div id="songContextMenu">
 	<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 		<li><a class="dropdown-item" @onclick="AddToQueue">Add to queue</a></li>
-		<li><a class="dropdown-item">Add to playlist</a></li>
+		<li><a class="dropdown-item" @onclick="OpenAddToPlaylist">Add to playlist</a></li>
 	</ul>
 </div>
 
+<div class="modal fade" id="addToPlaylistModal" tabindex="-1" aria-playListLabel="playListLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="playListLabel">Add to playlist:</h5>
+				<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				@if (_playlists != null && _playlists.Count > 0)
+				{
+					<ul class="list-group list-group-flush">
+						@if (SongContextStateService.LastUsedPlaylist != null)
+						{
+							<li class="list-group-item d-flex justify-content-between align-items-center addToPlaylistItem" @onclick="() => SelectAddToPlaylist(SongContextStateService.LastUsedPlaylist)" data-dismiss="modal"><b>@SongContextStateService.LastUsedPlaylist.Title</b><span class="badge bg-dark">@SongContextStateService.LastUsedPlaylist.Songs.Count</span></li>
+						}
+						<Virtualize Context="item" Items="_playlists" TItem="Playlist">
+							<li class="list-group-item d-flex justify-content-between align-items-center addToPlaylistItem" @onclick="() => SelectAddToPlaylist(item)" data-dismiss="modal">@item.Title<span class="badge bg-dark">@item.Songs.Count</span></li>
+						</Virtualize>
+					</ul>
+				}
+				else
+				{
+					<p>You don't have any playlists</p>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
 @code {
+	private List<Playlist> _playlists;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_playlists = await PlaylistService.GetAllPlaylists();
+	}
 
 	protected void AddToQueue()
 	{
 		var song = SongContextStateService.Song;
 		PlayerService.EnqueueSong(song);
+	}
+
+	protected async Task OpenAddToPlaylist()
+	{
+		await JsRuntime.InvokeAsync<string>("OpenAddToPlaylistModal");
+	}
+
+	protected async Task SelectAddToPlaylist(Playlist playlist)
+	{
+		SongContextStateService.LastUsedPlaylist = playlist;
+		var song = SongContextStateService.Song;
+		await PlaylistService.AddSongToEndOfPlaylist(playlist, song);
 	}
 }

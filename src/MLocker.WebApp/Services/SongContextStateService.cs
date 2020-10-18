@@ -6,12 +6,14 @@ namespace MLocker.WebApp.Services
 	{
 		Song Song { get; set; }
 		string ContextMenuID { get; set; }
+		Playlist LastUsedPlaylist { get; set; }
 	}
 
 	public class SongContextStateService : ISongContextStateService
 	{
 		private static Song _song;
 		private static string _contextMenuID;
+		private static Playlist _lastUsedPlaylist;
 
 		public Song Song
 		{
@@ -23,6 +25,12 @@ namespace MLocker.WebApp.Services
 		{
 			get => _contextMenuID;
 			set => _contextMenuID = value;
+		}
+
+		public Playlist LastUsedPlaylist
+		{
+			get => _lastUsedPlaylist;
+			set => _lastUsedPlaylist = value;
 		}
 	}
 }

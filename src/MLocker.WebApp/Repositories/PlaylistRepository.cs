@@ -14,6 +14,7 @@ namespace MLocker.WebApp.Repositories
 		Task UpdatePlaylists();
 		Task<List<PlaylistDefinition>> GetAllPlaylistDefinitions();
 		Task<PlaylistDefinition> CreateNewPlaylistDefinition(string title);
+		Task CreatePlaylistFile(PlaylistFile playlistFile);
 	}
 
 	public class PlaylistRepository : IPlaylistRepository
@@ -56,6 +57,13 @@ namespace MLocker.WebApp.Repositories
 			var playlistDefinition = JsonSerializer.Deserialize<PlaylistDefinition>(responsePayload);
 			_allPlaylistDefinitions?.Add(playlistDefinition);
 			return playlistDefinition;
+		}
+
+		public async Task CreatePlaylistFile(PlaylistFile playlistFile)
+		{
+			var apiKey = await _config.GetApiKey();
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
+			await _httpClient.PostAsJsonAsync(ApiPaths.CreatePlaylistFile, playlistFile);
 		}
 	}
 }

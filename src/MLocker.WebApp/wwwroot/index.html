@@ -36,7 +36,9 @@
 			width: 80px;
 		}
 
-		.clickyText {
+		.clickyText, 
+		.addToPlaylistItem,
+		#songContextMenu .dropdown-item {
 			cursor: pointer;
 		}
 
@@ -52,11 +54,11 @@
 			transition: all .5s ease-in-out;
 		}
 
-			.nowPlayingImage.nowPlayingShrink {
-				height: 600px;
-				width: 600px;
-				margin-left: calc(50% - 300px);
-			}
+		.nowPlayingImage.nowPlayingShrink {
+			height: 600px;
+			width: 600px;
+			margin-left: calc(50% - 300px);
+		}
 
 		.songDetails {
 			margin-top: -80px;
@@ -64,10 +66,10 @@
 			transition: all .5s ease-in-out;
 		}
 
-			.songDetails.songDetailsShrink {
-				margin-top: 0;
-				margin-left: 0;
-			}
+		.songDetails.songDetailsShrink {
+			margin-top: 0;
+			margin-left: 0;
+		}
 
 		#queueList {
 			background-color: #fdfdfd;
@@ -191,9 +193,6 @@
 		#songContextMenu .dropdown-menu {
 			display: block !important;
 		}
-		#songContextMenu .dropdown-item {
-			cursor: pointer;
-		}
 
 		#blazor-error-ui {
 			background: lightyellow;
@@ -260,10 +259,13 @@
 					if (instance)
 						instance.destroy();
 					instance = null;
-					menu = null;
-					button = null;
 				});
 			});
+		}
+
+		window.OpenAddToPlaylistModal = () => {
+			var myModal = new bootstrap.Modal(document.getElementById('addToPlaylistModal'));
+			myModal.show();
 		}
 	</script>
 </body>

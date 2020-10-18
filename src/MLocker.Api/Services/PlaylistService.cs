@@ -10,6 +10,7 @@ namespace MLocker.Api.Services
 	{
 		Task<PlaylistDefinition> CreatePlaylistDefinition(PlaylistDefinition playlistDefinition);
 		Task<List<PlaylistDefinition>> GetAllPlaylistDefinitions();
+		Task CreatePlaylistFile(PlaylistFile playlistFile);
 	}
 
 	public class PlaylistService : IPlaylistService
@@ -41,6 +42,11 @@ namespace MLocker.Api.Services
 				definition.PlaylistFiles = fileIDList.Where(x => x.PlaylistID == definition.PlaylistID).ToList();
 			}
 			return definitionList.ToList();
+		}
+
+		public async Task CreatePlaylistFile(PlaylistFile playlistFile)
+		{
+			await _playlistRepository.CreatePlaylistFile(playlistFile);
 		}
 	}
 }

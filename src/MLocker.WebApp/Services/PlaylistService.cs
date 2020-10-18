@@ -12,6 +12,7 @@ namespace MLocker.WebApp.Services
 		Task<PlaylistDefinition> CreateNewPlaylistDefinition(string title);
 		Task<List<Playlist>> GetAllPlaylists();
 		Task UpdatePlaylists();
+		Task AddSongToEndOfPlaylist(Playlist playlist, Song song);
 	}
 
 	public class PlaylistService : IPlaylistService
@@ -48,6 +49,14 @@ namespace MLocker.WebApp.Services
 			if (_allPlaylists == null)
 				await UpdatePlaylists();
 			return _allPlaylists;
+		}
+
+		public async Task AddSongToEndOfPlaylist(Playlist playlist, Song song)
+		{
+			var orderIndex = playlist.Songs.Count * 2;
+			var playlistFile = new PlaylistFile {FileID = song.FileID, PlaylistID = playlist.PlaylistID, SortOrder = orderIndex};
+			await _playlistRepository.CreatePlaylistFile(playlistFile);
+			playlist.Songs.Add(song);
 		}
 	}
 }
