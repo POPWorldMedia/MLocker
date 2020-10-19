@@ -21,7 +21,7 @@ namespace MLocker.WebApp
 
             builder.Services.AddScoped<IConfig, Config>();
 
-            builder.Services.AddScoped(sp => new HttpClient
+            builder.Services.AddSingleton(sp => new HttpClient
             {
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
             });
@@ -35,10 +35,10 @@ namespace MLocker.WebApp
             builder.Services.AddTransient<ISongContextStateService, SongContextStateService>();
 
             // repos
-            builder.Services.AddTransient<IUploadRepository, UploadRepository>();
-            builder.Services.AddTransient<ISongRepository, SongRepository>();
-            builder.Services.AddTransient<ITestRepository, TestRepository>();
-            builder.Services.AddTransient<IPlaylistRepository, PlaylistRepository>();
+            builder.Services.AddScoped<IUploadRepository, UploadRepository>();
+            builder.Services.AddScoped<ISongRepository, SongRepository>();
+            builder.Services.AddScoped<ITestRepository, TestRepository>();
+            builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
 
             await builder.Build().RunAsync();
         }

@@ -27,14 +27,19 @@ namespace MLocker.WebApp.Repositories
         {
 	        if (stream.Length == 0)
 		        return false;
-            var content = new MultipartFormDataContent();
+            using var content = new MultipartFormDataContent();
             content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
-            content.Add(new StreamContent(stream, Convert.ToInt32(stream.Length)), "file", fileName);
+            using var streamContent = new StreamContent(stream, Convert.ToInt32(stream.Length));
+            content.Add(streamContent, "file", fileName);
 
             var apiKey = await _config.GetApiKey();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
-            var response = await _httpClient.PostAsync(ApiPaths.Upload, content);
-            return response.IsSuccessStatusCode;
+            using var response = await _httpClient.PostAsync(ApiPaths.Upload, content);
+            streamContent.Dispose();
+            content.Dispose();
+            var result = response.IsSuccessStatusCode;
+            response.Dispose();
+            return result;
         }
     }
 }

@@ -42,15 +42,16 @@
 			// if (file.ContentType == "audio/mpeg" || file.ContentType == "audio/mp4")
 			{
 				_percentage = Convert.ToInt32(Math.Round((decimal)current / count * 100, MidpointRounding.ToPositiveInfinity));
-				await InvokeAsync(StateHasChanged);
-				var isSuccess = await MusicService.Upload(file.Name, file.OpenReadStream(100000000));
+				await using var stream = file.OpenReadStream(100000000);
+				var isSuccess = await MusicService.Upload(file.Name, stream);
 				if (!isSuccess)
 				{
 					_showErrors = true;
 					_errors.Add(file.Name);
-					await InvokeAsync(StateHasChanged);
 				}
 				current++;
+				stream.Close();
+				await stream.DisposeAsync();
 			}
 		}
 		await MusicService.UpdateSongs();
