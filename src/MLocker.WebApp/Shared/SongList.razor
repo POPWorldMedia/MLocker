@@ -58,9 +58,9 @@
 	{
 		var term = _searchTerm.Trim();
 		var filteredList = SongDictionary.Select(x => x.Value)
-			.Where(x => x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase)
-						|| x.Artist.Contains(term, StringComparison.InvariantCultureIgnoreCase)
-						|| x.Album.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
+			.Where(x => x.Title != null && x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase)
+						|| x.Artist != null && x.Artist.Contains(term, StringComparison.InvariantCultureIgnoreCase)
+						|| x.Album != null && x.Album.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
 		var dictionary = PlayerService.GetIndexedList(filteredList);
 		return dictionary;
 	}

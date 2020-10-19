@@ -52,7 +52,7 @@ namespace MLocker.Api.Services
 
         public string ParseStorageFileName(Song songData)
         {
-            var name = $"files/{songData.AlbumArtist ?? songData.Artist ?? "Various Artists"}/{songData.Album ?? "No Album"}/{songData.Disc?.ToString("D2") ?? "00"}-{songData.Track?.ToString("D2") ?? "00"}- {songData.Title ?? songData.FileName}{songData.FileType}";
+            var name = $"files/{songData.AlbumArtist?.Replace("/","_") ?? songData.Artist?.Replace("/", "_") ?? "Various Artists"}/{songData.Album?.Replace("/", "_") ?? "No Album"}/{songData.Disc?.ToString("D2") ?? "00"}-{songData.Track?.ToString("D2") ?? "00"}- {songData.Title?.Replace("/", "_") ?? songData.FileName}{songData.FileType}";
             return name;
         }
 

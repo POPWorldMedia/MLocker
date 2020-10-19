@@ -55,7 +55,8 @@
 	private List<Album> ReduceList()
 	{
 		var term = _searchTerm.Trim();
-		var filteredList = AlbumList.Where(x => x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase) || x.AlbumArtist.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
+		var filteredList = AlbumList.Where(x => (x.Title != null && x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase)) 
+		                                        || (x.AlbumArtist != null && x.AlbumArtist.Contains(term, StringComparison.InvariantCultureIgnoreCase))).ToList();
 		return filteredList;
 	}
 
