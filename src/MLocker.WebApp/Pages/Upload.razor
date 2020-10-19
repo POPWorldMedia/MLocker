@@ -52,6 +52,7 @@
 				current++;
 				stream.Close();
 				await stream.DisposeAsync();
+				await InvokeAsync(StateHasChanged);
 			}
 		}
 		await MusicService.UpdateSongs();

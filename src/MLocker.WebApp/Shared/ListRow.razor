@@ -12,7 +12,7 @@
 	<td class="songImageCell">
 		@if (Song.Value.PictureMimeType != null)
 		{
-			<div @onclick="@(() => PlaySong(Song))" style="background-image: url(@(QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", FileParsingService.ParseImageFileName(Song.Value))))" class="songImage playButton @_nowPlayingClass"></div>
+			<div @onclick="@(() => PlaySong(Song))" style="background-image: url('@(QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", FileParsingService.ParseImageFileName(Song.Value)))')" class="songImage playButton @_nowPlayingClass"></div>
 		}
 		else
 		{
