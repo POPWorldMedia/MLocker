@@ -14,6 +14,7 @@ Change the startup properties of the `MLocker.Database` project to point to a da
 * You need a container called music.
 
 ## Notes
+* The client will ask you for an API key if you run it and it doesn't have one saved. The one stored in the API's config is `123`, but of course you can change it.
 * Running under IIS requires changing max request size for uploads.
 * There's probably a cleaner way to add the API key header to requests from the client, though there aren't many calls anyway.
 * Fun fact: I'm loading the entire song index on start. Compressed, I'm estimating that 10,000 songs would be a payload around 750k. Whatever, that's not much these days!
