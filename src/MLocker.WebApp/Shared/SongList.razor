@@ -1,14 +1,15 @@
 ﻿@using MLocker.Core.Models
 @using MLocker.WebApp.Services
+@using System.Timers
 @inject IPlayerService PlayerService
 
-@if (SongDictionary != null)
+@if (_songList != null)
 {
 	if (ShowSearch)
 	{
 		<div class="input-group mb-4">
 			<span class="input-group-text"><span class="searchIcon"></span></span>
-			<input type="text" class="form-control" placeholder="Search songs" aria-label="Search songs" @bind-value="_searchTerm" @bind-value:event="oninput">
+			<input type="text" class="form-control" placeholder="Search songs" aria-label="Search songs" @bind-value="_searchTerm" @bind-value:event="oninput" @onkeyup="HandleKeyUp">
 			<span class="input-group-text" @onclick="ClearSearch"><button type="button" class="btn-close" aria-label="Close"></button></span>
 		</div>
 	}
@@ -45,13 +46,38 @@
 	[Parameter]
 	public bool ShowSearch { get; set; }
 
-	private Dictionary<int, Song> _songList => ReduceList();
+	private Dictionary<int, Song> _songList;
 	private string _searchTerm = string.Empty;
 	private Dictionary<int, Song> _listContextDictionary;
+	private Timer _timer;
 
 	protected override void OnInitialized()
 	{
+		_songList = SongDictionary;
 		_listContextDictionary = WillQueueListOnPlay ? SongDictionary : null;
+		_timer = new Timer(350) {AutoReset = false};
+		_timer.Elapsed += OnTimerFinish;
+	}
+
+	void HandleKeyUp(KeyboardEventArgs e)
+	{
+		_timer.Stop();
+		_timer.Start();        
+	}  
+
+	private void OnTimerFinish(Object source, ElapsedEventArgs e)
+	{
+		InvokeAsync( () =>
+		{
+			var term = _searchTerm.Trim();
+			var filteredList = SongDictionary.Select(x => x.Value)
+				.Where(x => x.Title != null && x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase)
+				            || x.Artist != null && x.Artist.Contains(term, StringComparison.InvariantCultureIgnoreCase)
+				            || x.Album != null && x.Album.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
+			var dictionary = PlayerService.GetIndexedList(filteredList);
+			_songList = dictionary;
+			StateHasChanged();
+		});
 	}
 
 	private Dictionary<int, Song> ReduceList()
