@@ -45,7 +45,7 @@ namespace MLocker.WebApp.Services
         public async Task<List<Album>> GetAlbums()
         {
             if (_albums == null)
-                await UpdateSongs();
+                await PopulateAlbums();
             return _albums;
         }
 

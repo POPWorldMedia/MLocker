@@ -53,7 +53,7 @@
 
 	protected override void OnInitialized()
 	{
-		_songList = SongDictionary;
+		RecalculateList();
 		_listContextDictionary = WillQueueListOnPlay ? SongDictionary : null;
 		_timer = new Timer(350) {AutoReset = false};
 		_timer.Elapsed += OnTimerFinish;
@@ -62,26 +62,34 @@
 	void HandleKeyUp(KeyboardEventArgs e)
 	{
 		_timer.Stop();
-		_timer.Start();        
-	}  
+		_timer.Start();
+	}
 
 	private void OnTimerFinish(Object source, ElapsedEventArgs e)
 	{
-		InvokeAsync( () =>
+		RecalculateList();
+	}
+
+	private void RecalculateList()
+	{
+		var term = _searchTerm.Trim();
+		if (string.IsNullOrEmpty(_searchTerm))
+			_songList = SongDictionary;
+		else
 		{
-			var term = _searchTerm.Trim();
 			var filteredList = SongDictionary.Select(x => x.Value)
 				.Where(x => x.Title != null && x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase)
 				            || x.Artist != null && x.Artist.Contains(term, StringComparison.InvariantCultureIgnoreCase)
 				            || x.Album != null && x.Album.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
 			var dictionary = PlayerService.GetIndexedList(filteredList);
 			_songList = dictionary;
-			StateHasChanged();
-		});
+		}
+		StateHasChanged();
 	}
 
 	private void ClearSearch()
 	{
 		_searchTerm = string.Empty;
+		RecalculateList();
 	}
 }
