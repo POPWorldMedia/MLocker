@@ -82,7 +82,7 @@ namespace MLocker.WebApp.Services
                 var songs = await GetAlbum(album);
                 if (songs.Any(x => x.PictureMimeType != null))
                 {
-                    album.FirstSong = songs.First();
+                    album.FirstSong = songs.First(x => x.PictureMimeType != null);
                 }
             }
         }
