@@ -33,7 +33,7 @@ namespace MLocker.Api.Repositories
         public async Task<IEnumerable<Song>> GetAll()
         {
             await using var connection = new SqlConnection(_config.ConnectionString);
-            var allSongs = await connection.QueryAsync<Song>("SELECT * FROM Songs");
+            var allSongs = await connection.QueryAsync<Song>("SELECT * FROM Songs ORDER BY Title");
             return allSongs;
         }
 

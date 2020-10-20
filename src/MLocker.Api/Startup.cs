@@ -43,20 +43,22 @@ namespace MLocker.Api
             services.AddTransient<IFileRepository, FileRepository>();
             services.AddTransient<IPlaylistRepository, PlaylistRepository>();
 
-            services.AddResponseCompression(options =>
-            {
-	            options.Providers.Add<BrotliCompressionProvider>();
-	            options.Providers.Add<GzipCompressionProvider>();
-                options.EnableForHttps = true;
-            });
-            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
-            services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+            // it turns out this really slows things down in terms of the initial load: it takes longer to compress 10k songs objects than to let the 3MB stream in real time
+
+            //services.AddResponseCompression(options =>
+            //{
+	           // options.Providers.Add<BrotliCompressionProvider>();
+	           // options.Providers.Add<GzipCompressionProvider>();
+            //    options.EnableForHttps = true;
+            //});
+            //services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+            //services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-	        app.UseResponseCompression();
+	        //app.UseResponseCompression();
 
             if (env.IsDevelopment())
             {
