@@ -13,14 +13,22 @@ namespace MLocker.Core.Services
 	{
 		public List<Playlist> PlaylistDefinitionsToPlaylists(List<PlaylistDefinition> playlistDefinitions, List<Song> songs)
 		{
-			var result = playlistDefinitions.Select(x =>
-				new Playlist
+			var playlists = new List<Playlist>();
+			foreach (var playlistDefinition in playlistDefinitions)
+			{
+				var playlistFiles = playlistDefinition.PlaylistFiles.OrderBy(x => x.SortOrder);
+				var playlistSongs = new List<Song>();
+				foreach (var playlistFile in playlistFiles)
+					playlistSongs.Add(songs.Single(x => x.FileID == playlistFile.FileID));
+				var playlist = new Playlist
 				{
-					Title = x.Title,
-					PlaylistID = x.PlaylistID,
-					Songs = songs.Where(s => x.PlaylistFiles.Select(p => p.FileID).Contains(s.FileID)).ToList()
-				});
-			return result.ToList();
+					PlaylistID = playlistDefinition.PlaylistID,
+					Title = playlistDefinition.Title,
+					Songs = playlistSongs
+				};
+				playlists.Add(playlist);
+			}
+			return playlists.OrderBy(x => x.Title).ToList();
 		}
 	}
 }
