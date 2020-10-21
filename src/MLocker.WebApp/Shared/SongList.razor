@@ -29,7 +29,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<Virtualize Context="song" Items="@_songList" TItem="KeyValuePair<int, Song>">
+			<Virtualize Context="song" Items="@_songList" TItem="KeyValuePair<int, Song>" OverscanCount="20">
 				<ListRow Song="song" ListContext="@_listContextDictionary" WillClearQueueOnPlay="@WillClearQueueOnPlay"/>
 			</Virtualize>
 		</tbody>
