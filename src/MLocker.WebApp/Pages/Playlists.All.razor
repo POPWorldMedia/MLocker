@@ -1,5 +1,6 @@
 ﻿@using MLocker.WebApp.Services
 @using MLocker.Core.Models
+@using System.Timers
 @inject IPlaylistService PlaylistService
 
 <div class="my-3 text-right">
@@ -32,8 +33,8 @@
 @if (PlaylistList != null && PlaylistList.Count > 0)
 {
 	<div class="input-group mb-4">
-		<span class="input-group-text"><div class="searchIcon"></div></span>
-		<input type="text" class="form-control" placeholder="Search playlists" aria-label="Search songs" @bind-value="_searchTerm" @bind-value:event="oninput">
+		<span class="input-group-text"><span class="searchIcon"></span></span>
+		<input type="text" class="form-control" placeholder="Search playlists" aria-label="Search songs" @bind-value="_searchTerm" @bind-value:event="oninput" @onkeyup="HandleKeyUp">
 		<span class="input-group-text" @onclick="ClearSearch"><button type="button" class="btn-close" aria-label="Close"></button></span>
 	</div>
 
@@ -66,18 +67,47 @@
 
 	private string _newPlaylistName;
 	private string _searchTerm = string.Empty;
-	private List<Playlist> _filteredList => ReduceList();
+	private List<Playlist> _filteredList;
+	private Timer _timer;
 
-	private List<Playlist> ReduceList()
+	protected override void OnInitialized()
+	{
+		_timer = new Timer(350) { AutoReset = false };
+		_timer.Elapsed += OnTimerFinish;
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await InvokeAsync(RecalculateList);
+	}
+
+	void HandleKeyUp(KeyboardEventArgs e)
+	{
+		_timer.Stop();
+		_timer.Start();
+	}
+
+	private void OnTimerFinish(Object source, ElapsedEventArgs e)
+	{
+		RecalculateList();
+	}
+	
+	private void RecalculateList()
 	{
 		var term = _searchTerm.Trim();
-		var filteredList = PlaylistList.Where(x => x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
-		return filteredList;
+		if (string.IsNullOrEmpty(_searchTerm))
+			_filteredList = PlaylistList;
+		else
+		{
+			_filteredList = PlaylistList.Where(x => x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
+		}
+		StateHasChanged();
 	}
 
 	private void ClearSearch()
 	{
 		_searchTerm = string.Empty;
+		RecalculateList();
 	}
 
 	private async Task SaveNewPlaylist()

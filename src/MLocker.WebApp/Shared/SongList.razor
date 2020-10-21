@@ -53,10 +53,14 @@
 
 	protected override void OnInitialized()
 	{
-		RecalculateList();
 		_listContextDictionary = WillQueueListOnPlay ? SongDictionary : null;
 		_timer = new Timer(350) {AutoReset = false};
 		_timer.Elapsed += OnTimerFinish;
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await InvokeAsync(RecalculateList);
 	}
 
 	void HandleKeyUp(KeyboardEventArgs e)
@@ -79,8 +83,8 @@
 		{
 			var filteredList = SongDictionary.Select(x => x.Value)
 				.Where(x => x.Title != null && x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase)
-				            || x.Artist != null && x.Artist.Contains(term, StringComparison.InvariantCultureIgnoreCase)
-				            || x.Album != null && x.Album.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
+							|| x.Artist != null && x.Artist.Contains(term, StringComparison.InvariantCultureIgnoreCase)
+							|| x.Album != null && x.Album.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
 			var dictionary = PlayerService.GetIndexedList(filteredList);
 			_songList = dictionary;
 		}
