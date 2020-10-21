@@ -74,6 +74,7 @@ namespace MLocker.WebApp.Services
                     AlbumGroupingType = GetGroupingType(x)
             })
                 .Select(x => new Album {AlbumArtist = x.Key.AlbumArtist, Title = x.Key.Album, AlbumGroupingType = x.Key.AlbumGroupingType})
+                .Where(x => x.Title != null & x.Title != string.Empty)
                 .OrderBy(x => x.Title)
                 .ToList();
             // this is janky and probably slow, but I couldn't figure out how to do it in the linq query above
