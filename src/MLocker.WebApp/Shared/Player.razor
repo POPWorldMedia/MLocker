@@ -25,12 +25,12 @@
     }
 </div>
 <div class="container">
-	<div class="row d-flex flex-nowrap" id="playerRow">
-		<div class="col-md-2"><div id="queueButton" class="playerButton" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></div></div>
-		<div class="col-md-2 text-right"><div class="@_previousClass playerButton" @onclick="PlayPrevious"></div></div>
-		<div class="col-md-4 text-center"><audio id="player" src="@_source" controls></audio></div>
-		<div class="col-md-2"><div class="@_nextClass playerButton" @onclick="PlayNext"></div></div>
-		<div class="col-md-2"></div>
+	<div class="row" id="playerRow">
+		<div class="col-sm-1 col-md-2"><div id="queueButton" class="playerButton" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></div></div>
+		<div class="col-sm-1 col-md-2 text-right"><div class="@_previousClass playerButton" @onclick="PlayPrevious"></div></div>
+		<div class="col-sm-9 col-md-5 text-center"><audio id="player" src="@_source" controls></audio></div>
+		<div class="col-sm-1 col-md-2"><div class="@_nextClass playerButton" @onclick="PlayNext"></div></div>
+		<div class="d-md-none col-lg-2"></div>
 	</div>
 </div>
 <div id="queueList" class="container collapse" aria-labelledby="queueButton" data-parent="#queueButton">
