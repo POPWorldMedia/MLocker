@@ -2,8 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+	<!-- these are for bugs in the linker when you publish, still in v5 RC2
 	<BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
-	<InvariantGlobalization>true</InvariantGlobalization>
+	<InvariantGlobalization>true</InvariantGlobalization>-->
+	<BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
+	<PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
 
   <ItemGroup>
