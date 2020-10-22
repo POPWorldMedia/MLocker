@@ -45,6 +45,10 @@
 	{
 		_contextMenuID = "songRow" + Guid.NewGuid().ToString("N").Substring(8,8);
 		PlayerService.OnChange += RecalcNowPlaying;
+	}
+
+	protected override void OnParametersSet()
+	{
 		RecalcNowPlaying();
 	}
 
@@ -63,7 +67,7 @@
 	private void RecalcNowPlaying()
 	{
 		_nowPlayingClass = Song.Value.FileID == PlayerService.CurrentSong?.FileID ? "eq" : string.Empty;
-		InvokeAsync(StateHasChanged);
+		StateHasChanged();
 	}
 
 	public void Dispose()
