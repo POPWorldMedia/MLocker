@@ -254,7 +254,7 @@
 				placement: 'right-start'
 			});
 			menu.setAttribute('data-show', '');
-			var hideEvents = ['mouseleave', 'blur'];
+			var hideEvents = ['mouseleave', 'blur', 'click'];
 			hideEvents.forEach(event => {
 				menu.addEventListener(event, () => {
 					if (menu)

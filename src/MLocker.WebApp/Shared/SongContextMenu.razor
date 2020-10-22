@@ -7,6 +7,10 @@
 
 <div id="songContextMenu">
 	<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+		@if (SongContextStateService.LastUsedPlaylist != null)
+		{
+			<li><a class="dropdown-item" @onclick="(() => SelectAddToPlaylist(SongContextStateService.LastUsedPlaylist))">Add to: @SongContextStateService.LastUsedPlaylist.Title</a></li>
+		}
 		<li><a class="dropdown-item" @onclick="OpenAddToPlaylist">Add to playlist</a></li>
 		<li><a class="dropdown-item" @onclick="AddToQueue">Add to queue</a></li>
 	</ul>
