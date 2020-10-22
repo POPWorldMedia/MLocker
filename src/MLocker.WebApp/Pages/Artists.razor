@@ -1,12 +1,10 @@
 ﻿@page "/Artists"
 @using MLocker.WebApp.Services
-@using MLocker.Core.Models
 @inject IMusicService MusicService
 
 @if (_isDetail)
 {
-	<p @onclick="@BackToAll"><span class="backButton"></span> all artists</p>
-	<Artists_Detail CurrentArtist="@_currentArtist" />
+	<Artists_Detail CurrentArtist="@_currentArtist" OnClick="@BackToAll" />
 }
 else
 {

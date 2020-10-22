@@ -19,6 +19,10 @@
 	<table class="table table-hover">
 		<thead>
 			<tr>
+				@if (ShowTrack)
+				{
+					<th>&#35;</th>
+				}
 				<th></th>
 				<th>Song</th>
 				<th></th>
@@ -30,7 +34,7 @@
 		</thead>
 		<tbody>
 			<Virtualize Context="song" Items="@_songList" TItem="KeyValuePair<int, Song>" OverscanCount="20">
-				<ListRow Song="song" ListContext="@_listContextDictionary" WillClearQueueOnPlay="@WillClearQueueOnPlay"/>
+				<ListRow Song="song" ListContext="@_listContextDictionary" WillClearQueueOnPlay="@WillClearQueueOnPlay" ShowTrack="@ShowTrack"/>
 			</Virtualize>
 		</tbody>
 	</table>
@@ -45,6 +49,8 @@
 	public bool WillQueueListOnPlay { get; set; }
 	[Parameter]
 	public bool ShowSearch { get; set; }
+	[Parameter]
+	public bool ShowTrack { get; set; }
 
 	private Dictionary<int, Song> _songList;
 	private string _searchTerm = string.Empty;

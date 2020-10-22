@@ -9,6 +9,10 @@
 @implements IDisposable
 
 <tr>
+	@if (ShowTrack)
+	{
+		<td class="songLengthPlayCell">@Song.Value.Track</td>
+	}
 	<td class="songImageCell">
 		@if (Song.Value.PictureMimeType != null)
 		{
@@ -37,6 +41,8 @@
 	public Dictionary<int, Song> ListContext { get; set; }
 	[Parameter]
 	public bool WillClearQueueOnPlay { get; set; }
+	[Parameter]
+	public bool ShowTrack { get; set; }
 
 	private string _nowPlayingClass;
 	private string _contextMenuID;

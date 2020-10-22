@@ -8,11 +8,12 @@
 
 @if (_isAlbumMode)
 {
-	<p @onclick="@BackToAll"><span class="backButton"></span> all albums</p>
+<p @onclick="@BackToAllAlbums"><span class="backButton"></span> all @_currentAlbum.AlbumArtist albums</p>
 	<h2><span id="playAlbumButton" @onclick="PlayAlbum"></span> @_currentAlbum.AlbumArtist - @_currentAlbum.Title</h2>
 }
 else
 {
+	<p @onclick="@(() => OnClick.InvokeAsync())"><span class="backButton"></span> all artists</p>
 	<h2>@CurrentArtist</h2>
 	<h3>Albums</h3>
 
@@ -49,14 +50,14 @@ else
 
 @if (_songList != null && _songList.Count > 0)
 {
-	<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="_showSearch" />
+	<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="_showSearch" ShowTrack="_isAlbumMode" />
 }
 
 @code {
 	[Parameter]
 	public string CurrentArtist { get; set; }
 	[Parameter]
-	public EventCallback<Album> OnClick { get; set; }
+	public EventCallback OnClick { get; set; }
 
 	Dictionary<int, Song> _songList;
 	List<Album> _albums;
@@ -83,7 +84,7 @@ else
 		StateHasChanged();
 	}
 
-	public void BackToAll()
+	public void BackToAllAlbums()
 	{
 		_showSearch = true;
 		_songList = PlayerService.GetIndexedList(_songs);

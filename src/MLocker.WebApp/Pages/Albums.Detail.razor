@@ -1,12 +1,11 @@
 ﻿@using MLocker.Core.Models
-@using MLocker.Core.Services
 @using MLocker.WebApp.Services
 @inject IMusicService MusicService
 @inject IPlayerService PlayerService
 
 <h2><span id="playAlbumButton" @onclick="PlayAlbum"></span> @Album.AlbumArtist - @Album.Title</h2>
 	
-<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="false" />
+<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="false" ShowTrack="true" />
 
 @code {
 	[CascadingParameter]

@@ -7,7 +7,7 @@
 @inject IFileParsingService FileParsingService
 @inject IPlayerService PlayerService
 
-<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="false" ShowSearch="true" />
+<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="false" ShowSearch="true" ShowTrack="false" />
 
 @code {
 	Dictionary<int, Song> _songList;
