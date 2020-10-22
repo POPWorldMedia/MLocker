@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using MLocker.Core.Models;
 using MLocker.WebApp.Repositories;
@@ -16,6 +18,8 @@ namespace MLocker.WebApp.Services
         Task<List<Song>> GetAlbum(Album album);
         Task UpdateSongs();
         Task IncrementPlayCount(int fileID);
+        Task<List<string>> GetAllArtists();
+        Task<Tuple<List<Album>, List<Song>>> GetArtistDetail(string artist);
     }
 
     public class MusicService : IMusicService
@@ -23,6 +27,7 @@ namespace MLocker.WebApp.Services
         private readonly ISongRepository _songRepository;
         private readonly IUploadRepository _uploadRepository;
         private static List<Album> _albums;
+        private static List<string> _artists;
 
         public MusicService(ISongRepository songRepository, IUploadRepository uploadRepository)
         {
@@ -109,6 +114,29 @@ namespace MLocker.WebApp.Services
         public async Task IncrementPlayCount(int fileID)
         {
 	        await _songRepository.IncrementPlayCount(fileID);
+        }
+
+        public async Task<List<string>> GetAllArtists()
+        {
+	        if (_artists != null)
+		        return _artists;
+	        var songs = await _songRepository.GetAllSongs();
+	        var artists = songs.Where(x => x.AlbumArtist != null)
+		        .Select(x => x.AlbumArtist).ToList();
+	        artists.AddRange(songs.Where(x => x.AlbumArtist == null && x.Artist != null).Select(x => x.Artist));
+	        artists.Sort();
+	        _artists = artists.Distinct().ToList();
+	        return _artists;
+        }
+
+        public async Task<Tuple<List<Album>, List<Song>>> GetArtistDetail(string artist)
+        {
+	        if (_albums == null)
+		        await PopulateAlbums();
+	        var albums = _albums.Where(x => x.AlbumArtist == artist).ToList();
+	        var allSongs = await _songRepository.GetAllSongs();
+	        var songs = allSongs.Where(x => x.AlbumArtist == artist || x.Artist == artist).OrderBy(x => x.Title).ToList();
+	        return Tuple.Create(albums, songs);
         }
     }
 }

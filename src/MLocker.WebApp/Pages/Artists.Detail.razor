@@ -1,0 +1,99 @@
+﻿@using MLocker.Core.Models
+@using MLocker.WebApp.Services
+@using Microsoft.AspNetCore.WebUtilities
+@using MLocker.Core.Services
+@inject IPlayerService PlayerService
+@inject IMusicService MusicService
+@inject IFileParsingService FileParsingService
+
+@if (_isAlbumMode)
+{
+	<p @onclick="@BackToAll"><span class="backButton"></span> all albums</p>
+	<h2><span id="playAlbumButton" @onclick="PlayAlbum"></span> @_currentAlbum.AlbumArtist - @_currentAlbum.Title</h2>
+}
+else
+{
+	<h2>@CurrentArtist</h2>
+	<h3>Albums</h3>
+
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th></th>
+				<th>Album</th>
+				<th>Artist</th>
+			</tr>
+		</thead>
+		<tbody>
+			<Virtualize Context="item" Items="@_albums" TItem="Album">
+				<tr>
+					<td class="songImageCell" @onclick="@(() => LoadAlbum(item))">
+						@if (item.FirstSong != null)
+						{
+							<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
+						}
+						else
+						{
+							<div class="coverPlaceholder songImage"> </div>
+						}
+					</td>
+					<td @onclick="@(() => LoadAlbum(item))" class="clickyText">@item.Title</td>
+					<td class="songSecondaryCell">@item.AlbumArtist</td>
+				</tr>
+			</Virtualize>
+		</tbody>
+	</table>
+
+	<h3>Songs</h3>
+}
+
+@if (_songList != null && _songList.Count > 0)
+{
+	<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="_showSearch" />
+}
+
+@code {
+	[Parameter]
+	public string CurrentArtist { get; set; }
+	[Parameter]
+	public EventCallback<Album> OnClick { get; set; }
+
+	Dictionary<int, Song> _songList;
+	List<Album> _albums;
+	List<Song> _songs;
+	bool _showSearch = true;
+	bool _isAlbumMode = false;
+	Album _currentAlbum;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		var (albums, songs) = await MusicService.GetArtistDetail(CurrentArtist);
+		_albums = albums;
+		_songs = songs;
+		_songList = PlayerService.GetIndexedList(_songs);
+	}
+
+	public async Task LoadAlbum(Album album)
+	{
+		_currentAlbum = album;
+		var songs = await MusicService.GetAlbum(album);
+		_songList = PlayerService.GetIndexedList(songs);
+		_showSearch = false;
+		_isAlbumMode = true;
+		StateHasChanged();
+	}
+
+	public void BackToAll()
+	{
+		_showSearch = true;
+		_songList = PlayerService.GetIndexedList(_songs);
+		_isAlbumMode = false;
+		StateHasChanged();
+	}
+
+	private void PlayAlbum()
+	{
+		PlayerService.PlaySong(_songList[0], _songList, 0);
+		StateHasChanged();
+	}
+}

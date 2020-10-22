@@ -1,0 +1,77 @@
+﻿@using System.Timers
+
+@if (ArtistList != null && ArtistList.Count > 0)
+{
+	<div class="input-group mb-4">
+		<span class="input-group-text"><span class="searchIcon"></span></span>
+		<input type="text" class="form-control" placeholder="Search artists" aria-label="Search songs" @bind-value="_searchTerm" @bind-value:event="oninput" @onkeyup="HandleKeyUp">
+		<span class="input-group-text" @onclick="ClearSearch"><button type="button" class="btn-close" aria-label="Close"></button></span>
+	</div>
+
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>Artist</th>
+			</tr>
+		</thead>
+		<tbody>
+			<Virtualize Context="item" Items="@_filteredList" TItem="string">
+				<tr>
+					<td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item</td>
+				</tr>
+			</Virtualize>
+		</tbody>
+	</table>
+}
+
+@code
+{
+	[CascadingParameter]
+	protected List<string> ArtistList { get; set; }
+	[Parameter]
+	public EventCallback<string> OnClick { get; set; }
+
+	private string _searchTerm = string.Empty;
+	private List<string> _filteredList;
+	private Timer _timer;
+
+	protected override void OnInitialized()
+	{
+		_timer = new Timer(350) { AutoReset = false };
+		_timer.Elapsed += OnTimerFinish;
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await InvokeAsync(RecalculateList);
+	}
+
+	void HandleKeyUp(KeyboardEventArgs e)
+	{
+		_timer.Stop();
+		_timer.Start();
+	}
+
+	private void OnTimerFinish(Object source, ElapsedEventArgs e)
+	{
+		RecalculateList();
+	}
+
+	private void RecalculateList()
+	{
+		var term = _searchTerm.Trim();
+		if (string.IsNullOrEmpty(_searchTerm))
+			_filteredList = ArtistList;
+		else
+		{
+			_filteredList = ArtistList.Where(x => x.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
+		}
+		StateHasChanged();
+	}
+
+	private void ClearSearch()
+	{
+		_searchTerm = string.Empty;
+		RecalculateList();
+	}
+}

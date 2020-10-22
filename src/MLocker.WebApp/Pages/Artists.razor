@@ -1,0 +1,39 @@
+﻿@page "/Artists"
+@using MLocker.WebApp.Services
+@using MLocker.Core.Models
+@inject IMusicService MusicService
+
+@if (_isDetail)
+{
+	<p @onclick="@BackToAll"><span class="backButton"></span> all artists</p>
+	<Artists_Detail CurrentArtist="@_currentArtist" />
+}
+else
+{
+	<CascadingValue Value="_artistList">
+		<Artists_All OnClick="@LoadArtistDetail" />
+	</CascadingValue>
+}
+
+@code {
+	List<string> _artistList = new List<string>();
+	string _currentArtist = null;
+	private bool _isDetail = false;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_artistList = await MusicService.GetAllArtists();
+	}
+
+	protected void LoadArtistDetail(string artist)
+	{
+		_currentArtist = artist;
+		_isDetail = true;
+	}
+
+	protected void BackToAll()
+	{
+		_isDetail = false;
+		_currentArtist = null;
+	}
+}
