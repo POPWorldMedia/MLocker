@@ -25,12 +25,18 @@
     }
 </div>
 <div class="container">
-	<div class="row" id="playerRow">
-		<div class="col-sm-1 col-md-2"><div id="queueButton" class="playerButton" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></div></div>
-		<div class="col-sm-1 col-md-2 text-right"><div class="@_previousClass playerButton" @onclick="PlayPrevious"></div></div>
-		<div class="col-sm-9 col-md-5 text-center"><audio id="player" src="@_source" controls></audio></div>
-		<div class="col-sm-1 col-md-2"><div class="@_nextClass playerButton" @onclick="PlayNext"></div></div>
-		<div class="d-md-none col-lg-2"></div>
+	<div class="row">
+		<div class="d-none d-md-block col-md-1"><span id="queueButton" class="playerButton" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></span></div>
+		<div class="d-none d-md-block col-md-2 text-right"><span class="@_previousClass playerButton" @onclick="PlayPrevious"></span></div>
+		<div class="col-md-6 text-center"><audio id="player" src="@_source" controls></audio></div>
+		<div class="d-none d-md-block col-md-2"><span class="@_nextClass playerButton" @onclick="PlayNext"></span></div>
+		<div class="d-none d-md-block col-md-1"></div>
+	</div>
+	<div class="row d-sm-block d-md-none">
+		<div class="col"><span id="queueButton" class="playerButton" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></span></div>
+		<div class="col text-right"><span class="@_previousClass playerButton" @onclick="PlayPrevious"></span></div>
+		<div class="col"><span class="@_nextClass playerButton" @onclick="PlayNext"></span></div>
+		<div class="col"></div>
 	</div>
 </div>
 <div id="queueList" class="container collapse" aria-labelledby="queueButton" data-parent="#queueButton">
