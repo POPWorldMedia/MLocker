@@ -34,6 +34,7 @@ namespace MLocker.Api.Services
 
         public async Task PersistSong(SongData songData, byte[] bytes)
         {
+	        await _songRepository.DeleteSong(songData.Title, songData.Album, songData.Artist);
             await _songRepository.SaveSong(songData);
             var fileName = ParseStorageFileName(songData);
             var contentType = songData.FileType switch

@@ -9,6 +9,7 @@ namespace MLocker.Api.Repositories
 {
     public interface ISongRepository
     {
+        Task DeleteSong(string title, string album, string artist);
         Task SaveSong(Song song);
         Task<IEnumerable<Song>> GetAll();
         Task<Song> GetSong(int fileID);
@@ -22,6 +23,12 @@ namespace MLocker.Api.Repositories
         public SongRepository(IConfig config)
         {
             _config = config;
+        }
+
+        public async Task DeleteSong(string title, string album, string artist)
+        {
+	        await using var connection = new SqlConnection(_config.ConnectionString);
+	        await connection.ExecuteAsync("DELETE FROM Songs WHERE Title = @Title AND Album = @Album AND Artist = @Artist", new {Title = title, Album = album, Artist = artist});
         }
 
         public async Task SaveSong(Song song)
