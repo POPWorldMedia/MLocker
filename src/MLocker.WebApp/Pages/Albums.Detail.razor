@@ -3,8 +3,11 @@
 @inject IMusicService MusicService
 @inject IPlayerService PlayerService
 
-<h2><span id="playAlbumButton" @onclick="PlayAlbum"></span> @Album.AlbumArtist - @Album.Title</h2>
-	
+<span id="playAlbumButton" @onclick="PlayAlbum"></span>
+<h2>@Album.AlbumArtist - @Album.Title</h2>
+
+<SongListSummary SongList="_songList" />
+
 <SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="false" ShowTrack="true" />
 
 @code {

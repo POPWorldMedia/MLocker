@@ -8,8 +8,10 @@
 
 @if (_isAlbumMode)
 {
-<p @onclick="@BackToAllAlbums"><span class="backButton"></span> all @_currentAlbum.AlbumArtist albums</p>
-	<h2><span id="playAlbumButton" @onclick="PlayAlbum"></span> @_currentAlbum.AlbumArtist - @_currentAlbum.Title</h2>
+	<p @onclick="@BackToAllAlbums"><span class="backButton"></span> all @_currentAlbum.AlbumArtist albums</p>
+	<span id="playAlbumButton" @onclick="PlayAlbum"></span>
+	<h2> @_currentAlbum.AlbumArtist - @_currentAlbum.Title</h2>
+	<SongListSummary SongList="_songList"/>
 }
 else
 {

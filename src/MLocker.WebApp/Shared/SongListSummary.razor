@@ -1,0 +1,19 @@
+﻿@using MLocker.Core.Models
+
+<p>@_songCount songs ● @_runTime</p>
+
+@code {
+	[Parameter]
+	public Dictionary<int, Song> SongList { get; set; }
+
+	private int _songCount;
+	private string _runTime;
+
+	protected override void OnParametersSet()
+	{
+		_songCount = SongList.Count;
+		var allTheTicks = SongList.Select(x => x.Value.Ticks).Sum();
+		var span = new TimeSpan(allTheTicks);
+		_runTime = span.TotalMinutes > 59 ? span.ToString(@"h\:mm\:ss") : span.ToString(@"m\:ss");
+	}
+}

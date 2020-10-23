@@ -2,8 +2,11 @@
 @using MLocker.WebApp.Services
 @inject IPlayerService PlayerService
 
-<h2><span id="playAlbumButton" @onclick="PlayPlaylist"></span> @Playlist.Title</h2>
-	
+<span id="playAlbumButton" @onclick="PlayPlaylist"></span>
+<h2>@Playlist.Title</h2>
+
+<SongListSummary SongList="_songList" />
+
 <SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="false" ShowTrack="false" />
 
 @code {

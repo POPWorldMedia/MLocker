@@ -31,6 +31,10 @@ hr {
 .songSecondaryCell {
 	width: 250px;
 }
+.songSecondaryCell span {
+	width: 250px;
+	display: inline-block;
+}
 
 .songLengthPlayCell {
 	width: 80px;
@@ -54,11 +58,11 @@ hr {
 	transition: all .5s ease-in-out;
 }
 
-	.nowPlayingImage.nowPlayingShrink {
-		height: 600px;
-		width: 600px;
-		margin-left: calc(50% - 300px);
-	}
+.nowPlayingImage.nowPlayingShrink {
+	height: 600px;
+	width: 600px;
+	margin-left: calc(50% - 300px);
+}
 
 .songDetails {
 	margin-top: -80px;
@@ -66,10 +70,10 @@ hr {
 	transition: all .5s ease-in-out;
 }
 
-	.songDetails.songDetailsShrink {
-		margin-top: 0;
-		margin-left: 0;
-	}
+.songDetails.songDetailsShrink {
+	margin-top: 0;
+	margin-left: 0;
+}
 
 #queueList {
 	background-color: #fdfdfd;
@@ -111,9 +115,10 @@ hr {
 }
 
 #playAlbumButton {
+	float:left;
 	display: inline-block;
-	height: 40px;
-	width: 40px;
+	height: 60px;
+	width: 60px;
 	cursor: pointer;
 }
 
@@ -184,13 +189,13 @@ hr {
 	z-index: 100;
 }
 
-	#songContextMenu[data-show] {
-		display: block;
-	}
+#songContextMenu[data-show] {
+	display: block;
+}
 
-	#songContextMenu .dropdown-menu {
-		display: block !important;
-	}
+#songContextMenu .dropdown-menu {
+	display: block !important;
+}
 
 #blazor-error-ui {
 	background: lightyellow;
@@ -204,9 +209,9 @@ hr {
 	z-index: 1000;
 }
 
-	#blazor-error-ui .dismiss {
-		cursor: pointer;
-		position: absolute;
-		right: 0.75rem;
-		top: 0.5rem;
-	}
+#blazor-error-ui .dismiss {
+	cursor: pointer;
+	position: absolute;
+	right: 0.75rem;
+	top: 0.5rem;
+}

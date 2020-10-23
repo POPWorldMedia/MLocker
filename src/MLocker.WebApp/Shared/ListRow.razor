@@ -24,11 +24,11 @@
 		}
 	</td>
 	<td>@Song.Value.Title</td>
-	<td>
+	<td class="songLengthPlayCell">
 		<div class="text-right" @onclick="OpenContext"><div id="@_contextMenuID" class="contextButton"></div></div>
 	</td>
-	<td class="songSecondaryCell">@Song.Value.Artist</td>
-	<td class="songSecondaryCell">@Song.Value.Album</td>
+	<td class="songSecondaryCell"><span class="text-truncate">@Song.Value.Artist</span></td>
+	<td class="songSecondaryCell"><span class="text-truncate">@Song.Value.Album</span></td>
 	<td class="songLengthPlayCell">@(new TimeSpan(Song.Value.Ticks).ToString(@"m\:ss"))</td>
 	<td class="songLengthPlayCell">@Song.Value.PlayCount</td>
 </tr>
