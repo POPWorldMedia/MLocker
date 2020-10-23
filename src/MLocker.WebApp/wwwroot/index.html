@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	<title>MLocker.WebApp</title>
+	<title>MLocker</title>
 	<base href="/" />
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
 	<script src="https://unpkg.com/@popperjs/core@2"></script>
@@ -269,6 +269,10 @@
 		window.OpenAddToPlaylistModal = () => {
 			var myModal = new bootstrap.Modal(document.getElementById('addToPlaylistModal'));
 			myModal.show();
+		}
+
+		window.SetTitle = (title) => {
+			document.title = title;
 		}
 	</script>
 </body>

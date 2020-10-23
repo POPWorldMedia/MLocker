@@ -37,21 +37,27 @@ namespace MLocker.WebApp.Services
 
         public int QueueIndex => _queueIndex;
 
+        private void CallPlayerAndUpdateTitle()
+        {
+	        Notify();
+	        _jsRuntime.InvokeAsync<string>("StartPlayer");
+	        var title = $"{_currentSong.Title ?? _currentSong.FileName} - {_currentSong.Artist ?? _currentSong.AlbumArtist} - MLocker";
+	        _jsRuntime.InvokeAsync<string>("SetTitle", title);
+        }
+
         public void PlaySong(Song song, Dictionary<int, Song> dictionary, int index)
         {
             _currentSong = song;
             _queue = dictionary;
             _queueIndex = index;
-            Notify();
-            _jsRuntime.InvokeAsync<string>("StartPlayer");
+            CallPlayerAndUpdateTitle();
         }
 
         public void SkipToSong(int index)
         {
 	        _queueIndex = index;
 	        _currentSong = _queue[index];
-	        Notify();
-	        _jsRuntime.InvokeAsync<string>("StartPlayer");
+	        CallPlayerAndUpdateTitle();
         }
 
         public void PlayNextSong()
@@ -67,8 +73,7 @@ namespace MLocker.WebApp.Services
 	        }
 
 	        _currentSong = _queue[_queueIndex];
-	        Notify();
-	        _jsRuntime.InvokeAsync<string>("StartPlayer");
+	        CallPlayerAndUpdateTitle();
         }
 
         public void PlayPreviousSong()
@@ -80,8 +85,7 @@ namespace MLocker.WebApp.Services
 
 	        _queueIndex--;
 	        _currentSong = _queue[_queueIndex];
-	        Notify();
-	        _jsRuntime.InvokeAsync<string>("StartPlayer");
+	        CallPlayerAndUpdateTitle();
         }
 
         public void EnqueueSong(Song song)
