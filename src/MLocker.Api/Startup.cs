@@ -78,6 +78,8 @@ namespace MLocker.Api
 			app.UseAuthentication();
 			app.UseAuthorization();
 
+			app.UseStaticFiles();
+
 			app.UseBlazorFrameworkFiles();
 
             app.UseEndpoints(endpoints =>
