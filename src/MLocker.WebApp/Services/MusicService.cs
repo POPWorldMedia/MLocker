@@ -26,13 +26,15 @@ namespace MLocker.WebApp.Services
     {
         private readonly ISongRepository _songRepository;
         private readonly IUploadRepository _uploadRepository;
+        private readonly ISpinnerService _spinnerService;
         private static List<Album> _albums;
         private static List<string> _artists;
 
-        public MusicService(ISongRepository songRepository, IUploadRepository uploadRepository)
+        public MusicService(ISongRepository songRepository, IUploadRepository uploadRepository, ISpinnerService spinnerService)
         {
             _songRepository = songRepository;
             _uploadRepository = uploadRepository;
+            _spinnerService = spinnerService;
         }
 
         public async Task UpdateSongs()
@@ -43,8 +45,21 @@ namespace MLocker.WebApp.Services
 
         public async Task<List<Song>> GetAllSongs()
         {
-	        var songs = await _songRepository.GetAllSongs();
-	        return songs;
+	        List<Song> songs = null;
+	        try
+	        {
+		        _spinnerService.Show();
+		        songs = await _songRepository.GetAllSongs();
+	        }
+	        catch
+	        {
+		        // TODO: error handling
+	        }
+	        finally
+	        {
+		        _spinnerService.Hide();
+	        }
+		    return songs;
         }
 
         public async Task<List<Album>> GetAlbums()
@@ -66,31 +81,46 @@ namespace MLocker.WebApp.Services
 
         private async Task PopulateAlbums()
         {
-            AlbumGroupingType GetGroupingType(Song song)
-            {
-                if (song.AlbumArtist != null) return AlbumGroupingType.AlbumArtist;
-                if (song.Artist != null) return AlbumGroupingType.Artist;
-                return AlbumGroupingType.VariousArtists;
-            }
+	        try
+	        {
+		        _spinnerService.Show();
 
-            var allSongs = await _songRepository.GetAllSongs();
-            _albums = allSongs.GroupBy(x => new { AlbumArtist = x.AlbumArtist ?? x.Artist ?? "Various Artists",
-                    x.Album,
-                    AlbumGroupingType = GetGroupingType(x)
-            })
-                .Select(x => new Album {AlbumArtist = x.Key.AlbumArtist, Title = x.Key.Album, AlbumGroupingType = x.Key.AlbumGroupingType})
-                .Where(x => x.Title != null & x.Title != string.Empty)
-                .OrderBy(x => x.Title)
-                .ToList();
-            // this is janky and probably slow, but I couldn't figure out how to do it in the linq query above
-            foreach (var album in _albums)
-            {
-                var songs = await GetAlbum(album);
-                if (songs.Any(x => x.PictureMimeType != null))
-                {
-                    album.FirstSong = songs.First(x => x.PictureMimeType != null);
-                }
-            }
+		        AlbumGroupingType GetGroupingType(Song song)
+		        {
+			        if (song.AlbumArtist != null) return AlbumGroupingType.AlbumArtist;
+			        if (song.Artist != null) return AlbumGroupingType.Artist;
+			        return AlbumGroupingType.VariousArtists;
+		        }
+
+		        var allSongs = await _songRepository.GetAllSongs();
+		        _albums = allSongs.GroupBy(x => new
+			        {
+				        AlbumArtist = x.AlbumArtist ?? x.Artist ?? "Various Artists",
+				        x.Album,
+				        AlbumGroupingType = GetGroupingType(x)
+			        })
+			        .Select(x => new Album {AlbumArtist = x.Key.AlbumArtist, Title = x.Key.Album, AlbumGroupingType = x.Key.AlbumGroupingType})
+			        .Where(x => x.Title != null & x.Title != string.Empty)
+			        .OrderBy(x => x.Title)
+			        .ToList();
+		        // this is janky and probably slow, but I couldn't figure out how to do it in the linq query above
+		        foreach (var album in _albums)
+		        {
+			        var songs = await GetAlbum(album);
+			        if (songs.Any(x => x.PictureMimeType != null))
+			        {
+				        album.FirstSong = songs.First(x => x.PictureMimeType != null);
+			        }
+		        }
+	        }
+	        catch
+	        {
+		        // TODO: error handler
+	        }
+	        finally
+	        {
+		        _spinnerService.Hide();
+	        }
         }
 
         public async Task<List<Song>> GetAlbum(Album album)
@@ -120,12 +150,25 @@ namespace MLocker.WebApp.Services
         {
 	        if (_artists != null)
 		        return _artists;
-	        var songs = await _songRepository.GetAllSongs();
-	        var artists = songs.Where(x => x.AlbumArtist != null)
-		        .Select(x => x.AlbumArtist).ToList();
-	        artists.AddRange(songs.Where(x => x.AlbumArtist == null && x.Artist != null).Select(x => x.Artist));
-	        artists.Sort();
-	        _artists = artists.Distinct().ToList();
+	        try
+	        {
+		        _spinnerService.Show();
+		        var songs = await _songRepository.GetAllSongs();
+		        var artists = songs.Where(x => x.AlbumArtist != null)
+			        .Select(x => x.AlbumArtist).ToList();
+		        artists.AddRange(songs.Where(x => x.AlbumArtist == null && x.Artist != null).Select(x => x.Artist));
+		        artists.Sort();
+		        _artists = artists.Distinct().ToList();
+	        }
+	        catch
+	        {
+		        // TODO: error handler
+	        }
+	        finally
+	        {
+		        _spinnerService.Hide();
+	        }
+
 	        return _artists;
         }
 

@@ -11,7 +11,6 @@ namespace MLocker.WebApp.Services
 	{
 		Task<PlaylistDefinition> CreateNewPlaylistDefinition(string title);
 		Task<List<Playlist>> GetAllPlaylists();
-		Task UpdatePlaylists();
 		Task AddSongToEndOfPlaylist(Playlist playlist, Song song);
 	}
 
@@ -20,13 +19,15 @@ namespace MLocker.WebApp.Services
 		private readonly IPlaylistTransformer _playlistTransformer;
 		private readonly IPlaylistRepository _playlistRepository;
 		private readonly ISongRepository _songRepository;
+		private readonly ISpinnerService _spinnerService;
 		private static List<Playlist> _allPlaylists;
 
-		public PlaylistService(IPlaylistTransformer playlistTransformer, IPlaylistRepository playlistRepository, ISongRepository songRepository)
+		public PlaylistService(IPlaylistTransformer playlistTransformer, IPlaylistRepository playlistRepository, ISongRepository songRepository, ISpinnerService spinnerService)
 		{
 			_playlistTransformer = playlistTransformer;
 			_playlistRepository = playlistRepository;
 			_songRepository = songRepository;
+			_spinnerService = spinnerService;
 		}
 
 		public async Task<PlaylistDefinition> CreateNewPlaylistDefinition(string title)
@@ -35,7 +36,7 @@ namespace MLocker.WebApp.Services
 			return await _playlistRepository.CreateNewPlaylistDefinition(title);
 		}
 
-		public async Task UpdatePlaylists()
+		private async Task UpdatePlaylists()
 		{
 			await _playlistRepository.UpdatePlaylists();
 			var definitions = await _playlistRepository.GetAllPlaylistDefinitions();
@@ -46,8 +47,23 @@ namespace MLocker.WebApp.Services
 
 		public async Task<List<Playlist>> GetAllPlaylists()
 		{
-			if (_allPlaylists == null)
-				await UpdatePlaylists();
+			try
+			{
+				_spinnerService.Show();
+				if (_allPlaylists == null)
+				{
+					await UpdatePlaylists();
+				}
+			}
+			catch
+			{
+				// TODO: error handling
+			}
+			finally
+			{
+				_spinnerService.Hide();
+			}
+
 			return _allPlaylists;
 		}
 

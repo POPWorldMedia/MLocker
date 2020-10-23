@@ -1,0 +1,41 @@
+﻿@using MLocker.WebApp.Services
+@inject ISpinnerService SpinnerService
+@implements IDisposable
+
+@if (_isVisible)
+{
+	<div class="text-center text-light">
+		<div class="spinner-border" role="status">
+			<span class="visually-hidden">Loading...</span>
+		</div>
+	</div>
+}
+
+@code {
+	private bool _isVisible;
+
+	protected override void OnInitialized()
+	{
+		_isVisible = true;
+		SpinnerService.OnShow += Show;
+		SpinnerService.OnHide += Hide;
+	}
+
+	public void Show()
+	{
+		_isVisible = true;
+		InvokeAsync(StateHasChanged);
+	}
+
+	public void Hide()
+	{
+		_isVisible = false;
+		InvokeAsync(StateHasChanged);
+	}
+
+	public void Dispose()
+	{
+		SpinnerService.OnShow -= Show;
+		SpinnerService.OnHide -= Hide;
+	}
+}

@@ -33,6 +33,7 @@ namespace MLocker.WebApp
             builder.Services.AddTransient<IPlaylistTransformer, PlaylistTransformer>();
             builder.Services.AddTransient<IPlaylistService, PlaylistService>();
             builder.Services.AddTransient<ISongContextStateService, SongContextStateService>();
+            builder.Services.AddSingleton<ISpinnerService, SpinnerService>();
 
             // repos
             builder.Services.AddScoped<IUploadRepository, UploadRepository>();
