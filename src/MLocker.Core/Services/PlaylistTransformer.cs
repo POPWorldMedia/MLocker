@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MLocker.Core.Models;
 
@@ -7,6 +8,7 @@ namespace MLocker.Core.Services
 	public interface IPlaylistTransformer
 	{
 		List<Playlist> PlaylistDefinitionsToPlaylists(List<PlaylistDefinition> playlistDefinitions, List<Song> songs);
+		List<Song> Shuffle(Dictionary<int, Song> songList);
 	}
 
 	public class PlaylistTransformer : IPlaylistTransformer
@@ -29,6 +31,12 @@ namespace MLocker.Core.Services
 				playlists.Add(playlist);
 			}
 			return playlists.OrderBy(x => x.Title).ToList();
+		}
+
+		public List<Song> Shuffle(Dictionary<int, Song> songList)
+		{
+			var shuffled = songList.Select(x => x.Value).OrderBy(x => Guid.NewGuid()).ToList();
+			return shuffled;
 		}
 	}
 }

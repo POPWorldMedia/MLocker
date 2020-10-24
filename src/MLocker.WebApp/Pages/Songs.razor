@@ -6,6 +6,9 @@
 @inject IJSRuntime JsRuntime
 @inject IFileParsingService FileParsingService
 @inject IPlayerService PlayerService
+@inject IPlaylistTransformer PlaylistTransformer
+
+<p><span id="playShuffleButton" @onclick="PlayShuffle"></span> Shuffle all songs</p>
 
 <SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="false" ShowSearch="true" ShowTrack="false" />
 
@@ -16,5 +19,15 @@
 	{
 		var songs = await MusicService.GetAllSongs();
 		_songList = PlayerService.GetIndexedList(songs);
+	}
+
+	private void PlayShuffle()
+	{
+		if (_songList.Any())
+		{
+			var shuffled = PlaylistTransformer.Shuffle(_songList);
+			var shuffledSongList = PlayerService.GetIndexedList(shuffled);
+			PlayerService.PlaySong(shuffledSongList[0], shuffledSongList, 0);
+		}
 	}
 }

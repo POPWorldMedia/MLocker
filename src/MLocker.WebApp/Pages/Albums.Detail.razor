@@ -1,10 +1,16 @@
 ﻿@using MLocker.Core.Models
+@using MLocker.Core.Services
+@using MLocker.WebApp.Repositories
 @using MLocker.WebApp.Services
 @inject IMusicService MusicService
 @inject IPlayerService PlayerService
+@inject IPlaylistTransformer PlaylistTransformer
 
-<span id="playAlbumButton" @onclick="PlayAlbum"></span>
-<h2>@Album.AlbumArtist - @Album.Title</h2>
+<h2>
+	<span id="playAlbumButton" @onclick="PlayAlbum"></span>
+	<span id="playShuffleButton" @onclick="PlayShuffle"></span>
+	@Album.AlbumArtist - @Album.Title
+</h2>
 
 <SongListSummary SongList="_songList" />
 
@@ -25,5 +31,15 @@
 	private void PlayAlbum()
 	{
 		PlayerService.PlaySong(_songList[0], _songList, 0);
+	}
+
+	private void PlayShuffle()
+	{
+		if (_songList.Any())
+		{
+			var shuffled = PlaylistTransformer.Shuffle(_songList);
+			var shuffledSongList = PlayerService.GetIndexedList(shuffled);
+			PlayerService.PlaySong(shuffledSongList[0], shuffledSongList, 0);
+		}
 	}
 }

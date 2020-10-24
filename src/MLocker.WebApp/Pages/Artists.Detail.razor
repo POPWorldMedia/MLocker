@@ -5,12 +5,16 @@
 @inject IPlayerService PlayerService
 @inject IMusicService MusicService
 @inject IFileParsingService FileParsingService
+@inject IPlaylistTransformer PlaylistTransformer
 
 @if (_isAlbumMode)
 {
 	<p @onclick="@BackToAllAlbums"><span class="backButton"></span> all @_currentAlbum.AlbumArtist albums</p>
-	<span id="playAlbumButton" @onclick="PlayAlbum"></span>
-	<h2> @_currentAlbum.AlbumArtist - @_currentAlbum.Title</h2>
+	<h2>
+		<span id="playAlbumButton" @onclick="PlayAlbum"></span>
+		<span id="playShuffleButton" @onclick="PlayShuffle"></span>
+		@_currentAlbum.AlbumArtist - @_currentAlbum.Title
+	</h2>
 	<SongListSummary SongList="_songList"/>
 }
 else
@@ -47,7 +51,10 @@ else
 		</tbody>
 	</table>
 
-	<h3>Songs</h3>
+	<h3>
+		<span id="playShuffleButton" @onclick="PlayShuffle"></span>
+		Songs
+	</h3>
 }
 
 @if (_songList != null && _songList.Count > 0)
@@ -98,5 +105,15 @@ else
 	{
 		PlayerService.PlaySong(_songList[0], _songList, 0);
 		StateHasChanged();
+	}
+
+	private void PlayShuffle()
+	{
+		if (_songList.Any())
+		{
+			var shuffled = PlaylistTransformer.Shuffle(_songList);
+			var shuffledSongList = PlayerService.GetIndexedList(shuffled);
+			PlayerService.PlaySong(shuffledSongList[0], shuffledSongList, 0);
+		}
 	}
 }
