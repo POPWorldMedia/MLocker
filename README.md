@@ -3,10 +3,10 @@ This project takes an experimental shot at building a personal music locker. All
 
 The app uses an aspnetcore API, storing the music files in Azure Storage and the metadata and playlists in SQL. (I was going to use something else, but I have a wholly underutilized SQL pool. I was going to use Azure Functions for the API, but I have a wholly underutilized app service, too.) The front-end is a Blazor client, but I'm confident that I can probably whip up a phone client or two.
 
-![image](https://user-images.githubusercontent.com/2114255/97057101-8950a080-1558-11eb-9dc5-378c098cb0fa.png)
+![image](https://user-images.githubusercontent.com/2114255/97090915-d5a5ea00-1605-11eb-94aa-3044701acf19.png)
 
 ## Roadmap
-This is really an exercise in experimentation, but using it myself daily, I do want to formally make some releases. I think there v1 will nail down the rest of the basic functionality, like editing playlists, and then a subsequent release will take a stab at mobile apps that will cache the music locally.
+This is really an exercise in experimentation, but using it myself daily, I do want to formally make some releases. I think v1 will nail down the rest of the basic functionality, like editing playlists, and then a subsequent release will take a stab at mobile apps that will cache the music locally.
 
 ## Database
 Change the startup properties of the `MLocker.Database` project to point to a database with a connection string, then run it. The default in source is looking for a database called `MLocker` on `localhost`. This uses `dbup` to keep the schema updated.
@@ -27,3 +27,5 @@ Change the startup properties of the `MLocker.Database` project to point to a da
 * Blazor is suprisingly great for manipulating the DOM wihtout having to get JS interop calls involved. Note the expansion of the "now playing" album cover when you click on it. That's all CSS and Blazor!
 * SQL is definitely overkill for this. Playlists can certainly be documents, and songs probably can too.
 * It feels like there should be a way to turn an API project into a series of Azure Functions, but there isn't.
+* Shuffle is achieved by generating GUID's, which CS nerds insist is "wrong" because they're not random. I would aruge they're more than adequate, but also that GUID's are not random on Windows. Running everywhere else, including the Mono implementation in the browser, they are in fact random, seeded with `RNGCryptoServiceProvider`. But even if they weren't, we're shuffling songs, not powering a casino game. Y'all need to be pragmatic.
+* HTTP calls seem to be routed though Javascript interop, relying on the browser to make the calls. It appears that there's a memory leak there, because I can crash the app on my comprooder when attempting to upload 8,000 songs. The tab uses 22 gigabytes of memory and fails on Chrome/Edge around 2,500 songs. Firefox grows similarly, but seems to evacuate large chunks of memory now and then, and sometimes can make the whole run. Not sure if it's a Blazor problem or browser problem, but [I filed a bug](https://github.com/dotnet/aspnetcore/issues/27023). There's a console app in the solution to upload large batches.
