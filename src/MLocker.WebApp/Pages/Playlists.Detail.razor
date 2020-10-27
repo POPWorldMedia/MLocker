@@ -4,6 +4,7 @@
 @using System.Timers
 @inject IPlayerService PlayerService
 @inject IPlaylistTransformer PlaylistTransformer
+@inject IPlaylistService PlaylistService
 
 <div class="my-3 float-right">
 	<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#editModal" title="Edit playlist" id="editButton">
@@ -92,11 +93,17 @@
 		_currentIndex = index;
 		_songList = PlayerService.GetIndexedList(Playlist.Songs);
 		StateHasChanged();
-		// TODO: persist
+		PlaylistService.UpdatePlaylist(Playlist);
 	}
 
 	private void OnTimerFinish(Object source, ElapsedEventArgs e)
 	{
-		// TODO: persist
+		PlaylistService.UpdatePlaylist(Playlist);
+	}
+
+	void HandleKeyUp(KeyboardEventArgs e)
+	{
+		_timer.Stop();
+		_timer.Start();
 	}
 }

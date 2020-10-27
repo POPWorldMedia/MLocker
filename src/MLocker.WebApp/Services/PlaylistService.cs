@@ -9,9 +9,10 @@ namespace MLocker.WebApp.Services
 {
 	public interface IPlaylistService
 	{
-		Task<PlaylistDefinition> CreateNewPlaylistDefinition(string title);
+		Task<Playlist> CreateNewPlaylistDefinition(string title);
 		Task<List<Playlist>> GetAllPlaylists();
 		Task AddSongToEndOfPlaylist(Playlist playlist, Song song);
+		Task UpdatePlaylist(Playlist playlist);
 	}
 
 	public class PlaylistService : IPlaylistService
@@ -30,10 +31,17 @@ namespace MLocker.WebApp.Services
 			_spinnerService = spinnerService;
 		}
 
-		public async Task<PlaylistDefinition> CreateNewPlaylistDefinition(string title)
+		public async Task<Playlist> CreateNewPlaylistDefinition(string title)
 		{
 			_allPlaylists = null;
-			return await _playlistRepository.CreateNewPlaylistDefinition(title);
+			var playlistDefinition = await _playlistRepository.CreateNewPlaylistDefinition(title);
+			var playlist = new Playlist
+			{
+				PlaylistID = playlistDefinition.PlaylistID,
+				Title = playlistDefinition.Title,
+				Songs = new List<Song>()
+			};
+			return playlist;
 		}
 
 		private async Task UpdatePlaylists()
@@ -69,10 +77,25 @@ namespace MLocker.WebApp.Services
 
 		public async Task AddSongToEndOfPlaylist(Playlist playlist, Song song)
 		{
-			var orderIndex = playlist.Songs.Count * 2;
-			var playlistFile = new PlaylistFile {FileID = song.FileID, PlaylistID = playlist.PlaylistID, SortOrder = orderIndex};
-			await _playlistRepository.CreatePlaylistFile(playlistFile);
 			playlist.Songs.Add(song);
+			var playlistDefinition = ConvertPlaylistToPlaylistDefinition(playlist);
+			await _playlistRepository.UpdatePlaylist(playlistDefinition);
+		}
+
+		public async Task UpdatePlaylist(Playlist playlist)
+		{
+			var playlistDefinition = ConvertPlaylistToPlaylistDefinition(playlist);
+			await _playlistRepository.UpdatePlaylist(playlistDefinition);
+		}
+
+		private PlaylistDefinition ConvertPlaylistToPlaylistDefinition(Playlist playlist)
+		{
+			return new PlaylistDefinition
+			{
+				PlaylistID = playlist.PlaylistID,
+				Title = playlist.Title,
+				SongIDs = playlist.Songs.Select(x => x.FileID).ToList()
+			};
 		}
 	}
 }

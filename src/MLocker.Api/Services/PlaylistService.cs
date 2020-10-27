@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using MLocker.Api.Models;
 using MLocker.Api.Repositories;
 using MLocker.Core.Models;
 
@@ -10,7 +12,7 @@ namespace MLocker.Api.Services
 	{
 		Task<PlaylistDefinition> CreatePlaylistDefinition(PlaylistDefinition playlistDefinition);
 		Task<List<PlaylistDefinition>> GetAllPlaylistDefinitions();
-		Task CreatePlaylistFile(PlaylistFile playlistFile);
+		Task UpdatePlaylist(PlaylistDefinition playlist);
 	}
 
 	public class PlaylistService : IPlaylistService
@@ -24,29 +26,38 @@ namespace MLocker.Api.Services
 
 		public async Task<PlaylistDefinition> CreatePlaylistDefinition(PlaylistDefinition playlistDefinition)
 		{
-			var newPlaylistDefinition = await _playlistRepository.CreatePlaylistDefinition(playlistDefinition.Title);
-			if (playlistDefinition.PlaylistFiles != null && playlistDefinition.PlaylistFiles.Count > 0)
-				foreach (var item in playlistDefinition.PlaylistFiles)
-					await _playlistRepository.CreatePlaylistFile(item);
+			var newEntity = await _playlistRepository.CreatePlaylistEntity(playlistDefinition.Title);
+			var newPlaylistDefinition = new PlaylistDefinition
+			{
+				PlaylistID = newEntity.PlaylistID,
+				Title = newEntity.Title,
+				SongIDs = new List<int>()
+			};
 			return newPlaylistDefinition;
 		}
 
 		public async Task<List<PlaylistDefinition>> GetAllPlaylistDefinitions()
 		{
-			var definitions = await _playlistRepository.GetAllPlaylistDefinitions();
-			var fileIDs = await _playlistRepository.GetAllPlaylistFiles();
-			var fileIDList = fileIDs.ToList();
-			var definitionList = definitions.ToList();
-			foreach (var definition in definitionList)
+			var entities = await _playlistRepository.GetAllPlaylistEntities();
+			var list = entities.Select(x => new PlaylistDefinition
 			{
-				definition.PlaylistFiles = fileIDList.Where(x => x.PlaylistID == definition.PlaylistID).ToList();
-			}
-			return definitionList.ToList();
+				PlaylistID = x.PlaylistID,
+				Title = x.Title,
+				SongIDs = string.IsNullOrEmpty(x.SongsJson) ? new List<int>() : JsonSerializer.Deserialize<List<int>>(x.SongsJson)
+			});
+			return list.ToList();
 		}
 
-		public async Task CreatePlaylistFile(PlaylistFile playlistFile)
+		public async Task UpdatePlaylist(PlaylistDefinition playlistDefinition)
 		{
-			await _playlistRepository.CreatePlaylistFile(playlistFile);
+			var serializedSongIDs = JsonSerializer.Serialize(playlistDefinition.SongIDs);
+			var entity = new PlaylistEntity
+			{
+				PlaylistID = playlistDefinition.PlaylistID,
+				Title = playlistDefinition.Title,
+				SongsJson = serializedSongIDs
+			};
+			await _playlistRepository.UpdatePlaylist(entity);
 		}
 	}
 }

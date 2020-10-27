@@ -48,7 +48,7 @@
 @code {
 	private List<Playlist> _playlists;
 
-	protected override async Task OnInitializedAsync()
+	protected override async Task OnParametersSetAsync()
 	{
 		_playlists = await PlaylistService.GetAllPlaylists();
 	}
@@ -61,6 +61,7 @@
 
 	protected async Task OpenAddToPlaylist()
 	{
+		_playlists = await PlaylistService.GetAllPlaylists();
 		await JsRuntime.InvokeAsync<string>("OpenAddToPlaylistModal");
 	}
 

@@ -18,10 +18,10 @@ namespace MLocker.Core.Services
 			var playlists = new List<Playlist>();
 			foreach (var playlistDefinition in playlistDefinitions)
 			{
-				var playlistFiles = playlistDefinition.PlaylistFiles.OrderBy(x => x.SortOrder);
+				var songIDs = playlistDefinition.SongIDs;
 				var playlistSongs = new List<Song>();
-				foreach (var playlistFile in playlistFiles)
-					playlistSongs.Add(songs.Single(x => x.FileID == playlistFile.FileID));
+				foreach (var songID in songIDs)
+					playlistSongs.Add(songs.Single(x => x.FileID == songID));
 				var playlist = new Playlist
 				{
 					PlaylistID = playlistDefinition.PlaylistID,

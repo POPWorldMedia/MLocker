@@ -31,10 +31,10 @@ namespace MLocker.Api.Controllers
 		}
 
 		[ApiAuth]
-		[HttpPost(ApiPaths.CreatePlaylistFile)]
-		public async Task<IActionResult> CreatePlaylistFile([FromBody] PlaylistFile playlistFile)
+		[HttpPost(ApiPaths.UpdatePlaylist)]
+		public async Task<IActionResult> UpdatePlaylist([FromBody] PlaylistDefinition playlistDefinition)
 		{
-			await _playlistService.CreatePlaylistFile(playlistFile);
+			await _playlistService.UpdatePlaylist(playlistDefinition);
 			return Ok();
 		}
 	}

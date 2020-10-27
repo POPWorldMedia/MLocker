@@ -9,10 +9,12 @@
     <None Remove="Scripts\Script001 - seed with songs.sql" />
     <None Remove="Scripts\Script002 - playlists.sql" />
     <None Remove="Scripts\Script003 - add songs by title index.sql" />
+    <None Remove="Scripts\Script004 - use serialized playlists.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Scripts\Script003 - add songs by title index.sql" />
+    <EmbeddedResource Include="Scripts\Script004 - use serialized playlists.sql" />
     <EmbeddedResource Include="Scripts\Script002 - playlists.sql" />
     <EmbeddedResource Include="Scripts\Script001 - seed with songs.sql" />
   </ItemGroup>

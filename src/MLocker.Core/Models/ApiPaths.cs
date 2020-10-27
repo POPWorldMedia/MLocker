@@ -4,6 +4,7 @@
 	{
 		public const string CreatePlaylist = "/CreatePlaylist";
 		public const string GetAllPlaylistDefinitions = "/GetAllPlaylistDefinitions";
+		public const string UpdatePlaylist = "/UpdatePlaylist";
 		public const string Test = "/Test";
 		public const string GetAllSongs = "/GetAllSongs";
 		/// <summary>
@@ -13,6 +14,5 @@
 		public const string GetImage = "/GetImage";
 		public const string IncrementPlayCount = "/IncrementPlayCount";
 		public const string Upload = "/Upload";
-		public const string CreatePlaylistFile = "/CreatePlaylistFile";
 	}
 }

@@ -6,6 +6,6 @@ namespace MLocker.Core.Models
 	{
 		public int PlaylistID { get; set; }
 		public string Title { get; set; }
-		public List<PlaylistFile> PlaylistFiles { get; set; }
+		public List<int> SongIDs { get; set; }
 	}
 }
