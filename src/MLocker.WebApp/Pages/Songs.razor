@@ -8,7 +8,7 @@
 @inject IPlayerService PlayerService
 @inject IPlaylistTransformer PlaylistTransformer
 
-<p><span id="playShuffleButton" @onclick="PlayShuffle"></span> Shuffle all songs</p>
+<p><span id="playShuffleButton" @onclick="PlayShuffle" title="Shuffle all songs"></span> Shuffle all songs</p>
 
 <SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="false" ShowSearch="true" ShowTrack="false" />
 

@@ -11,8 +11,8 @@
 {
 	<p @onclick="@BackToAllAlbums"><span class="backButton"></span> all @_currentAlbum.AlbumArtist albums</p>
 	<h2>
-		<span id="playAlbumButton" @onclick="PlayAlbum"></span>
-		<span id="playShuffleButton" @onclick="PlayShuffle"></span>
+		<span id="playAlbumButton" @onclick="PlayAlbum" title="Play album"></span>
+		<span id="playShuffleButton" @onclick="PlayShuffle" title="Shuffle album"></span>
 		@_currentAlbum.AlbumArtist - @_currentAlbum.Title
 	</h2>
 	<SongListSummary SongList="_songList"/>

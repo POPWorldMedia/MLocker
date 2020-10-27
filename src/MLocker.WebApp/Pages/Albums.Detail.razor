@@ -7,8 +7,8 @@
 @inject IPlaylistTransformer PlaylistTransformer
 
 <h2>
-	<span id="playAlbumButton" @onclick="PlayAlbum"></span>
-	<span id="playShuffleButton" @onclick="PlayShuffle"></span>
+	<span id="playAlbumButton" @onclick="PlayAlbum" title="Play album"></span>
+	<span id="playShuffleButton" @onclick="PlayShuffle" title="Shuffle album"></span>
 	@Album.AlbumArtist - @Album.Title
 </h2>
 

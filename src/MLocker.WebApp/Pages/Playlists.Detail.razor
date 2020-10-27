@@ -1,14 +1,47 @@
 ﻿@using MLocker.Core.Models
 @using MLocker.Core.Services
 @using MLocker.WebApp.Services
+@using System.Timers
 @inject IPlayerService PlayerService
 @inject IPlaylistTransformer PlaylistTransformer
 
+<div class="my-3 float-right">
+	<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#editModal" title="Edit playlist" id="editButton">
+		<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+			<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+			<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+		</svg>
+	</button>
+</div>
+
 <h2>
-	<span id="playAlbumButton" @onclick="PlayPlaylist"></span>
-	<span id="playShuffleButton" @onclick="PlayShuffle"></span>
+	<span id="playAlbumButton" @onclick="PlayPlaylist" title="Play playlist"></span>
+	<span id="playShuffleButton" @onclick="PlayShuffle" title="Shuffle playlist"></span>
 	@Playlist.Title
 </h2>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editButton" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Edit playlist</h5>
+				<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<input class="form-control my-2" type="text" placeholder="Playlist name required" @bind-value="Playlist.Title" @onkeyup="HandleKeyUp" />
+				<ul class="list-group list-group-flush" ondragover="event.preventDefault();">
+					@foreach (var item in Playlist.Songs)
+					{
+						<li class="list-group-item draggable" draggable="true" @ondrop="@(() => OnDrop(item))" @ondrag="@(() => OnDrag(item))">
+							<span class="gripper"></span>
+							@item.Title, @(item.Artist ?? item.AlbumArtist)
+						</li>
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
 
 <SongListSummary SongList="_songList" />
 
@@ -19,10 +52,14 @@
 	protected Playlist Playlist { get; set; }
 
 	Dictionary<int, Song> _songList;
+	int _currentIndex;
+	private Timer _timer;
 
 	protected override void OnInitialized()
 	{
 		_songList = PlayerService.GetIndexedList(Playlist.Songs);
+		_timer = new Timer(500) { AutoReset = false };
+		_timer.Elapsed += OnTimerFinish;
 	}
 
 	private void PlayPlaylist()
@@ -39,5 +76,27 @@
 			var shuffledSongList = PlayerService.GetIndexedList(shuffled);
 			PlayerService.PlaySong(shuffledSongList[0], shuffledSongList, 0);
 		}
+	}
+
+	void OnDrag(Song item)
+	{
+		_currentIndex = Playlist.Songs.FindIndex(x => x.FileID == item.FileID);
+	}
+
+	private void OnDrop(Song item)
+	{
+		var index = Playlist.Songs.FindIndex(x => x.FileID == item.FileID);
+		var current = Playlist.Songs[_currentIndex];
+		Playlist.Songs.RemoveAt(_currentIndex);
+		Playlist.Songs.Insert(index, current);
+		_currentIndex = index;
+		_songList = PlayerService.GetIndexedList(Playlist.Songs);
+		StateHasChanged();
+		// TODO: persist
+	}
+
+	private void OnTimerFinish(Object source, ElapsedEventArgs e)
+	{
+		// TODO: persist
 	}
 }
