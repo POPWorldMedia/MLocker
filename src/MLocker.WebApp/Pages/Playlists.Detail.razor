@@ -36,6 +36,7 @@
 						<li class="list-group-item draggable" draggable="true" @ondrop="@(() => OnDrop(item))" @ondrag="@(() => OnDrag(item))">
 							<span class="gripper"></span>
 							@item.Title, @(item.Artist ?? item.AlbumArtist)
+							<span class="trashCan" @onclick="(() => Delete(item))"></span>
 						</li>
 					}
 				</ul>
@@ -105,5 +106,13 @@
 	{
 		_timer.Stop();
 		_timer.Start();
+	}
+
+	private void Delete(Song item)
+	{
+		Playlist.Songs.Remove(item);
+		_songList = PlayerService.GetIndexedList(Playlist.Songs);
+		StateHasChanged();
+		PlaylistService.UpdatePlaylist(Playlist);
 	}
 }
