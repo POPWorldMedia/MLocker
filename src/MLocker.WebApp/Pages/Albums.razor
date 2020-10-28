@@ -4,6 +4,7 @@
 @using MLocker.Core.Models
 @inject IMusicService MusicService
 @inject IFileParsingService FileParsingService
+@inject ISongContextStateService SongContextStateService
 
 @if (_isDetail)
 {
@@ -27,6 +28,17 @@ else
 	protected override async Task OnInitializedAsync()
 	{
 		_albumList = await MusicService.GetAlbums();
+		if (SongContextStateService.IsToAlbumLoad)
+		{
+			var song = SongContextStateService.Song;
+			var album = _albumList.SingleOrDefault(x => x.Title == song.Album && x.AlbumArtist == song.AlbumArtist);
+			if (album != null)
+			{
+				_currentAlbum = album;
+				_isDetail = true;
+			}
+			SongContextStateService.IsToAlbumLoad = false;
+		}
 	}
 
 	protected void LoadAlbum(Album album)
