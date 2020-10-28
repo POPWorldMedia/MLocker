@@ -13,6 +13,7 @@ namespace MLocker.Api.Services
 		Task<PlaylistDefinition> CreatePlaylistDefinition(PlaylistDefinition playlistDefinition);
 		Task<List<PlaylistDefinition>> GetAllPlaylistDefinitions();
 		Task UpdatePlaylist(PlaylistDefinition playlist);
+		Task DeletePlaylist(int playlistID);
 	}
 
 	public class PlaylistService : IPlaylistService
@@ -58,6 +59,11 @@ namespace MLocker.Api.Services
 				SongsJson = serializedSongIDs
 			};
 			await _playlistRepository.UpdatePlaylist(entity);
+		}
+
+		public async Task DeletePlaylist(int playlistID)
+		{
+			await _playlistRepository.DeletePlaylist(playlistID);
 		}
 	}
 }

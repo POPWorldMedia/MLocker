@@ -13,6 +13,7 @@ namespace MLocker.WebApp.Services
 		Task<List<Playlist>> GetAllPlaylists();
 		Task AddSongToEndOfPlaylist(Playlist playlist, Song song);
 		Task UpdatePlaylist(Playlist playlist);
+		Task DeletePlaylist(Playlist playlist);
 	}
 
 	public class PlaylistService : IPlaylistService
@@ -96,6 +97,12 @@ namespace MLocker.WebApp.Services
 				Title = playlist.Title,
 				SongIDs = playlist.Songs.Select(x => x.FileID).ToList()
 			};
+		}
+
+		public async Task DeletePlaylist(Playlist playlist)
+		{
+			await _playlistRepository.DeletePlaylist(playlist.PlaylistID);
+			_allPlaylists?.Remove(playlist);
 		}
 	}
 }

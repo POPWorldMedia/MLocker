@@ -12,6 +12,7 @@ namespace MLocker.Api.Repositories
 		Task<PlaylistEntity> CreatePlaylistEntity(string title);
 		Task<IEnumerable<PlaylistEntity>> GetAllPlaylistEntities();
 		Task UpdatePlaylist(PlaylistEntity playlistEntity);
+		Task DeletePlaylist(int playlistID);
 	}
 
 	public class PlaylistRepository : IPlaylistRepository
@@ -43,6 +44,12 @@ namespace MLocker.Api.Repositories
 		{
 			await using var connection = new SqlConnection(_config.ConnectionString);
 			await connection.ExecuteAsync("UPDATE Playlists SET Title = @Title, SongsJson = @SongsJson WHERE PlaylistID = @PlaylistID", playlistEntity);
+		}
+
+		public async Task DeletePlaylist(int playlistID)
+		{
+			await using var connection = new SqlConnection(_config.ConnectionString);
+			await connection.ExecuteAsync("DELETE FROM Playlists WHERE PlaylistID = @PlaylistID", new { PlaylistID = playlistID });
 		}
 	}
 }

@@ -37,5 +37,13 @@ namespace MLocker.Api.Controllers
 			await _playlistService.UpdatePlaylist(playlistDefinition);
 			return Ok();
 		}
+
+		[ApiAuth]
+		[HttpDelete(ApiPaths.DeletePlaylist + "/{id}")]
+		public async Task<IActionResult> DeletePlaylist(int id)
+		{
+			await _playlistService.DeletePlaylist(id);
+			return Ok();
+		}
 	}
 }

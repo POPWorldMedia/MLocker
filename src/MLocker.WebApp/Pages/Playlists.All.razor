@@ -43,6 +43,7 @@
 			<tr>
 				<th>Playlist</th>
 				<th class="text-right">Songs</th>
+				<th class="songLengthPlayCell"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -50,6 +51,7 @@
 				<tr>
 					<td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item.Title</td>
 					<td class="text-right">@item.Songs.Count</td>
+					<td><span class="trashCan" @onclick="(() => Delete(item))"></span></td>
 				</tr>
 			</Virtualize>
 		</tbody>
@@ -117,5 +119,10 @@
 		await PlaylistService.CreateNewPlaylistDefinition(_newPlaylistName);
 		_newPlaylistName = string.Empty;
 		await OnNew.InvokeAsync();
+	}
+
+	private async Task Delete(Playlist playlist)
+	{
+		await PlaylistService.DeletePlaylist(playlist);
 	}
 }

@@ -15,6 +15,7 @@ namespace MLocker.WebApp.Repositories
 		Task<List<PlaylistDefinition>> GetAllPlaylistDefinitions();
 		Task<PlaylistDefinition> CreateNewPlaylistDefinition(string title);
 		Task UpdatePlaylist(PlaylistDefinition playlistDefinition);
+		Task DeletePlaylist(int playlistID);
 	}
 
 	public class PlaylistRepository : IPlaylistRepository
@@ -64,6 +65,14 @@ namespace MLocker.WebApp.Repositories
 			var apiKey = await _config.GetApiKey();
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
 			await _httpClient.PostAsJsonAsync(ApiPaths.UpdatePlaylist, playlistDefinition);
+		}
+
+		public async Task DeletePlaylist(int playlistID)
+		{
+			var apiKey = await _config.GetApiKey();
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
+			string uri = $"{ApiPaths.DeletePlaylist}/{playlistID}";
+			await _httpClient.DeleteAsync(uri);
 		}
 	}
 }
