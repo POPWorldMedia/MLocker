@@ -8,6 +8,7 @@ namespace MLocker.WebApp.Services
 		string ContextMenuID { get; set; }
 		Playlist LastUsedPlaylist { get; set; }
 		bool IsToAlbumLoad { get; set; }
+		bool IsToArtistLoad { get; set; }
 	}
 
 	public class SongContextStateService : ISongContextStateService
@@ -16,6 +17,7 @@ namespace MLocker.WebApp.Services
 		private static string _contextMenuID;
 		private static Playlist _lastUsedPlaylist;
 		private static bool _isToAlbumLoad;
+		private static bool _isToArtistLoad;
 
 		public Song Song
 		{
@@ -39,6 +41,12 @@ namespace MLocker.WebApp.Services
 		{
 			get => _isToAlbumLoad;
 			set => _isToAlbumLoad = value;
+		}
+
+		public bool IsToArtistLoad
+		{
+			get => _isToArtistLoad;
+			set => _isToArtistLoad = value;
 		}
 	}
 }

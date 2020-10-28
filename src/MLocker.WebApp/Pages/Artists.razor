@@ -1,6 +1,7 @@
 ﻿@page "/Artists"
 @using MLocker.WebApp.Services
 @inject IMusicService MusicService
+@inject ISongContextStateService SongContextStateService
 
 @if (_isDetail)
 {
@@ -21,6 +22,17 @@ else
 	protected override async Task OnInitializedAsync()
 	{
 		_artistList = await MusicService.GetAllArtists();
+		if (SongContextStateService.IsToArtistLoad)
+		{
+			var song = SongContextStateService.Song;
+			var artist = _artistList.SingleOrDefault(x => x == song.AlbumArtist);
+			if (artist != null)
+			{
+				_currentArtist = artist;
+				_isDetail = true;
+			}
+			SongContextStateService.IsToArtistLoad = false;
+		}
 	}
 
 	protected void LoadArtistDetail(string artist)
