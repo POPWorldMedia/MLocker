@@ -14,18 +14,18 @@
 
 <SongListSummary SongList="_songList" />
 
-<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="false" ShowTrack="true" />
+<SongList Songs="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="false" ShowTrack="true" />
 
 @code {
 	[CascadingParameter]
 	protected Album Album { get; set; }
 
-	Dictionary<int, Song> _songList;
+	List<Song> _songList;
 
 	protected override async Task OnInitializedAsync()
 	{
 		var songs = await MusicService.GetAlbum(Album);
-		_songList = PlayerService.GetIndexedList(songs);
+		_songList = songs;
 	}
 
 	private void PlayAlbum()
@@ -38,8 +38,7 @@
 		if (_songList.Any())
 		{
 			var shuffled = PlaylistTransformer.Shuffle(_songList);
-			var shuffledSongList = PlayerService.GetIndexedList(shuffled);
-			PlayerService.PlaySong(shuffledSongList[0], shuffledSongList, 0);
+			PlayerService.PlaySong(shuffled[0], shuffled, 0);
 		}
 	}
 }

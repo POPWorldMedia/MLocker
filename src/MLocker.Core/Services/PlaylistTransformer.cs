@@ -8,7 +8,7 @@ namespace MLocker.Core.Services
 	public interface IPlaylistTransformer
 	{
 		List<Playlist> PlaylistDefinitionsToPlaylists(List<PlaylistDefinition> playlistDefinitions, List<Song> songs);
-		List<Song> Shuffle(Dictionary<int, Song> songList);
+		List<Song> Shuffle(List<Song> songList);
 	}
 
 	public class PlaylistTransformer : IPlaylistTransformer
@@ -37,9 +37,9 @@ namespace MLocker.Core.Services
 			return playlists.OrderBy(x => x.Title).ToList();
 		}
 
-		public List<Song> Shuffle(Dictionary<int, Song> songList)
+		public List<Song> Shuffle(List<Song> songList)
 		{
-			var shuffled = songList.Select(x => x.Value).OrderBy(x => Guid.NewGuid()).ToList();
+			var shuffled = songList.OrderBy(x => Guid.NewGuid()).ToList();
 			return shuffled;
 		}
 	}

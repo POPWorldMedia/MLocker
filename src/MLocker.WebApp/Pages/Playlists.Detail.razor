@@ -47,19 +47,19 @@
 
 <SongListSummary SongList="_songList" />
 
-<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="false" ShowTrack="false" />
+<SongList Songs="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="false" ShowTrack="false" />
 
 @code {
 	[CascadingParameter]
 	protected Playlist Playlist { get; set; }
 
-	Dictionary<int, Song> _songList;
+	List<Song> _songList;
 	int _currentIndex;
 	private Timer _timer;
 
 	protected override void OnInitialized()
 	{
-		_songList = PlayerService.GetIndexedList(Playlist.Songs);
+		_songList = Playlist.Songs;
 		_timer = new Timer(500) { AutoReset = false };
 		_timer.Elapsed += OnTimerFinish;
 	}
@@ -75,8 +75,7 @@
 		if (Playlist.Songs.Any())
 		{
 			var shuffled = PlaylistTransformer.Shuffle(_songList);
-			var shuffledSongList = PlayerService.GetIndexedList(shuffled);
-			PlayerService.PlaySong(shuffledSongList[0], shuffledSongList, 0);
+			PlayerService.PlaySong(shuffled[0], shuffled, 0);
 		}
 	}
 
@@ -92,7 +91,7 @@
 		Playlist.Songs.RemoveAt(_currentIndex);
 		Playlist.Songs.Insert(index, current);
 		_currentIndex = index;
-		_songList = PlayerService.GetIndexedList(Playlist.Songs);
+		_songList = Playlist.Songs;
 		StateHasChanged();
 		PlaylistService.UpdatePlaylist(Playlist);
 	}
@@ -111,7 +110,7 @@
 	private void Delete(Song item)
 	{
 		Playlist.Songs.Remove(item);
-		_songList = PlayerService.GetIndexedList(Playlist.Songs);
+		_songList = Playlist.Songs;
 		StateHasChanged();
 		PlaylistService.UpdatePlaylist(Playlist);
 	}

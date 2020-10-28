@@ -11,34 +11,34 @@
 <tr>
 	@if (ShowTrack)
 	{
-		<td class="songLengthPlayCell">@Song.Value.Track</td>
+		<td class="songLengthPlayCell">@Song.Track</td>
 	}
 	<td class="songImageCell">
-		@if (Song.Value.PictureMimeType != null)
+		@if (Song.PictureMimeType != null)
 		{
-			<div @onclick="@(() => PlaySong(Song))" style="background-image: url('@(QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", FileParsingService.ParseImageFileName(Song.Value)))')" class="songImage playButton @_nowPlayingClass"></div>
+			<div @onclick="@(() => PlaySong(Song))" style="background-image: url('@(QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", FileParsingService.ParseImageFileName(Song)))')" class="songImage playButton @_nowPlayingClass"></div>
 		}
 		else
 		{
 			<div @onclick="@(() => PlaySong(Song))" class="coverPlaceholder songImage playButton @_nowPlayingClass"> </div>
 		}
 	</td>
-	<td>@Song.Value.Title</td>
+	<td>@Song.Title</td>
 	<td class="songLengthPlayCell">
 		<div class="text-right" @onclick="OpenContext"><div id="@_contextMenuID" class="contextButton"></div></div>
 	</td>
-	<td class="songSecondaryCell"><span class="text-truncate">@Song.Value.Artist</span></td>
-	<td class="songSecondaryCell"><span class="text-truncate">@Song.Value.Album</span></td>
-	<td class="songLengthPlayCell">@(new TimeSpan(Song.Value.Ticks).ToString(@"m\:ss"))</td>
-	<td class="songLengthPlayCell">@Song.Value.PlayCount</td>
+	<td class="songSecondaryCell"><span class="text-truncate">@Song.Artist</span></td>
+	<td class="songSecondaryCell"><span class="text-truncate">@Song.Album</span></td>
+	<td class="songLengthPlayCell">@(new TimeSpan(Song.Ticks).ToString(@"m\:ss"))</td>
+	<td class="songLengthPlayCell">@Song.PlayCount</td>
 </tr>
 
 @code {
 
 	[Parameter]
-	public KeyValuePair<int, Song> Song { get; set; }
+	public Song Song { get; set; }
 	[Parameter]
-	public Dictionary<int, Song> ListContext { get; set; }
+	public List<Song> ListContext { get; set; }
 	[Parameter]
 	public bool WillClearQueueOnPlay { get; set; }
 	[Parameter]
@@ -58,21 +58,25 @@
 		RecalcNowPlaying();
 	}
 
-	public void PlaySong(KeyValuePair<int, Song> song)
+	public void PlaySong(Song song)
 	{
 		if (WillClearQueueOnPlay)
 		{
 			if (ListContext == null)
-				ListContext = new Dictionary<int, Song> {{0, song.Value}};
-			PlayerService.PlaySong(song.Value, ListContext, song.Key);
+				ListContext = new List<Song> {song};
+			var index = ListContext.IndexOf(song);
+			PlayerService.PlaySong(song, ListContext, index);
 		}
 		else
-			PlayerService.SkipToSong(song.Key);
+		{
+			var index = ListContext.IndexOf(song);
+			PlayerService.SkipToSong(index);
+		}
 	}
 
 	private void RecalcNowPlaying()
 	{
-		_nowPlayingClass = Song.Value.FileID == PlayerService.CurrentSong?.FileID ? "eq" : string.Empty;
+		_nowPlayingClass = Song.FileID == PlayerService.CurrentSong?.FileID ? "eq" : string.Empty;
 		StateHasChanged();
 	}
 
@@ -84,7 +88,7 @@
 	private void OpenContext()
 	{
 		SongContextStateService.ContextMenuID = _contextMenuID;
-		SongContextStateService.Song = Song.Value;
+		SongContextStateService.Song = Song;
 		JsRuntime.InvokeVoidAsync("OpenSongContext", _contextMenuID);
 	}
 }

@@ -42,7 +42,7 @@
 <div id="queueList" class="container collapse" aria-labelledby="queueButton" data-parent="#queueButton">
 	@if (PlayerService.Queue != null && PlayerService.Queue.Count > 0)
 	{
-		<SongList SongDictionary="_songList" WillClearQueueOnPlay="false" WillQueueListOnPlay="false" ShowSearch="false" />
+		<SongList Songs="_songList" WillClearQueueOnPlay="false" WillQueueListOnPlay="false" ShowSearch="false" />
 	}
 	else
 	{
@@ -55,7 +55,7 @@
 
 @code
 {
-	private Dictionary<int, Song> _songList;
+	private List<Song> _songList;
 	string _source;
 	string _imageClass;
 	string _titleClass;

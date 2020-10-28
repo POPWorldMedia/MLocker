@@ -10,15 +10,15 @@
 
 <p><span id="playShuffleButton" @onclick="PlayShuffle" title="Shuffle all songs"></span> Shuffle all songs</p>
 
-<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="false" ShowSearch="true" ShowTrack="false" />
+<SongList Songs="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="false" ShowSearch="true" ShowTrack="false" />
 
 @code {
-	Dictionary<int, Song> _songList;
+	List<Song> _songList;
 
 	protected override async Task OnInitializedAsync()
 	{
 		var songs = await MusicService.GetAllSongs();
-		_songList = PlayerService.GetIndexedList(songs);
+		_songList = songs;
 	}
 
 	private void PlayShuffle()
@@ -26,8 +26,7 @@
 		if (_songList.Any())
 		{
 			var shuffled = PlaylistTransformer.Shuffle(_songList);
-			var shuffledSongList = PlayerService.GetIndexedList(shuffled);
-			PlayerService.PlaySong(shuffledSongList[0], shuffledSongList, 0);
+			PlayerService.PlaySong(shuffled[0], shuffled, 0);
 		}
 	}
 }

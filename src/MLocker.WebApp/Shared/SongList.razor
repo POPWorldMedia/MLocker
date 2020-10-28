@@ -31,8 +31,8 @@
 			</tr>
 		</thead>
 		<tbody>
-			<Virtualize Context="song" Items="@_songList" TItem="KeyValuePair<int, Song>" OverscanCount="20">
-				<ListRow Song="song" ListContext="@_listContextDictionary" WillClearQueueOnPlay="@WillClearQueueOnPlay" ShowTrack="@ShowTrack"/>
+			<Virtualize Context="song" Items="@_songList" TItem="Song" OverscanCount="20">
+				<ListRow Song="song" ListContext="@_listContext" WillClearQueueOnPlay="@WillClearQueueOnPlay" ShowTrack="@ShowTrack"/>
 			</Virtualize>
 		</tbody>
 	</table>
@@ -40,7 +40,7 @@
 
 @code {
 	[Parameter]
-	public Dictionary<int, Song> SongDictionary { get; set; }
+	public List<Song> Songs { get; set; }
 	[Parameter]
 	public bool WillClearQueueOnPlay { get; set; }
 	[Parameter]
@@ -50,14 +50,14 @@
 	[Parameter]
 	public bool ShowTrack { get; set; }
 
-	private Dictionary<int, Song> _songList;
+	private List<Song> _songList;
 	private string _searchTerm = string.Empty;
-	private Dictionary<int, Song> _listContextDictionary;
+	private List<Song> _listContext;
 	private Timer _timer;
 
 	protected override void OnInitialized()
 	{
-		_listContextDictionary = WillQueueListOnPlay ? SongDictionary : null;
+		_listContext = WillQueueListOnPlay ? Songs : null;
 		_timer = new Timer(350) {AutoReset = false};
 		_timer.Elapsed += OnTimerFinish;
 	}
@@ -82,15 +82,14 @@
 	{
 		var term = _searchTerm.Trim();
 		if (string.IsNullOrEmpty(_searchTerm))
-			_songList = SongDictionary;
+			_songList = Songs;
 		else
 		{
-			var filteredList = SongDictionary.Select(x => x.Value)
+			var filteredList = Songs
 				.Where(x => x.Title != null && x.Title.Contains(term, StringComparison.InvariantCultureIgnoreCase)
 							|| x.Artist != null && x.Artist.Contains(term, StringComparison.InvariantCultureIgnoreCase)
 							|| x.Album != null && x.Album.Contains(term, StringComparison.InvariantCultureIgnoreCase)).ToList();
-			var dictionary = PlayerService.GetIndexedList(filteredList);
-			_songList = dictionary;
+			_songList = filteredList;
 		}
 		StateHasChanged();
 	}

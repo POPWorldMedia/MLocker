@@ -59,7 +59,7 @@ else
 
 @if (_songList != null && _songList.Count > 0)
 {
-	<SongList SongDictionary="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="_showSearch" ShowTrack="_isAlbumMode" />
+	<SongList Songs="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="_showSearch" ShowTrack="_isAlbumMode" />
 }
 
 @code {
@@ -68,7 +68,7 @@ else
 	[Parameter]
 	public EventCallback OnClick { get; set; }
 
-	Dictionary<int, Song> _songList;
+	List<Song> _songList;
 	List<Album> _albums;
 	List<Song> _songs;
 	bool _showSearch = true;
@@ -80,14 +80,14 @@ else
 		var (albums, songs) = await MusicService.GetArtistDetail(CurrentArtist);
 		_albums = albums;
 		_songs = songs;
-		_songList = PlayerService.GetIndexedList(_songs);
+		_songList = _songs;
 	}
 
 	public async Task LoadAlbum(Album album)
 	{
 		_currentAlbum = album;
 		var songs = await MusicService.GetAlbum(album);
-		_songList = PlayerService.GetIndexedList(songs);
+		_songList = songs;
 		_showSearch = false;
 		_isAlbumMode = true;
 		StateHasChanged();
@@ -96,7 +96,7 @@ else
 	public void BackToAllAlbums()
 	{
 		_showSearch = true;
-		_songList = PlayerService.GetIndexedList(_songs);
+		_songList = _songs;
 		_isAlbumMode = false;
 		StateHasChanged();
 	}
@@ -112,8 +112,7 @@ else
 		if (_songList.Any())
 		{
 			var shuffled = PlaylistTransformer.Shuffle(_songList);
-			var shuffledSongList = PlayerService.GetIndexedList(shuffled);
-			PlayerService.PlaySong(shuffledSongList[0], shuffledSongList, 0);
+			PlayerService.PlaySong(shuffled[0], shuffled, 0);
 		}
 	}
 }

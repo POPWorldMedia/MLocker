@@ -8,21 +8,20 @@ namespace MLocker.WebApp.Services
     public interface IPlayerService
     {
         Song CurrentSong { get; }
-        Dictionary<int, Song> Queue { get; }
+        List<Song> Queue { get; }
         int QueueIndex { get; }
-        void PlaySong(Song song, Dictionary<int, Song> dictionary, int index);
+        void PlaySong(Song song, List<Song> list, int index);
         void PlayNextSong();
         void PlayPreviousSong();
         void EnqueueSong(Song song);
         event Action OnChange;
-        Dictionary<int, Song> GetIndexedList(List<Song> songs);
         void SkipToSong(int index);
     }
 
     public class PlayerService : IPlayerService
     {
         private readonly IJSRuntime _jsRuntime;
-        private Dictionary<int, Song> _queue = new Dictionary<int, Song>();
+        private List<Song> _queue = new List<Song>();
         private int _queueIndex;
         private Song _currentSong;
 
@@ -33,7 +32,7 @@ namespace MLocker.WebApp.Services
 
         public Song CurrentSong => _currentSong;
 
-        public Dictionary<int, Song> Queue => _queue;
+        public List<Song> Queue => _queue;
 
         public int QueueIndex => _queueIndex;
 
@@ -45,10 +44,10 @@ namespace MLocker.WebApp.Services
 	        _jsRuntime.InvokeAsync<string>("SetTitle", title);
         }
 
-        public void PlaySong(Song song, Dictionary<int, Song> dictionary, int index)
+        public void PlaySong(Song song, List<Song> list, int index)
         {
             _currentSong = song;
-            _queue = dictionary;
+            _queue = list;
             _queueIndex = index;
             CallPlayerAndUpdateTitle();
         }
@@ -65,7 +64,7 @@ namespace MLocker.WebApp.Services
 	        _queueIndex++;
 	        if (_queue == null || _queueIndex >= _queue.Count)
 	        {
-		        _queue = new Dictionary<int, Song>();
+		        _queue = new List<Song>();
 		        _queueIndex = 0;
 		        _currentSong = null;
 		        Notify();
@@ -92,29 +91,17 @@ namespace MLocker.WebApp.Services
         {
 	        if (_queue == null || _queue.Count == 0)
 	        {
-		        var dictionary = new Dictionary<int, Song> {{0, song}};
+		        var dictionary = new List<Song> {song};
 		        PlaySong(song, dictionary, 0);
 	        }
 	        else
 	        {
-		        _queue.Add(_queue.Count, song);
+		        _queue.Add(song);
 				Notify();
 	        }
         }
 
         public event Action OnChange;
         private void Notify() => OnChange?.Invoke();
-
-        public Dictionary<int, Song> GetIndexedList(List<Song> songs)
-        {
-	        var x = 0;
-	        var dictionary = new Dictionary<int, Song>();
-	        foreach (var item in songs)
-	        {
-		        dictionary.Add(x, item);
-		        x++;
-	        }
-	        return dictionary;
-        }
     }
 }
