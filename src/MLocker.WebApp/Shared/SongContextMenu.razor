@@ -13,6 +13,7 @@
 		}
 		<li><a class="dropdown-item" @onclick="OpenAddToPlaylist">Add to playlist</a></li>
 		<li><a class="dropdown-item" @onclick="AddToQueue">Add to queue</a></li>
+		<li><a class="dropdown-item" @onclick="PlayNext">Play next</a></li>
 	</ul>
 </div>
 
@@ -57,6 +58,12 @@
 	{
 		var song = SongContextStateService.Song;
 		PlayerService.EnqueueSong(song);
+	}
+
+	protected void PlayNext()
+	{
+		var song = SongContextStateService.Song;
+		PlayerService.PlaySongNext(song);
 	}
 
 	protected async Task OpenAddToPlaylist()

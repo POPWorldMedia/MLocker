@@ -16,6 +16,7 @@ namespace MLocker.WebApp.Services
         void EnqueueSong(Song song);
         event Action OnChange;
         void SkipToSong(int index);
+        void PlaySongNext(Song song);
     }
 
     public class PlayerService : IPlayerService
@@ -98,6 +99,20 @@ namespace MLocker.WebApp.Services
 	        {
 		        _queue.Add(song);
 				Notify();
+	        }
+        }
+
+        public void PlaySongNext(Song song)
+        {
+	        if (_queue == null || _queue.Count == 0)
+	        {
+		        var dictionary = new List<Song> { song };
+		        PlaySong(song, dictionary, 0);
+	        }
+	        else
+	        {
+		        _queue.Insert(1, song);
+		        Notify();
 	        }
         }
 
