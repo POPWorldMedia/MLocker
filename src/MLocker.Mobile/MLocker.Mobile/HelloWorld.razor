@@ -1,0 +1,34 @@
+@using MLocker.Mobile.Repositories
+@using MLocker.Core.Models
+@inject ISongRepository SongRepository
+
+<Microsoft.MobileBlazorBindings.Elements.ContentView>
+    <Microsoft.MobileBlazorBindings.Elements.StackLayout Margin="new Thickness(20)">
+
+        <Microsoft.MobileBlazorBindings.Elements.Label Text="Hello, World!" FontSize="40" />
+
+        <Microsoft.MobileBlazorBindings.Elements.ScrollView>
+	        <Microsoft.MobileBlazorBindings.Elements.StackLayout>
+				@if (_songList != null)
+				{
+					foreach (var song in _songList)
+					{
+						<Microsoft.MobileBlazorBindings.Elements.Label Text="@song.Title"/>
+					}
+				}
+	        </Microsoft.MobileBlazorBindings.Elements.StackLayout>
+        </Microsoft.MobileBlazorBindings.Elements.ScrollView>
+
+    </Microsoft.MobileBlazorBindings.Elements.StackLayout>
+</Microsoft.MobileBlazorBindings.Elements.ContentView>
+
+@code
+{
+	private List<Song> _songList;
+
+	protected override async Task OnInitializedAsync()
+	{
+		_songList = await SongRepository.GetAllSongs();
+		StateHasChanged();
+	}
+}
