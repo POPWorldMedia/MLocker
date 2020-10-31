@@ -1,9 +1,14 @@
-﻿window.StartPlayer = () => {
+﻿var CACHE_NAME = 'music-image-cache';
+
+window.StartPlayer = (wholepath) => {
 	var player = document.getElementById('player');
 	player.oncanplaythrough = (e) => { player.play() };
 	player.onended = (e) => {
 		DotNet.invokeMethodAsync('MLocker.WebApp', 'SongEnded');
 	};
+	//caches.open(CACHE_NAME).then((cache) => {
+	//	cache.add(wholepath);
+	//});
 }
 
 window.OpenApiModal = () => {
@@ -57,3 +62,16 @@ window.SetTitle = (song, imageUrl) => {
 		navigator.mediaSession.setActionHandler('previoustrack', () => DotNet.invokeMethodAsync('MLocker.WebApp', 'SongPrevious'));
 	}
 }
+
+window.onload = () => {
+	if ('serviceWorker' in navigator) {
+		window.addEventListener('load', function () {
+			navigator.serviceWorker.register('/sw.js').then(function (registration) {
+				registration.update();
+				console.log('ServiceWorker registration successful with scope: ', registration.scope);
+			}, function (err) {
+				console.log('ServiceWorker registration failed: ', err);
+			});
+		});
+	}
+};

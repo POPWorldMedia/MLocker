@@ -34,6 +34,19 @@ namespace MLocker.Api.Controllers
             return File(stream, mediaType, true);
         }
 
+        [HttpGet(ApiPaths.GetWholeSong + "/{id}")]
+        public async Task<IActionResult> GetWholeSong(int id)
+        {
+	        var (stream, song) = await _songService.GetSong(id);
+	        if (stream == null || song == null)
+		        return StatusCode(404);
+	        var mediaType = song.FileName.EndsWith("mp3") ? "audio/mpeg" : "audio/mp4";
+	        var length = (int)stream.Length;
+	        var bytes = new byte[length];
+	        await stream.ReadAsync(bytes, 0, length);
+            return File(bytes, mediaType);
+        }
+
         [HttpGet(ApiPaths.GetImage)]
         public async Task<IActionResult> GetImage(string fileName)
         {

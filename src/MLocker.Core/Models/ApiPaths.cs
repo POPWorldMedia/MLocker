@@ -15,6 +15,10 @@
 		/// Append with "/{id}"
 		/// </summary>
 		public const string GetSong = "/GetSong";
+		/// <summary>
+		/// Append with "/{id}"
+		/// </summary>
+		public const string GetWholeSong = "/GetWholeSong";
 		public const string GetImage = "/GetImage";
 		public const string IncrementPlayCount = "/IncrementPlayCount";
 		public const string Upload = "/Upload";

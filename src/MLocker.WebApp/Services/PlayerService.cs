@@ -44,7 +44,7 @@ namespace MLocker.WebApp.Services
         private void CallPlayerAndUpdateTitle()
         {
 	        Notify();
-	        _jsRuntime.InvokeAsync<string>("StartPlayer");
+	        _jsRuntime.InvokeAsync<string>("StartPlayer", $"{ApiPaths.GetWholeSong}/{_currentSong.FileID}");
 	        var imageUrl = QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", _fileParsingService.ParseImageFileName(_currentSong));
             _jsRuntime.InvokeAsync<string>("SetTitle", _currentSong, imageUrl);
         }
