@@ -250,6 +250,26 @@ hr {
 	display: block !important;
 }
 
+#bottomTabs a {
+	text-align: center;
+	color: rgba(255,255,255,.55);
+	cursor: pointer;
+}
+#bottomTabs a.active {
+	color: #fff;
+}
+#bottomTabs svg {
+	height: 1.5em;
+	width: 1.5em;
+}
+#bottomTabs span {
+	font-size: .6em;
+}
+#bottomTabs .col-2, #bottomTabs .nav-link {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
 
 
 #blazor-error-ui {
