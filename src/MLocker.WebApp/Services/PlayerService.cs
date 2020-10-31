@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using MLocker.Core.Models;
+using MLocker.Core.Services;
 
 namespace MLocker.WebApp.Services
 {
@@ -22,13 +24,15 @@ namespace MLocker.WebApp.Services
     public class PlayerService : IPlayerService
     {
         private readonly IJSRuntime _jsRuntime;
+        private readonly IFileParsingService _fileParsingService;
         private List<Song> _queue = new List<Song>();
         private int _queueIndex;
         private Song _currentSong;
 
-        public PlayerService(IJSRuntime jsRuntime)
+        public PlayerService(IJSRuntime jsRuntime, IFileParsingService fileParsingService)
         {
-            _jsRuntime = jsRuntime;
+	        _jsRuntime = jsRuntime;
+	        _fileParsingService = fileParsingService;
         }
 
         public Song CurrentSong => _currentSong;
@@ -41,8 +45,8 @@ namespace MLocker.WebApp.Services
         {
 	        Notify();
 	        _jsRuntime.InvokeAsync<string>("StartPlayer");
-	        var title = $"{_currentSong.Title ?? _currentSong.FileName} - {_currentSong.Artist ?? _currentSong.AlbumArtist} - MLocker";
-	        _jsRuntime.InvokeAsync<string>("SetTitle", title);
+	        var imageUrl = QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", _fileParsingService.ParseImageFileName(_currentSong));
+            _jsRuntime.InvokeAsync<string>("SetTitle", _currentSong, imageUrl);
         }
 
         public void PlaySong(Song song, List<Song> list, int index)

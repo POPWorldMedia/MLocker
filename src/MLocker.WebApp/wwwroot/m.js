@@ -39,6 +39,21 @@ window.OpenAddToPlaylistModal = () => {
 	myModal.show();
 }
 
-window.SetTitle = (title) => {
-	document.title = title;
+window.SetTitle = (song, imageUrl) => {
+	document.title = song.title + ' - ' + song.artist + ' - MLocker';
+	var player = document.getElementById('player');
+	if ('mediaSession' in navigator) {
+		navigator.mediaSession.metadata = new MediaMetadata({
+			title: song.title,
+			artist: song.artist,
+			album: song.album,
+			artwork: [
+				{ src: imageUrl, sizes: '300x300', type: song.mediaMimeType }
+			]
+		});
+		navigator.mediaSession.setActionHandler('play', () => player.play());
+		navigator.mediaSession.setActionHandler('pause', () => player.pause());
+		navigator.mediaSession.setActionHandler('nexttrack', () => DotNet.invokeMethodAsync('MLocker.WebApp', 'SongNext'));
+		navigator.mediaSession.setActionHandler('previoustrack', () => DotNet.invokeMethodAsync('MLocker.WebApp', 'SongPrevious'));
+	}
 }

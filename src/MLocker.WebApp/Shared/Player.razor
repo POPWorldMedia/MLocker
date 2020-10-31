@@ -76,18 +76,20 @@
 				MusicService.IncrementPlayCount(PlayerService.CurrentSong.FileID);
 			}
 			_previousClass = PlayerService.CurrentSong == null
-						 || PlayerService.Queue.Count <= 1
-						 || PlayerService.QueueIndex == 0
+			                 || PlayerService.Queue.Count <= 1
+			                 || PlayerService.QueueIndex == 0
 				? "previousButtonOff" : "previousButton";
 			_nextClass = PlayerService.CurrentSong == null
-						 || PlayerService.Queue.Count <= 1
-						 || PlayerService.QueueIndex >= PlayerService.Queue.Count - 1
+			             || PlayerService.Queue.Count <= 1
+			             || PlayerService.QueueIndex >= PlayerService.Queue.Count - 1
 				? "nextButtonOff" : "nextButton";
 			_songList = PlayerService.Queue;
 			InvokeAsync(StateHasChanged);
 		};
 
-		action = UpdateMessage;
+		_updateAction = UpdateMessage;
+		_nextSongAction = PlayNext;
+		_previousSongAction = PlayPrevious;
 	}
 
 	private void ShrinkToggle()
@@ -115,7 +117,9 @@
 		PlayerService.PlayPreviousSong();
 	}
 
-	private static Action action;
+	private static Action _updateAction;
+	private static Action _nextSongAction;
+	private static Action _previousSongAction;
 
 	private void UpdateMessage()
 	{
@@ -125,6 +129,18 @@
 	[JSInvokable]
 	public static void SongEnded()
 	{
-		action.Invoke();
+		_updateAction.Invoke();
+	}
+
+	[JSInvokable]
+	public static void SongNext()
+	{
+		_nextSongAction.Invoke();
+	}
+
+	[JSInvokable]
+	public static void SongPrevious()
+	{
+		_previousSongAction.Invoke();
 	}
 }
