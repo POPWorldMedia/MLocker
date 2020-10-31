@@ -14,28 +14,24 @@
 		</div>
 	}
 
-	<table class="table table-hover">
-		<thead>
-			<tr>
-				@if (ShowTrack)
-				{
-					<th>&#35;</th>
-				}
-				<th></th>
-				<th>Song</th>
-				<th></th>
-				<th>Artist</th>
-				<th>Album</th>
-				<th>Length</th>
-				<th>Plays</th>
-			</tr>
-		</thead>
-		<tbody>
-			<Virtualize Context="song" Items="@_songList" TItem="Song" OverscanCount="20">
-				<ListRow Song="song" ListContext="@_listContext" WillClearQueueOnPlay="@WillClearQueueOnPlay" ShowTrack="@ShowTrack"/>
-			</Virtualize>
-		</tbody>
-	</table>
+	<div class="songList">
+		<div class="row font-weight-bold header py-2">
+			@if (ShowTrack)
+			{
+				<div class="col songLengthPlayCell">&#35;</div>
+			}
+			<div class="col songImageCell"></div>
+			<div class="col">Song</div>
+			<div class="col songLengthPlayCell"></div>
+			<div class="col songSecondaryCell d-none d-md-table-cell col-md-2">Artist</div>
+			<div class="col songSecondaryCell d-none d-md-table-cell col-md-2">Album</div>
+			<div class="col songLengthPlayCell d-none d-md-table-cell col-md-2">Length</div>
+			<div class="col songLengthPlayCell d-none d-md-table-cell col-md-2">Plays</div>
+		</div>
+		<Virtualize Context="song" Items="@_songList" TItem="Song" OverscanCount="20">
+			<ListRow Song="song" ListContext="@_listContext" WillClearQueueOnPlay="@WillClearQueueOnPlay" ShowTrack="@ShowTrack"/>
+		</Virtualize>
+	</div>
 }
 
 @code {

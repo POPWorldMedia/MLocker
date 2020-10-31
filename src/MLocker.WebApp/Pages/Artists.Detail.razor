@@ -28,7 +28,6 @@ else
 			<tr>
 				<th></th>
 				<th>Album</th>
-				<th>Artist</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -45,7 +44,6 @@ else
 						}
 					</td>
 					<td @onclick="@(() => LoadAlbum(item))" class="clickyText">@item.Title</td>
-					<td class="songSecondaryCell">@item.AlbumArtist</td>
 				</tr>
 			</Virtualize>
 		</tbody>

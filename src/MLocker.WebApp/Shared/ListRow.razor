@@ -8,12 +8,12 @@
 @inject ISongContextStateService SongContextStateService
 @implements IDisposable
 
-<tr>
+<div class="row py-2">
 	@if (ShowTrack)
 	{
-		<td class="songLengthPlayCell">@Song.Track</td>
+		<div class="songLengthPlayCell">@Song.Track</div>
 	}
-	<td class="songImageCell">
+	<div class="col songImageCell">
 		@if (Song.PictureMimeType != null)
 		{
 			<div @onclick="@(() => PlaySong(Song))" style="background-image: url('@(QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", FileParsingService.ParseImageFileName(Song)))')" class="songImage playButton @_nowPlayingClass"></div>
@@ -22,16 +22,21 @@
 		{
 			<div @onclick="@(() => PlaySong(Song))" class="coverPlaceholder songImage playButton @_nowPlayingClass"> </div>
 		}
-	</td>
-	<td>@Song.Title</td>
-	<td class="songLengthPlayCell">
+	</div>
+	<div class="col align-self-center">
+		<div class="songTitle text-truncate">@Song.Title</div>
+		<div class="songSubTitle text-truncate d-sm-block d-md-none">
+			@Song.Artist ● @Song.Album ● @(new TimeSpan(Song.Ticks).ToString(@"m\:ss"))
+		</div>
+	</div>
+	<div class="col align-self-center songLengthPlayCell">
 		<div class="text-right" @onclick="OpenContext"><div id="@_contextMenuID" class="contextButton"></div></div>
-	</td>
-	<td class="songSecondaryCell"><span class="text-truncate">@Song.Artist</span></td>
-	<td class="songSecondaryCell"><span class="text-truncate">@Song.Album</span></td>
-	<td class="songLengthPlayCell">@(new TimeSpan(Song.Ticks).ToString(@"m\:ss"))</td>
-	<td class="songLengthPlayCell">@Song.PlayCount</td>
-</tr>
+	</div>
+	<div class="col align-self-center songSecondaryCell d-none d-md-table-cell col-md-2"><span class="text-truncate">@Song.Artist</span></div>
+	<div class="col align-self-center songSecondaryCell d-none d-md-table-cell col-md-2"><span class="text-truncate">@Song.Album</span></div>
+	<div class="col align-self-center songLengthPlayCell d-none d-md-table-cell col-md-2">@(new TimeSpan(Song.Ticks).ToString(@"m\:ss"))</div>
+	<div class="col align-self-center songLengthPlayCell d-none d-md-table-cell col-md-2">@Song.PlayCount</div>
+</div>
 
 @code {
 

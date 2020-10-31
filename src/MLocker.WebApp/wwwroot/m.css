@@ -24,20 +24,30 @@ hr {
 	background-repeat: no-repeat;
 }
 
+.songList .row {
+	border-bottom: 1px #dee2e6 solid;
+}
+.songList .row:hover {
+	background-color: rgba(0,0,0,0.075);
+}
+.songList .header:hover {
+	background: none !important;
+}
+
 .songImageCell {
-	width: 60px;
+	flex: 0 0 60px;
 }
 
 .songSecondaryCell {
-	width: 250px;
+	flex: 0 0 250px;
 }
 .songSecondaryCell span {
-	width: 250px;
+	flex: 0 0 250px;
 	display: inline-block;
 }
 
 .songLengthPlayCell {
-	width: 80px;
+	flex: 0 0 80px;
 }
 
 .clickyText,
@@ -76,7 +86,7 @@ hr {
 }
 
 #queueList {
-	background-color: #fdfdfd;
+	background-color: #dfdfdf;
 }
 
 .playerButton {
@@ -239,7 +249,7 @@ hr {
 
 #songContextMenu {
 	display: none;
-	z-index: 100;
+	z-index: 10000;
 }
 
 #songContextMenu[data-show] {
@@ -268,6 +278,16 @@ hr {
 #bottomTabs .col-2, #bottomTabs .nav-link {
 	padding-left: 0 !important;
 	padding-right: 0 !important;
+}
+
+.songTitle {
+	font-size: 1em;
+	font-weight: bold;
+	display: block;
+}
+.songSubTitle {
+	font-size: .7em;
+	display: block;
 }
 
 
