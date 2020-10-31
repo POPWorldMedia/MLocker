@@ -24,7 +24,15 @@ window.OpenSongContext = (contextMenuId) => {
 	var menu = document.querySelector('#songContextMenu');
 	var button = document.querySelector('#' + contextMenuId);
 	var instance = Popper.createPopper(button, menu, {
-		placement: 'right-start'
+		placement: 'right-start',
+		modifiers: [
+			{
+				name: 'flip',
+				options: {
+					fallbackPlacements: ['left-start', 'top']
+				}
+			}
+		]
 	});
 	menu.setAttribute('data-show', '');
 	var hideEvents = ['mouseleave', 'blur', 'click'];

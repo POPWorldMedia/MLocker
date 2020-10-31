@@ -8,7 +8,7 @@
 @inject ISongContextStateService SongContextStateService
 @implements IDisposable
 
-<div class="row py-2">
+<div class="row py-2 flex-nowrap">
 	@if (ShowTrack)
 	{
 		<div class="songLengthPlayCell">@Song.Track</div>
@@ -23,19 +23,19 @@
 			<div @onclick="@(() => PlaySong(Song))" class="coverPlaceholder songImage playButton @_nowPlayingClass"> </div>
 		}
 	</div>
-	<div class="col align-self-center">
+	<div class="col align-self-center wrapTruncate">
 		<div class="songTitle text-truncate">@Song.Title</div>
-		<div class="songSubTitle text-truncate d-sm-block d-md-none">
+		<div class="songSubTitle text-truncate d-md-block d-md-none">
 			@Song.Artist ● @Song.Album ● @(new TimeSpan(Song.Ticks).ToString(@"m\:ss"))
 		</div>
 	</div>
 	<div class="col align-self-center songLengthPlayCell">
 		<div class="text-right" @onclick="OpenContext"><div id="@_contextMenuID" class="contextButton"></div></div>
 	</div>
-	<div class="col align-self-center songSecondaryCell d-none d-md-table-cell col-md-2"><span class="text-truncate">@Song.Artist</span></div>
-	<div class="col align-self-center songSecondaryCell d-none d-md-table-cell col-md-2"><span class="text-truncate">@Song.Album</span></div>
-	<div class="col align-self-center songLengthPlayCell d-none d-md-table-cell col-md-2">@(new TimeSpan(Song.Ticks).ToString(@"m\:ss"))</div>
-	<div class="col align-self-center songLengthPlayCell d-none d-md-table-cell col-md-2">@Song.PlayCount</div>
+	<div class="col align-self-center songSecondaryCell d-none d-lg-block col-md-2 wrapTruncate"><span class="text-truncate d-block">@Song.Artist</span></div>
+	<div class="col align-self-center songSecondaryCell d-none d-lg-block col-md-2 wrapTruncate"><span class="text-truncate d-block">@Song.Album</span></div>
+	<div class="col align-self-center songLengthPlayCell d-none d-lg-block col-md-2">@(new TimeSpan(Song.Ticks).ToString(@"m\:ss"))</div>
+	<div class="col align-self-center songLengthPlayCell d-none d-lg-block col-md-2">@Song.PlayCount</div>
 </div>
 
 @code {

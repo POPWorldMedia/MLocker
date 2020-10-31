@@ -15,7 +15,7 @@
 	}
 
 	<div class="songList">
-		<div class="row font-weight-bold header py-2">
+		<div class="row font-weight-bold header py-2 flex-nowrap">
 			@if (ShowTrack)
 			{
 				<div class="col songLengthPlayCell">&#35;</div>
@@ -23,10 +23,10 @@
 			<div class="col songImageCell"></div>
 			<div class="col">Song</div>
 			<div class="col songLengthPlayCell"></div>
-			<div class="col songSecondaryCell d-none d-md-table-cell col-md-2">Artist</div>
-			<div class="col songSecondaryCell d-none d-md-table-cell col-md-2">Album</div>
-			<div class="col songLengthPlayCell d-none d-md-table-cell col-md-2">Length</div>
-			<div class="col songLengthPlayCell d-none d-md-table-cell col-md-2">Plays</div>
+			<div class="col songSecondaryCell d-none d-lg-block col-md-2">Artist</div>
+			<div class="col songSecondaryCell d-none d-lg-block col-md-2">Album</div>
+			<div class="col songLengthPlayCell d-none d-lg-block col-md-2">Length</div>
+			<div class="col songLengthPlayCell d-none d-lg-block col-md-2">Plays</div>
 		</div>
 		<Virtualize Context="song" Items="@_songList" TItem="Song" OverscanCount="20">
 			<ListRow Song="song" ListContext="@_listContext" WillClearQueueOnPlay="@WillClearQueueOnPlay" ShowTrack="@ShowTrack"/>

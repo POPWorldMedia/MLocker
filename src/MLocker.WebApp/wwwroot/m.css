@@ -50,6 +50,9 @@ hr {
 	flex: 0 0 80px;
 }
 
+.wrapTruncate {
+	min-width: 0;
+}
 .clickyText,
 .addToPlaylistItem,
 #songContextMenu .dropdown-item {
