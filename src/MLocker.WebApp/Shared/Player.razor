@@ -7,7 +7,7 @@
 @inject IPlayerService PlayerService
 @inject IMusicService MusicService
 
-<div class="container" id="playerInfo">
+<div id="playerInfo">
     @if (PlayerService.CurrentSong != null)
     {
         if (PlayerService.CurrentSong.PictureMimeType != null)

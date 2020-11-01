@@ -1,11 +1,11 @@
 ﻿@inherits LayoutComponentBase
 <SongContextMenu />
-<div id="bodyContent" class="container mt-2">
-	<div style="overflow-y: auto;">
+<div id="bodyContent" class="flex-column justify-content-center flex-grow-1 overflow-auto pt-2">
+	<div class="container">
 		@Body
 	</div>
 </div>
-<div id="fixedParts" class="fixed-bottom">
+<div id="fixedParts" class="flex-column justify-content-center">
 	<Player />
 	<MainNav />
 </div>

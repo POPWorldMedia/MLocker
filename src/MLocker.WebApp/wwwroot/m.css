@@ -1,5 +1,9 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto&display=swap');
 
+html, body {
+	height: 100%;
+}
+
 body {
 	font-family: 'Open Sans', sans-serif;
 }
@@ -65,17 +69,10 @@ hr {
 	cursor: pointer;
 }
 
-#bodyContent {
-	margin-bottom: 200px;
-}
-#fixedParts {
-	background-color: white;
-	z-index: 100;
-}
-
 #playerInfo {
 	min-height: 50px;
 	border-top: black solid 4px;
+	padding: 10px;
 }
 
 .nowPlayingImage {
