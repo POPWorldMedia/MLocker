@@ -35,7 +35,13 @@ hr {
 }
 
 .songImageCell {
-	flex: 0 0 60px;
+	flex: 0 0 40px;
+	padding-left: 0;
+	margin-left: 10px;
+}
+
+.smallCell {
+	flex: 0 0 40px;
 }
 
 .songSecondaryCell {
@@ -55,7 +61,7 @@ hr {
 }
 .clickyText,
 .addToPlaylistItem,
-#songContextMenu .dropdown-item {
+#songContextMenu .list-group-item {
 	cursor: pointer;
 }
 

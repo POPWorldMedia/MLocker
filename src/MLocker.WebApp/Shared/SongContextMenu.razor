@@ -7,16 +7,16 @@
 @inject NavigationManager NavigationManager
 
 <div id="songContextMenu">
-	<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+	<ul class="list-group">
 		@if (SongContextStateService.LastUsedPlaylist != null)
 		{
-			<li><a class="dropdown-item" @onclick="(() => SelectAddToPlaylist(SongContextStateService.LastUsedPlaylist))">Add to: @SongContextStateService.LastUsedPlaylist.Title</a></li>
+			<a class="list-group-item list-group-item-action" @onclick="(() => SelectAddToPlaylist(SongContextStateService.LastUsedPlaylist))">Add to: @SongContextStateService.LastUsedPlaylist.Title</a>
 		}
-		<li><a class="dropdown-item" @onclick="OpenAddToPlaylist">Add to playlist</a></li>
-		<li><a class="dropdown-item" @onclick="AddToQueue">Add to queue</a></li>
-		<li><a class="dropdown-item" @onclick="PlayNext">Play next</a></li>
-		<li><a class="dropdown-item" @onclick="GoToAlbum">Go to album</a></li>
-		<li><a class="dropdown-item" @onclick="GoToArtist">Go to artist</a></li>
+		<a class="list-group-item list-group-item-action" @onclick="OpenAddToPlaylist">Add to playlist</a>
+		<a class="list-group-item list-group-item-action" @onclick="AddToQueue">Add to queue</a>
+		<a class="list-group-item list-group-item-action" @onclick="PlayNext">Play next</a>
+		<a class="list-group-item list-group-item-action" @onclick="GoToAlbum">Go to album</a>
+		<a class="list-group-item list-group-item-action" @onclick="GoToArtist">Go to artist</a>
 	</ul>
 </div>
 

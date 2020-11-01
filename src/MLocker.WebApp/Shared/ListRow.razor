@@ -11,7 +11,7 @@
 <div class="row py-2 flex-nowrap">
 	@if (ShowTrack)
 	{
-		<div class="songLengthPlayCell">@Song.Track</div>
+		<div class="col smallCell">@Song.Track</div>
 	}
 	<div class="col songImageCell">
 		@if (Song.PictureMimeType != null)
@@ -25,11 +25,11 @@
 	</div>
 	<div class="col align-self-center wrapTruncate">
 		<div class="songTitle text-truncate">@Song.Title</div>
-		<div class="songSubTitle text-truncate d-md-block d-md-none">
+		<div class="songSubTitle text-truncate d-md-block d-lg-none">
 			@Song.Artist ● @Song.Album ● @(new TimeSpan(Song.Ticks).ToString(@"m\:ss"))
 		</div>
 	</div>
-	<div class="col align-self-center songLengthPlayCell">
+	<div class="col align-self-center smallCell">
 		<div class="text-right" @onclick="OpenContext"><div id="@_contextMenuID" class="contextButton"></div></div>
 	</div>
 	<div class="col align-self-center songSecondaryCell d-none d-lg-block col-md-2 wrapTruncate"><span class="text-truncate d-block">@Song.Artist</span></div>

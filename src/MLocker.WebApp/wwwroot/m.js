@@ -23,13 +23,26 @@ window.Reload = () => {
 window.OpenSongContext = (contextMenuId) => {
 	var menu = document.querySelector('#songContextMenu');
 	var button = document.querySelector('#' + contextMenuId);
+	var songList = button.closest(".songList");
 	var instance = Popper.createPopper(button, menu, {
 		placement: 'right-start',
 		modifiers: [
 			{
+				name: 'offset',
+				options: {
+					offset: [0, 0]
+				}
+			},
+			{
 				name: 'flip',
 				options: {
-					fallbackPlacements: ['left-start', 'top']
+					boundary: songList
+				}
+			},
+			{
+				name: 'preventOverflow',
+				options: {
+					boundary: songList
 				}
 			}
 		]
