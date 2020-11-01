@@ -1,10 +1,12 @@
 ﻿@inherits LayoutComponentBase
 <SongContextMenu />
-<Player />
-<div class="container" style="margin-bottom: 100px;">
-	<div>
+<div id="bodyContent" class="container mt-2">
+	<div style="overflow-y: auto;">
 		@Body
 	</div>
 </div>
-<MainNav />
+<div id="fixedParts" class="fixed-bottom">
+	<Player />
+	<MainNav />
+</div>
 <AuthTest />

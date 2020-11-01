@@ -14,33 +14,29 @@
 		<span class="input-group-text" @onclick="ClearSearch"><button type="button" class="btn-close" aria-label="Close"></button></span>
 	</div>
 
-	<table class="table table-hover">
-		<thead>
-			<tr>
-				<th></th>
-				<th>Album</th>
-				<th>Artist</th>
-			</tr>
-		</thead>
-		<tbody>
-			<Virtualize Context="item" Items="@_filteredList" TItem="Album">
-				<tr>
-					<td class="songImageCell" @onclick="@(() => OnClick.InvokeAsync(item))">
-						@if (item.FirstSong != null)
-						{
-							<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
-						}
-						else
-						{
-							<div class="coverPlaceholder songImage"> </div>
-						}
-					</td>
-					<td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item.Title</td>
-					<td class="songSecondaryCell">@item.AlbumArtist</td>
-				</tr>
-			</Virtualize>
-		</tbody>
-	</table>
+	<div class="albumList">
+		<div class="row font-weight-bold header py-2 flex-nowrap">
+			<div class="col songImageCell"></div>
+			<div class="col">Album</div>
+			<div class="col songSecondaryCell">Artist</div>
+		</div>
+		<Virtualize Context="item" Items="@_filteredList" TItem="Album">
+			<div class="row py-2 flex-nowrap">
+				<div class="col songImageCell" @onclick="@(() => OnClick.InvokeAsync(item))">
+					@if (item.FirstSong != null)
+					{
+						<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
+					}
+					else
+					{
+						<div class="coverPlaceholder songImage"> </div>
+					}
+				</div>
+				<div @onclick="@(() => OnClick.InvokeAsync(item))" class="col align-self-center clickyText wrapTruncate"><span class="text-truncate d-block">@item.Title</span></div>
+				<div class="col align-self-center songSecondaryCell wrapTruncate"><span class="text-truncate d-block">@item.AlbumArtist</span></div>
+			</div>
+		</Virtualize>
+	</div>
 }
 
 @code

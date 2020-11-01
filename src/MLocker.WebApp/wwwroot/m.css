@@ -24,10 +24,10 @@ hr {
 	background-repeat: no-repeat;
 }
 
-.songList .row {
+.songList .row, .albumList .row {
 	border-bottom: 1px #dee2e6 solid;
 }
-.songList .row:hover {
+.songList .row:hover, .albumList .row:hover {
 	background-color: rgba(0,0,0,0.075);
 }
 .songList .header:hover {
@@ -65,28 +65,44 @@ hr {
 	cursor: pointer;
 }
 
+#bodyContent {
+	margin-bottom: 200px;
+}
+#fixedParts {
+	background-color: white;
+	z-index: 100;
+}
+
 #playerInfo {
-	min-height: 100px;
+	min-height: 50px;
+	border-top: black solid 4px;
 }
 
 .nowPlayingImage {
 	cursor: pointer;
-	height: 100px;
-	width: 100px;
+	height: 50px;
+	width: 50px;
 	margin-left: 0;
 	transition: all .5s ease-in-out;
 }
 
 .nowPlayingImage.nowPlayingShrink {
-	height: 600px;
-	width: 600px;
-	margin-left: calc(50% - 300px);
+	height: 500px;
+	width: 500px;
+	margin-left: calc(50% - 250px);
 }
 
 .songDetails {
-	margin-top: -80px;
-	margin-left: 120px;
+	margin-top: -45px;
+	margin-left: 65px;
 	transition: all .5s ease-in-out;
+}
+.songDetails h3 {
+	font-size: 1em;
+	font-weight: bold;
+}
+.songDetails h4 {
+	font-size: .8em;
 }
 
 .songDetails.songDetailsShrink {
