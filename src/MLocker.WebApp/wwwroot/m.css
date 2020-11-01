@@ -282,6 +282,9 @@ hr {
 	display: block !important;
 }
 
+#bottomTabs {
+	--bs-gutter-x: 0;
+}
 #bottomTabs a {
 	text-align: center;
 	color: rgba(255,255,255,.55);
