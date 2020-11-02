@@ -87,6 +87,7 @@ hr {
 	height: 400px;
 	width: 400px;
 	margin-left: calc(50% - 200px);
+	margin-bottom: 10px;
 }
 
 .songDetails {
