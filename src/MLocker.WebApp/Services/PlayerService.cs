@@ -116,14 +116,15 @@ namespace MLocker.WebApp.Services
 
         public void PlaySongNext(Song song)
         {
-	        if (_queue == null || _queue.Count == 0)
+	        if (_queue == null || _queue.Count == 0 || _currentSong == null)
 	        {
 		        var dictionary = new List<Song> { song };
 		        PlaySong(song, dictionary, 0);
 	        }
 	        else
 	        {
-		        _queue.Insert(1, song);
+		        var index = _queue.IndexOf(_currentSong);
+		        _queue.Insert(index + 1, song);
 		        Notify();
 	        }
         }
