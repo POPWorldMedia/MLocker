@@ -18,7 +18,7 @@
 		<div class="row font-weight-bold header py-2 flex-nowrap">
 			<div class="col songImageCell"></div>
 			<div class="col">Album</div>
-			<div class="col songSecondaryCell">Artist</div>
+			<div class="col songSecondaryCell d-none d-lg-block col-md-2">Artist</div>
 		</div>
 		<Virtualize Context="item" Items="@_filteredList" TItem="Album">
 			<div class="row py-2 flex-nowrap">
@@ -32,8 +32,11 @@
 						<div class="coverPlaceholder songImage"> </div>
 					}
 				</div>
-				<div @onclick="@(() => OnClick.InvokeAsync(item))" class="col align-self-center clickyText wrapTruncate"><span class="text-truncate d-block">@item.Title</span></div>
-				<div class="col align-self-center songSecondaryCell wrapTruncate"><span class="text-truncate d-block">@item.AlbumArtist</span></div>
+				<div @onclick="@(() => OnClick.InvokeAsync(item))" class="col align-self-center clickyText wrapTruncate">
+					<div class="songTitle text-truncate"><span class="text-truncate d-block">@item.Title</span></div>
+					<div class="songSubTitle text-truncate d-md-block d-lg-none"><span class="text-truncate d-block">@item.AlbumArtist</span></div>
+				</div>
+				<div class="col align-self-center songSecondaryCell d-none d-lg-block col-md-2 wrapTruncate"><span class="text-truncate d-block">@item.AlbumArtist</span></div>
 			</div>
 		</Virtualize>
 	</div>

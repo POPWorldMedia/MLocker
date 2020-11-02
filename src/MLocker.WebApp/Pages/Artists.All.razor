@@ -8,20 +8,16 @@
 		<span class="input-group-text" @onclick="ClearSearch"><button type="button" class="btn-close" aria-label="Close"></button></span>
 	</div>
 
-	<table class="table table-hover">
-		<thead>
-			<tr>
-				<th>Artist</th>
-			</tr>
-		</thead>
-		<tbody>
-			<Virtualize Context="item" Items="@_filteredList" TItem="string">
-				<tr>
-					<td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item</td>
-				</tr>
-			</Virtualize>
-		</tbody>
-	</table>
+	<div class="artistList">
+		<div class="row font-weight-bold header py-2 flex-nowrap">
+			<div>Artist</div>
+		</div>
+		<Virtualize Context="item" Items="@_filteredList" TItem="string">
+			<div class="row py-2 flex-nowrap">
+				<div @onclick="@(() => OnClick.InvokeAsync(item))" class="text-truncate clickyText"><span class="text-truncate d-block">@item</span></div>
+			</div>
+</Virtualize>
+	</div>
 }
 
 @code

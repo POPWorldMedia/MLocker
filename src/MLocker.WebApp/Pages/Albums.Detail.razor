@@ -6,13 +6,12 @@
 @inject IPlayerService PlayerService
 @inject IPlaylistTransformer PlaylistTransformer
 
-<h2>
+<div>
 	<span id="playAlbumButton" @onclick="PlayAlbum" title="Play album"></span>
-	<span id="playShuffleButton" @onclick="PlayShuffle" title="Shuffle album"></span>
-	@Album.AlbumArtist - @Album.Title
-</h2>
-
-<SongListSummary SongList="_songList" />
+	<span class="playShuffleButton" @onclick="PlayShuffle" title="Shuffle album"></span>
+	<div class="songTitle text-truncate"><span class="text-truncate d-block">@Album.AlbumArtist - @Album.Title</span></div>
+	<SongListSummary SongList="_songList" />
+</div>
 
 <SongList Songs="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="false" ShowTrack="true" />
 

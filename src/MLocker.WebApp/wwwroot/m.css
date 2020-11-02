@@ -28,10 +28,10 @@ hr {
 	background-repeat: no-repeat;
 }
 
-.songList .row, .albumList .row {
+.songList .row, .albumList .row, .artistList .row {
 	border-bottom: 1px #dee2e6 solid;
 }
-.songList .row:hover, .albumList .row:hover {
+.songList .row:hover, .albumList .row:hover, .artistList .row:hover {
 	background-color: rgba(0,0,0,0.075);
 }
 .songList .header:hover {
@@ -148,27 +148,31 @@ hr {
 
 #playAlbumButton {
 	display: inline-block;
-	height: 60px;
-	width: 60px;
+	height: 40px;
+	width: 40px;
 	cursor: pointer;
+	float: left;
 }
 
-#playShuffleButton {
+.playShuffleButton {
 	content: "";
 	background-image: url("data:image/svg+xml,<svg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-shuffle' fill='currentColor' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z'/><path d='M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z'/></svg>") !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	vertical-align: middle;
 	display: inline-block;
-	height: 40px;
-	width: 40px;
+	height: 25px;
+	width: 25px;
 	cursor: pointer;
-	margin: 10px 10px 10px 0;
+	margin: 8px 12px 10px 0;
+	float: left;
+}
+.shuffleAllButton {
+	margin-top: 0;
 }
 
 .songListSummary {
-	margin-left: 130px;
-	margin-top: -15px;
+	font-size: .8em;
 }
 
 .backButton {

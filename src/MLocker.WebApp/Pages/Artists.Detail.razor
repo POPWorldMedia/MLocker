@@ -10,47 +10,45 @@
 @if (_isAlbumMode)
 {
 	<p @onclick="@BackToAllAlbums"><span class="backButton"></span> all @_currentAlbum.AlbumArtist albums</p>
-	<h2>
+	<div>
 		<span id="playAlbumButton" @onclick="PlayAlbum" title="Play album"></span>
-		<span id="playShuffleButton" @onclick="PlayShuffle" title="Shuffle album"></span>
-		@_currentAlbum.AlbumArtist - @_currentAlbum.Title
-	</h2>
-	<SongListSummary SongList="_songList"/>
+		<span class="playShuffleButton" @onclick="PlayShuffle" title="Shuffle album"></span>
+		<div class="songTitle text-truncate"><span class="text-truncate d-block">@_currentAlbum.AlbumArtist - @_currentAlbum.Title</span></div>
+		<SongListSummary SongList="_songList" />
+	</div>
 }
 else
 {
 	<p @onclick="@(() => OnClick.InvokeAsync())"><span class="backButton"></span> all artists</p>
 	<h2>@CurrentArtist</h2>
 	<h3>Albums</h3>
+	
+	<div class="albumList">
+		<div class="row font-weight-bold header py-2 flex-nowrap">
+			<div class="col songImageCell"></div>
+			<div class="col">Album</div>
+		</div>
+		<Virtualize Context="item" Items="@_albums" TItem="Album">
+			<div class="row py-2 flex-nowrap">
+				<div class="col songImageCell" @onclick="@(() => LoadAlbum(item))">
+					@if (item.FirstSong != null)
+					{
+						<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
+					}
+					else
+					{
+						<div class="coverPlaceholder songImage"> </div>
+					}
+				</div>
+				<div @onclick="@(() => LoadAlbum(item))" class="col align-self-center clickyText wrapTruncate">
+					<div class="songTitle text-truncate"><span class="text-truncate d-block">@item.Title</span></div>
+				</div>
+			</div>
+		</Virtualize>
+	</div>
 
-	<table class="table table-hover">
-		<thead>
-			<tr>
-				<th></th>
-				<th>Album</th>
-			</tr>
-		</thead>
-		<tbody>
-			<Virtualize Context="item" Items="@_albums" TItem="Album">
-				<tr>
-					<td class="songImageCell" @onclick="@(() => LoadAlbum(item))">
-						@if (item.FirstSong != null)
-						{
-							<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
-						}
-						else
-						{
-							<div class="coverPlaceholder songImage"> </div>
-						}
-					</td>
-					<td @onclick="@(() => LoadAlbum(item))" class="clickyText">@item.Title</td>
-				</tr>
-			</Virtualize>
-		</tbody>
-	</table>
-
-	<h3>
-		<span id="playShuffleButton" @onclick="PlayShuffle"></span>
+	<h3 class="mt-3">
+		<span class="playShuffleButton shuffleAllButton" @onclick="PlayShuffle"></span>
 		Songs
 	</h3>
 }
