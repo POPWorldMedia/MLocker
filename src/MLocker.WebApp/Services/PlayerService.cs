@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using MLocker.Core.Models;
@@ -19,6 +20,7 @@ namespace MLocker.WebApp.Services
         event Action OnChange;
         void SkipToSong(int index);
         void PlaySongNext(Song song);
+        Task<bool> TogglePlayer();
     }
 
     public class PlayerService : IPlayerService
@@ -43,10 +45,16 @@ namespace MLocker.WebApp.Services
 
         private void CallPlayerAndUpdateTitle()
         {
-	        Notify();
 	        _jsRuntime.InvokeAsync<string>("StartPlayer", $"{ApiPaths.GetWholeSong}/{_currentSong.FileID}");
 	        var imageUrl = QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", _fileParsingService.ParseImageFileName(_currentSong));
             _jsRuntime.InvokeAsync<string>("SetTitle", _currentSong, imageUrl);
+	        Notify();
+        }
+
+        public async Task<bool> TogglePlayer()
+        {
+	        var isPlaying = await _jsRuntime.InvokeAsync<bool>("TogglePlayer");
+	        return isPlaying;
         }
 
         public void PlaySong(Song song, List<Song> list, int index)

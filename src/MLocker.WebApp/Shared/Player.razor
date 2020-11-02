@@ -8,37 +8,39 @@
 @inject IMusicService MusicService
 
 <div id="playerInfo">
-    @if (PlayerService.CurrentSong != null)
-    {
-        if (PlayerService.CurrentSong.PictureMimeType != null)
-        {
-            <img src="@(QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", FileParsingService.ParseImageFileName(PlayerService.CurrentSong)))" class="nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)" />
-        }
-        else
-        {
-	        <div class="coverPlaceholder nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)"> </div>
-        }
-        <div class="songDetails @_titleClass">
-            <h3>@PlayerService.CurrentSong.Title</h3>
-            <h4>@PlayerService.CurrentSong.Artist - @PlayerService.CurrentSong.Album</h4>
-        </div>
-    }
+	@if (PlayerService.CurrentSong != null)
+	{
+		if (PlayerService.CurrentSong.PictureMimeType != null)
+		{
+			<img src="@(QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", FileParsingService.ParseImageFileName(PlayerService.CurrentSong)))" class="nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)" />
+		}
+		else
+		{
+			<div class="coverPlaceholder nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)"> </div>
+		}
+		<div class="songDetails @_titleClass">
+			<h3>@PlayerService.CurrentSong.Title</h3>
+			<h4>@PlayerService.CurrentSong.Artist - @PlayerService.CurrentSong.Album</h4>
+		</div>
+	}
 </div>
+<audio id="player" src="@_source"></audio>
 <div class="container">
 	<div class="row">
-		<div class="d-none d-md-block col-md-1"><span id="queueButton" class="playerButton" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></span></div>
-		<div class="d-none d-md-block col-md-2 text-right"><span class="@_previousClass playerButton" @onclick="PlayPrevious"></span></div>
-		<div class="col-md-6 text-center"><audio id="player" src="@_source" controls></audio></div>
-		<div class="d-none d-md-block col-md-2"><span class="@_nextClass playerButton" @onclick="PlayNext"></span></div>
-		<div class="d-none d-md-block col-md-1"></div>
-	</div>
-	<div class="row d-sm-block d-md-none">
 		<div class="col"><span id="queueButton" class="playerButton" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></span></div>
 		<div class="col text-right"><span class="@_previousClass playerButton" @onclick="PlayPrevious"></span></div>
+		<div class="col text-center"><span class="@_playClass playerButton" @onclick="PlayPause"></span></div>
 		<div class="col"><span class="@_nextClass playerButton" @onclick="PlayNext"></span></div>
 		<div class="col"></div>
 	</div>
 </div>
+
+<div id="timeValues" class="mx-3">
+	<span id="duration" class="float-right">0:00</span>
+	<span id="currentTime">0:00</span>
+	<input type="range" class="form-range" id="songRange" value="0" disabled="disabled">
+</div>
+
 <div id="queueList" class="container collapse" aria-labelledby="queueButton" data-parent="#queueButton">
 	@if (PlayerService.Queue != null && PlayerService.Queue.Count > 0)
 	{
@@ -60,35 +62,41 @@
 	string _titleClass;
 	string _nextClass;
 	string _previousClass;
+	string _playClass;
 	bool _isBig = false;
 
 	protected override void OnInitialized()
 	{
 		_imageClass = "";
-		PlayerService.OnChange += () =>
+		_previousClass = "previousButtonOff";
+		_nextClass = "nextButtonOff";
+		_playClass = "activePlayButtonOff";
+		PlayerService.OnChange += async () =>
 		{
 			if (PlayerService.CurrentSong == null)
 				_source = string.Empty;
 			if (PlayerService.CurrentSong != null)
 			{
 				_source = MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
-				MusicService.IncrementPlayCount(PlayerService.CurrentSong.FileID);
+				await MusicService.IncrementPlayCount(PlayerService.CurrentSong.FileID);
 			}
 			_previousClass = PlayerService.CurrentSong == null
-			                 || PlayerService.Queue.Count <= 1
-			                 || PlayerService.QueueIndex == 0
+							 || PlayerService.Queue.Count <= 1
+							 || PlayerService.QueueIndex == 0
 				? "previousButtonOff" : "previousButton";
 			_nextClass = PlayerService.CurrentSong == null
-			             || PlayerService.Queue.Count <= 1
-			             || PlayerService.QueueIndex >= PlayerService.Queue.Count - 1
+						 || PlayerService.Queue.Count <= 1
+						 || PlayerService.QueueIndex >= PlayerService.Queue.Count - 1
 				? "nextButtonOff" : "nextButton";
+			_playClass = PlayerService.Queue.Count == 0 ? "activePlayButtonOff" : "pauseButton";
 			_songList = PlayerService.Queue;
-			InvokeAsync(StateHasChanged);
+			StateHasChanged();
 		};
 
 		_updateAction = UpdateMessage;
 		_nextSongAction = PlayNext;
 		_previousSongAction = PlayPrevious;
+		_isPlayingAction = UpdatePlayerButton;
 	}
 
 	private void ShrinkToggle()
@@ -106,6 +114,18 @@
 		_isBig = !_isBig;
 	}
 
+	private async Task PlayPause()
+	{
+		var isPlaying = await PlayerService.TogglePlayer();
+		UpdatePlayerButton(isPlaying);
+	}
+
+	private void UpdatePlayerButton(bool isPlaying)
+	{
+		_playClass = isPlaying ? "pauseButton" : "activePlayButton";
+		StateHasChanged();
+	}
+
 	private void PlayNext()
 	{
 		PlayerService.PlayNextSong();
@@ -119,10 +139,18 @@
 	private static Action _updateAction;
 	private static Action _nextSongAction;
 	private static Action _previousSongAction;
+	private static Action<bool> _isPlayingAction;
 
 	private void UpdateMessage()
 	{
 		PlayerService.PlayNextSong();
+		_playClass = PlayerService.CurrentSong != null ? "pauseButton" : "activePlayButtonOff";
+	}
+
+	[JSInvokable]
+	public static void IsPlaying(bool isPlaying)
+	{
+		_isPlayingAction.Invoke(isPlaying);
 	}
 
 	[JSInvokable]

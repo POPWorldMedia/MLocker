@@ -84,9 +84,9 @@ hr {
 }
 
 .nowPlayingImage.nowPlayingShrink {
-	height: 500px;
-	width: 500px;
-	margin-left: calc(50% - 250px);
+	height: 400px;
+	width: 400px;
+	margin-left: calc(50% - 200px);
 }
 
 .songDetails {
@@ -116,8 +116,8 @@ hr {
 	content: "";
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	height: 40px;
-	width: 40px;
+	height: 30px;
+	width: 30px;
 	display: inline-block;
 	cursor: pointer;
 	vertical-align: middle;
@@ -186,6 +186,19 @@ hr {
 
 #queueButton {
 	background-image: url("data:image/svg+xml,<svg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-list-ul' fill='currentColor' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z'/></svg>") !important;
+}
+
+.pauseButton {
+	background-image: url("data:image/svg+xml,<svg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-pause-fill' fill='currentColor' xmlns='http://www.w3.org/2000/svg'><path d='M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z'/></svg>") !important;
+}
+
+.activePlayButton {
+	background-image: url("data:image/svg+xml,<svg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-play-fill' fill='currentColor' xmlns='http://www.w3.org/2000/svg'><path d='M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z'/></svg>") !important;
+}
+
+.activePlayButtonOff {
+	background-image: url("data:image/svg+xml,<svg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-play' fill='currentColor' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z'/></svg>") !important;
+	cursor: default !important;
 }
 
 .nextButton {
@@ -313,6 +326,11 @@ hr {
 .songSubTitle {
 	font-size: .7em;
 	display: block;
+}
+
+#timeValues {
+	font-size: .7em;
+	font-weight: bold;
 }
 
 

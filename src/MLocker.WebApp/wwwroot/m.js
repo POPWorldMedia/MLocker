@@ -2,13 +2,49 @@
 
 window.StartPlayer = (wholepath) => {
 	var player = document.getElementById('player');
-	player.oncanplaythrough = (e) => { player.play() };
+	var songRange = document.getElementById('songRange');
+	var duration = document.getElementById('duration');
+	var currentTime = document.getElementById('currentTime');
+	player.oncanplaythrough = (e) => {
+		songRange.min = 0;
+		songRange.max = player.duration;
+		duration.innerHTML = FormatSeconds(player.duration);
+		player.play();
+	};
 	player.onended = (e) => {
+		songRange.disabled = true;
 		DotNet.invokeMethodAsync('MLocker.WebApp', 'SongEnded');
 	};
-	//caches.open(CACHE_NAME).then((cache) => {
-	//	cache.add(wholepath);
-	//});
+	player.ontimeupdate = () => {
+		songRange.value = player.currentTime;
+		songRange.disabled = false;
+		currentTime.innerHTML = FormatSeconds(player.currentTime);
+	};
+	songRange.oninput = (e) => {
+		player.currentTime = e.target.value;
+	}
+}
+
+window.TogglePlayer = () => {
+	var player = document.getElementById('player');
+	if (player.paused) {
+		player.play();
+		return true;
+	} else {
+		player.pause();
+		return false;
+	}
+}
+
+window.GetPlayerStatus = () => {
+	var player = document.getElementById('player');
+	return player.paused;
+}
+
+window.FormatSeconds = (s) => {
+	var minutes = Math.floor(s / 60);
+	var seconds = s % 60;
+	return minutes.toString() + ":" + Math.round(seconds).toString().padStart(2, "0");
 }
 
 window.OpenApiModal = () => {
@@ -77,8 +113,14 @@ window.SetTitle = (song, imageUrl) => {
 				{ src: imageUrl, sizes: '300x300', type: song.mediaMimeType }
 			]
 		});
-		navigator.mediaSession.setActionHandler('play', () => player.play());
-		navigator.mediaSession.setActionHandler('pause', () => player.pause());
+		navigator.mediaSession.setActionHandler('play', () => {
+			player.play();
+			DotNet.invokeMethodAsync('MLocker.WebApp', 'IsPlaying', true);
+		});
+		navigator.mediaSession.setActionHandler('pause', () => {
+			player.pause();
+			DotNet.invokeMethodAsync('MLocker.WebApp', 'IsPlaying', false);
+		});
 		navigator.mediaSession.setActionHandler('nexttrack', () => DotNet.invokeMethodAsync('MLocker.WebApp', 'SongNext'));
 		navigator.mediaSession.setActionHandler('previoustrack', () => DotNet.invokeMethodAsync('MLocker.WebApp', 'SongPrevious'));
 	}
