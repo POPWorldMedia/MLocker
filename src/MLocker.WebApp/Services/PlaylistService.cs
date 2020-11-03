@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using MLocker.Core.Models;
@@ -50,8 +52,12 @@ namespace MLocker.WebApp.Services
 			await _playlistRepository.UpdatePlaylists();
 			var definitions = await _playlistRepository.GetAllPlaylistDefinitions();
 			var songs = await _songRepository.GetAllSongs();
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
 			var playlists = _playlistTransformer.PlaylistDefinitionsToPlaylists(definitions, songs);
 			_allPlaylists = playlists.OrderBy(x => x.Title).ToList();
+			stopwatch.Stop();
+			Console.WriteLine($"UpdatePlaylists: {stopwatch.ElapsedMilliseconds}ms");
 		}
 
 		public async Task<List<Playlist>> GetAllPlaylists()

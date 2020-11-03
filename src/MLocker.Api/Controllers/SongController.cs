@@ -16,12 +16,14 @@ namespace MLocker.Api.Controllers
             _songService = songService;
         }
 
-        [ApiAuth]
+        //[ApiAuth]
         [HttpGet(ApiPaths.GetAllSongs)]
         public async Task<IActionResult> GetAll()
         {
             var allSongs = await _songService.GetAll();
-            return Ok(allSongs);
+            var version = await _songService.GetSongListVersion();
+            var payload = new SongListPayload {Songs = allSongs, Version = version};
+            return Ok(payload);
         }
 
         [HttpGet(ApiPaths.GetSong + "/{id}")]
@@ -67,6 +69,13 @@ namespace MLocker.Api.Controllers
         public class Incrementer
         {
             public int FileID { get; set; }
+        }
+
+        [HttpGet(ApiPaths.GetSongListVersion)]
+        public async Task<IActionResult> GetSongListVersion()
+        {
+	        var version = await _songService.GetSongListVersion();
+	        return Content(version, "text/plain");
         }
     }
 }

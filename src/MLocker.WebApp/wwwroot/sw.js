@@ -5,7 +5,11 @@ self.addEventListener('install', event => {
 	});
 
 self.addEventListener('fetch', event => {
-	if (event.request.url.includes('GetImage')) {
+	var cacheControl = event.request.headers.get('cache-control');
+	if (cacheControl !== 'no-cache')
+	if (event.request.url.includes('GetImage')
+		|| event.request.url.includes('GetAllSongs')
+		|| event.request.url.includes('GetWholeSong')) {
 		event.respondWith(
 			caches.match(event.request)
 			.then(function (response) {

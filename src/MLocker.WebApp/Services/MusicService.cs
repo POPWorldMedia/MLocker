@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using MLocker.Core.Models;
 using MLocker.WebApp.Repositories;
@@ -16,10 +16,10 @@ namespace MLocker.WebApp.Services
         Task<bool> Upload(string fileName, Stream stream);
         Task<List<Album>> GetAlbums();
         Task<List<Song>> GetAlbum(Album album);
-        Task UpdateSongs();
         Task IncrementPlayCount(int fileID);
         Task<List<string>> GetAllArtists();
         Task<Tuple<List<Album>, List<Song>>> GetArtistDetail(string artist);
+        Task UpdateSongs();
     }
 
     public class MusicService : IMusicService
@@ -53,8 +53,9 @@ namespace MLocker.WebApp.Services
 	        }
 	        catch
 	        {
-		        // TODO: error handling
-	        }
+				// TODO: error handling
+				throw;
+			}
 	        finally
 	        {
 		        _spinnerService.Hide();
@@ -76,7 +77,8 @@ namespace MLocker.WebApp.Services
 
         public async Task<bool> Upload(string fileName, Stream stream)
         {
-            return await _uploadRepository.UploadFile(fileName, stream);
+            var isSuccess = await _uploadRepository.UploadFile(fileName, stream);
+            return isSuccess;
         }
 
         private async Task PopulateAlbums()
@@ -84,7 +86,8 @@ namespace MLocker.WebApp.Services
 	        try
 	        {
 		        _spinnerService.Show();
-
+		        var stopwatch = new Stopwatch();
+		        stopwatch.Start();
 		        AlbumGroupingType GetGroupingType(Song song)
 		        {
 			        if (song.AlbumArtist != null) return AlbumGroupingType.AlbumArtist;
@@ -112,10 +115,14 @@ namespace MLocker.WebApp.Services
 				        album.FirstSong = songs.First(x => x.PictureMimeType != null);
 			        }
 		        }
+
+		        stopwatch.Stop();
+		        Console.WriteLine($"PopulateAlbums: {stopwatch.ElapsedMilliseconds}ms");
 	        }
 	        catch
 	        {
 		        // TODO: error handler
+		        throw;
 	        }
 	        finally
 	        {
@@ -163,6 +170,7 @@ namespace MLocker.WebApp.Services
 	        catch
 	        {
 		        // TODO: error handler
+		        throw;
 	        }
 	        finally
 	        {

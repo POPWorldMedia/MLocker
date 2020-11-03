@@ -17,6 +17,7 @@ namespace MLocker.Api.Services
         Task<Tuple<Stream, Song>> GetSong(int songID);
         Task<Tuple<Stream, string>> GetImage(string imageName);
         Task IncrementPlayCount(int fileID);
+        Task<string> GetSongListVersion();
     }
 
     public class SongService : ISongService
@@ -24,12 +25,14 @@ namespace MLocker.Api.Services
         private readonly ISongRepository _songRepository;
         private readonly IFileRepository _fileRepository;
         private readonly IFileParsingService _fileParsingService;
+        private readonly IVersionRepository _versionRepository;
 
-        public SongService(ISongRepository songRepository, IFileRepository fileRepository, IFileParsingService fileParsingService)
+        public SongService(ISongRepository songRepository, IFileRepository fileRepository, IFileParsingService fileParsingService, IVersionRepository versionRepository)
         {
             _songRepository = songRepository;
             _fileRepository = fileRepository;
             _fileParsingService = fileParsingService;
+            _versionRepository = versionRepository;
         }
 
         public async Task PersistSong(SongData songData, byte[] bytes)
@@ -49,6 +52,9 @@ namespace MLocker.Api.Services
                 var imageFileName = _fileParsingService.ParseImageFileName(songData);
                 await _fileRepository.SaveFile(imageFileName, songData.Picture, songData.PictureMimeType);
             }
+
+            var version = Guid.NewGuid().ToString();
+            await _versionRepository.SaveSongListVersion(version);
         }
 
         public string ParseStorageFileName(Song songData)
@@ -82,6 +88,11 @@ namespace MLocker.Api.Services
         public async Task IncrementPlayCount(int fileID)
         {
 	        await _songRepository.IncrementPlayCount(fileID);
+        }
+
+        public async Task<string> GetSongListVersion()
+        {
+	        return await _versionRepository.GetSongListVersion();
         }
     }
 }
