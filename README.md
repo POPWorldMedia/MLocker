@@ -3,7 +3,7 @@ This project takes an experimental shot at building a personal music locker. All
 
 The app uses an aspnetcore API, storing the music files in Azure Storage and the metadata and playlists in SQL. (I was going to use something else, but I have a wholly underutilized SQL pool. I was going to use Azure Functions for the API, but I have a wholly underutilized app service, too.) The front-end is a Blazor client, but I'm confident that I can probably whip up a phone client or two.
 
-![image](https://user-images.githubusercontent.com/2114255/97090915-d5a5ea00-1605-11eb-94aa-3044701acf19.png)
+![image](https://user-images.githubusercontent.com/2114255/98284863-bdbc5780-1f6f-11eb-9aa0-7c563d78b1f0.png)
 
 ## Roadmap
 This is really an exercise in experimentation, but using it myself daily, I do want to formally make some releases. I think v1 will nail down the rest of the basic functionality, like editing playlists, and then a subsequent release will take a stab at mobile apps that will cache the music locally.
