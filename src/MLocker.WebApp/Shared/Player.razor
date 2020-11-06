@@ -19,8 +19,8 @@
 			<div class="coverPlaceholder nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)"> </div>
 		}
 		<div class="songDetails @_titleClass">
-			<h3>@PlayerService.CurrentSong.Title</h3>
-			<h4>@PlayerService.CurrentSong.Artist - @PlayerService.CurrentSong.Album</h4>
+			<h3 class="text-truncate d-block">@PlayerService.CurrentSong.Title</h3>
+			<h4 class="text-truncate d-block">@PlayerService.CurrentSong.Artist - @PlayerService.CurrentSong.Album</h4>
 		</div>
 	}
 </div>
