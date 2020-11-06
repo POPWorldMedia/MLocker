@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -53,6 +55,8 @@ namespace MLocker.WebApp.Repositories
 
 	        try
 	        {
+		        var stopwatch = new Stopwatch();
+		        stopwatch.Start();
 		        var songListVersion = await _localStorageService.GetItemAsStringAsync(SongListVersionKey);
 		        var remoteSongListVersion = await GetRemoteSongListVersion();
 		        var isNewVersion = songListVersion != remoteSongListVersion;
@@ -64,6 +68,8 @@ namespace MLocker.WebApp.Repositories
 		        _allSongs = payload.Songs.ToList();
 		        if (isNewVersion)
 			        await _localStorageService.SetItemAsync(SongListVersionKey, payload.Version);
+		        stopwatch.Stop();
+		        Console.WriteLine($"Song fetch: {stopwatch.ElapsedMilliseconds}ms");
 	        }
 	        catch
 	        {
