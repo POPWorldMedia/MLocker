@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MLocker.Core.Models;
 using MLocker.WebApp.Repositories;
@@ -28,8 +29,9 @@ namespace MLocker.WebApp.Services
         private readonly ISpinnerService _spinnerService;
         private static List<Album> _albums;
         private static List<string> _artists;
+        private static SemaphoreSlim _updateLocker = new SemaphoreSlim(1, 1);
 
-        public MusicService(ISongRepository songRepository, IUploadRepository uploadRepository, ISpinnerService spinnerService)
+		public MusicService(ISongRepository songRepository, IUploadRepository uploadRepository, ISpinnerService spinnerService)
         {
             _songRepository = songRepository;
             _uploadRepository = uploadRepository;
@@ -84,6 +86,7 @@ namespace MLocker.WebApp.Services
         {
 	        try
 	        {
+		        await _updateLocker.WaitAsync();
 		        _spinnerService.Show();
 		        var allSongs = await _songRepository.GetAllSongs();
 		        var stopwatch = new Stopwatch();
@@ -119,6 +122,7 @@ namespace MLocker.WebApp.Services
 	        }
 	        finally
 	        {
+		        _updateLocker.Release();
 		        _spinnerService.Hide();
 	        }
         }
@@ -134,10 +138,10 @@ namespace MLocker.WebApp.Services
 		        return _artists;
 	        try
 	        {
+		        var songs = await _songRepository.GetAllSongs();
 		        _spinnerService.Show();
 		        var stopwatch = new Stopwatch();
 		        stopwatch.Start();
-		        var songs = await _songRepository.GetAllSongs();
 		        var artists = songs
 			        .Select(x => x.AlbumArtist ?? x.Artist)
 			        .Distinct()
