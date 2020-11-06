@@ -19,18 +19,15 @@ namespace MLocker.Core.Services
 			foreach (var playlistDefinition in playlistDefinitions)
 			{
 				var songIDs = playlistDefinition.SongIDs;
-				var playlistSongs = new List<Song>();
-				foreach (var songID in songIDs)
-				{
-					var song = songs.SingleOrDefault(x => x.FileID == songID);
-					if (song != null)
-						playlistSongs.Add(song);
-				}
+				var theSongList = songIDs.Join(songs, 
+					songID => songID, 
+					song => song.FileID, 
+					(songID, song) => song).ToList();
 				var playlist = new Playlist
 				{
 					PlaylistID = playlistDefinition.PlaylistID,
 					Title = playlistDefinition.Title,
-					Songs = playlistSongs
+					Songs = theSongList
 				};
 				playlists.Add(playlist);
 			}

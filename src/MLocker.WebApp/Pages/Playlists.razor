@@ -22,7 +22,7 @@ else
 	Playlist _currentPlaylist = null;
 	private bool _isDetail = false;
 
-	protected override async Task OnInitializedAsync()
+	protected override async Task OnParametersSetAsync()
 	{
 		_playlistList = await PlaylistService.GetAllPlaylists();
 	}

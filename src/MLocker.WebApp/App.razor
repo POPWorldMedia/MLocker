@@ -1,3 +1,6 @@
+@using MLocker.WebApp.Services
+@inject IMusicService MusicService
+@inject IPlaylistService PlaylistService
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
@@ -8,3 +11,12 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code
+{
+	protected override async Task OnInitializedAsync()
+	{
+        // warm up the app with the fresh data
+		await MusicService.UpdateSongs();
+	}
+}

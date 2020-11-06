@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MLocker.Core.Models;
 using MLocker.Core.Services;
@@ -25,6 +26,7 @@ namespace MLocker.WebApp.Services
 		private readonly ISongRepository _songRepository;
 		private readonly ISpinnerService _spinnerService;
 		private static List<Playlist> _allPlaylists;
+		private static SemaphoreSlim _updateLocker = new SemaphoreSlim(1, 1);
 
 		public PlaylistService(IPlaylistTransformer playlistTransformer, IPlaylistRepository playlistRepository, ISongRepository songRepository, ISpinnerService spinnerService)
 		{
@@ -64,6 +66,7 @@ namespace MLocker.WebApp.Services
 		{
 			try
 			{
+				await _updateLocker.WaitAsync();
 				_spinnerService.Show();
 				if (_allPlaylists == null)
 				{
@@ -76,6 +79,7 @@ namespace MLocker.WebApp.Services
 			}
 			finally
 			{
+				_updateLocker.Release();
 				_spinnerService.Hide();
 			}
 

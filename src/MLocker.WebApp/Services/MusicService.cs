@@ -160,12 +160,18 @@ namespace MLocker.WebApp.Services
 	        try
 	        {
 		        _spinnerService.Show();
+		        var stopwatch = new Stopwatch();
+		        stopwatch.Start();
 		        var songs = await _songRepository.GetAllSongs();
-		        var artists = songs.Where(x => x.AlbumArtist != null)
-			        .Select(x => x.AlbumArtist).ToList();
-		        artists.AddRange(songs.Where(x => x.AlbumArtist == null && x.Artist != null).Select(x => x.Artist));
-		        artists.Sort();
-		        _artists = artists.Distinct().ToList();
+		        var artists = songs
+			        .Select(x => x.AlbumArtist ?? x.Artist)
+			        .Distinct()
+			        .OrderBy(x => x).ToList();
+		        if (string.IsNullOrEmpty(artists[0]))
+			        artists.RemoveAt(0); // remove anything that came back with no data in Artist or AlbumArtist
+		        _artists = artists;
+		        stopwatch.Stop();
+		        Console.WriteLine($"GetAllArtists: {stopwatch.ElapsedMilliseconds}ms");
 	        }
 	        catch
 	        {
