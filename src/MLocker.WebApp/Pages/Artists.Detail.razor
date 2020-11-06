@@ -82,8 +82,7 @@ else
 	public async Task LoadAlbum(Album album)
 	{
 		_currentAlbum = album;
-		var songs = await MusicService.GetAlbum(album);
-		_songList = songs;
+		_songList = album.Songs;
 		_showSearch = false;
 		_isAlbumMode = true;
 		StateHasChanged();

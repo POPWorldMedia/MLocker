@@ -1,6 +1,5 @@
 ﻿@using MLocker.Core.Models
 @using MLocker.Core.Services
-@using MLocker.WebApp.Repositories
 @using MLocker.WebApp.Services
 @inject IMusicService MusicService
 @inject IPlayerService PlayerService
@@ -23,8 +22,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		var songs = await MusicService.GetAlbum(Album);
-		_songList = songs;
+		_songList = Album.Songs;
 	}
 
 	private void PlayAlbum()

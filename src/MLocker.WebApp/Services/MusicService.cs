@@ -15,7 +15,6 @@ namespace MLocker.WebApp.Services
         string GetSongUrl(int fileID);
         Task<bool> Upload(string fileName, Stream stream);
         Task<List<Album>> GetAlbums();
-        Task<List<Song>> GetAlbum(Album album);
         Task IncrementPlayCount(int fileID);
         Task<List<string>> GetAllArtists();
         Task<Tuple<List<Album>, List<Song>>> GetArtistDetail(string artist);
@@ -86,6 +85,7 @@ namespace MLocker.WebApp.Services
 	        try
 	        {
 		        _spinnerService.Show();
+		        var allSongs = await _songRepository.GetAllSongs();
 		        var stopwatch = new Stopwatch();
 		        stopwatch.Start();
 		        AlbumGroupingType GetGroupingType(Song song)
@@ -95,27 +95,20 @@ namespace MLocker.WebApp.Services
 			        return AlbumGroupingType.VariousArtists;
 		        }
 
-		        var allSongs = await _songRepository.GetAllSongs();
 		        _albums = allSongs.GroupBy(x => new
 			        {
 				        AlbumArtist = x.AlbumArtist ?? x.Artist ?? "Various Artists",
 				        x.Album,
 				        AlbumGroupingType = GetGroupingType(x)
 			        })
-			        .Select(x => new Album {AlbumArtist = x.Key.AlbumArtist, Title = x.Key.Album, AlbumGroupingType = x.Key.AlbumGroupingType})
+			        .Select(x => new Album {AlbumArtist = x.Key.AlbumArtist, Title = x.Key.Album, AlbumGroupingType = x.Key.AlbumGroupingType, 
+				        Songs = x
+				        .OrderBy(s => s.Disc)
+				        .ThenBy(s => s.Track).ToList(), 
+				        FirstSong = x.FirstOrDefault(s => s.PictureMimeType != null)})
 			        .Where(x => x.Title != null & x.Title != string.Empty)
 			        .OrderBy(x => x.Title)
 			        .ToList();
-		        // this is janky and probably slow, but I couldn't figure out how to do it in the linq query above
-		        foreach (var album in _albums)
-		        {
-			        var songs = await GetAlbum(album);
-			        if (songs.Any(x => x.PictureMimeType != null))
-			        {
-				        album.FirstSong = songs.First(x => x.PictureMimeType != null);
-			        }
-		        }
-
 		        stopwatch.Stop();
 		        Console.WriteLine($"PopulateAlbums: {stopwatch.ElapsedMilliseconds}ms");
 	        }
@@ -128,24 +121,6 @@ namespace MLocker.WebApp.Services
 	        {
 		        _spinnerService.Hide();
 	        }
-        }
-
-        public async Task<List<Song>> GetAlbum(Album album)
-        {
-            if (_albums == null)
-                await UpdateSongs();
-            var allSongs = await _songRepository.GetAllSongs();
-            var unsorted = album.AlbumGroupingType switch
-            {
-                AlbumGroupingType.AlbumArtist => allSongs.Where(x => x.Album == album.Title && x.AlbumArtist == album.AlbumArtist),
-                AlbumGroupingType.Artist => allSongs.Where(x => x.Album == album.Title && x.Artist == album.AlbumArtist),
-                _ => allSongs.Where(x => x.Album == album.Title && x.AlbumArtist == null && x.Artist == null)
-            };
-            var songs = unsorted
-                .OrderBy(x => x.Disc)
-                .ThenBy(x => x.Track)
-                .ToList();
-            return songs;
         }
 
         public async Task IncrementPlayCount(int fileID)
