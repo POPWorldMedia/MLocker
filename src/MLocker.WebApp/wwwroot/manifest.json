@@ -1,0 +1,15 @@
+{
+	"name": "MLocker",
+	"short_name": "MLocker",
+	"start_url": "./",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#00005c",
+	"icons": [
+		{
+			"src": "MLockerLogo.png",
+			"type": "image/png",
+			"sizes": "512x512"
+		}
+	]
+}

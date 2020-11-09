@@ -20,7 +20,7 @@
 
 	List<Song> _songList;
 
-	protected override async Task OnInitializedAsync()
+	protected override void OnInitialized()
 	{
 		_songList = Album.Songs;
 	}
