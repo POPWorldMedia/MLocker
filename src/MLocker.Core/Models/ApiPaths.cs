@@ -23,5 +23,6 @@
 		public const string IncrementPlayCount = "/IncrementPlayCount";
 		public const string Upload = "/Upload";
 		public const string GetSongListVersion = "/GetSongListVersion";
+		public const string GetPlaylistVersion = "/GetPlaylistVersion";
 	}
 }

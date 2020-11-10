@@ -101,8 +101,10 @@ namespace MLocker.WebApp.Repositories
         }
 
         public async Task<string> GetRemoteSongListVersion()
-        {
-            var songListVersion = await _httpClient.GetStringAsync(ApiPaths.GetSongListVersion);
+		{
+			var apiKey = await _config.GetApiKey();
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
+			var songListVersion = await _httpClient.GetStringAsync(ApiPaths.GetSongListVersion);
 	        return songListVersion;
         }
     }

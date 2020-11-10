@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -14,15 +15,18 @@ namespace MLocker.Api.Services
 		Task<List<PlaylistDefinition>> GetAllPlaylistDefinitions();
 		Task UpdatePlaylist(PlaylistDefinition playlist);
 		Task DeletePlaylist(int playlistID);
+		Task<string> GetPlaylistVersion();
 	}
 
 	public class PlaylistService : IPlaylistService
 	{
 		private readonly IPlaylistRepository _playlistRepository;
+		private readonly IVersionRepository _versionRepository;
 
-		public PlaylistService(IPlaylistRepository playlistRepository)
+		public PlaylistService(IPlaylistRepository playlistRepository, IVersionRepository versionRepository)
 		{
 			_playlistRepository = playlistRepository;
+			_versionRepository = versionRepository;
 		}
 
 		public async Task<PlaylistDefinition> CreatePlaylistDefinition(PlaylistDefinition playlistDefinition)
@@ -34,6 +38,8 @@ namespace MLocker.Api.Services
 				Title = newEntity.Title,
 				SongIDs = new List<int>()
 			};
+			var version = Guid.NewGuid().ToString();
+			await _versionRepository.SavePlaylistVersion(version);
 			return newPlaylistDefinition;
 		}
 
@@ -58,12 +64,21 @@ namespace MLocker.Api.Services
 				Title = playlistDefinition.Title,
 				SongsJson = serializedSongIDs
 			};
+			var version = Guid.NewGuid().ToString();
+			await _versionRepository.SavePlaylistVersion(version);
 			await _playlistRepository.UpdatePlaylist(entity);
 		}
 
 		public async Task DeletePlaylist(int playlistID)
 		{
+			var version = Guid.NewGuid().ToString();
+			await _versionRepository.SavePlaylistVersion(version);
 			await _playlistRepository.DeletePlaylist(playlistID);
+		}
+
+		public async Task<string> GetPlaylistVersion()
+		{
+			return await _versionRepository.GetPlaylistVersion();
 		}
 	}
 }

@@ -16,7 +16,7 @@ namespace MLocker.Api.Controllers
             _songService = songService;
         }
 
-        //[ApiAuth]
+        [ApiAuth]
         [HttpGet(ApiPaths.GetAllSongs)]
         public async Task<IActionResult> GetAll()
         {
@@ -71,6 +71,7 @@ namespace MLocker.Api.Controllers
             public int FileID { get; set; }
         }
 
+        [ApiAuth]
         [HttpGet(ApiPaths.GetSongListVersion)]
         public async Task<IActionResult> GetSongListVersion()
         {

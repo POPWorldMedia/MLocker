@@ -26,8 +26,10 @@ namespace MLocker.Api.Controllers
 		[HttpGet(ApiPaths.GetAllPlaylistDefinitions)]
 		public async Task<IActionResult> GetAllPlaylistDefinitions()
 		{
-			var result = await _playlistService.GetAllPlaylistDefinitions();
-			return Json(result);
+			var version = await _playlistService.GetPlaylistVersion();
+			var playlistDefinitions = await _playlistService.GetAllPlaylistDefinitions();
+			var payload = new PlaylistPayload {Version = version, PlaylistDefinitions = playlistDefinitions};
+			return Json(payload);
 		}
 
 		[ApiAuth]
@@ -44,6 +46,14 @@ namespace MLocker.Api.Controllers
 		{
 			await _playlistService.DeletePlaylist(id);
 			return Ok();
+		}
+
+		[ApiAuth]
+		[HttpGet(ApiPaths.GetPlaylistVersion)]
+		public async Task<IActionResult> GetPlaylistVersion()
+		{
+			var version = await _playlistService.GetPlaylistVersion();
+			return Content(version, "text/plain");
 		}
 	}
 }
