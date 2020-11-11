@@ -77,7 +77,7 @@
 				_source = string.Empty;
 			if (PlayerService.CurrentSong != null)
 			{
-				_source = MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
+				_source = await MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
 				await MusicService.IncrementPlayCount(PlayerService.CurrentSong.FileID);
 			}
 			_previousClass = PlayerService.CurrentSong == null

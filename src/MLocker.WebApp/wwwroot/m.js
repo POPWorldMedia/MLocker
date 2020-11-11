@@ -134,6 +134,21 @@ window.GetStorageItem = (key) => {
 	return localStorage.getItem(key);
 }
 
+window.IsUrlCached = (url) => {
+	return caches.open(CACHE_NAME)
+		.then((cache) => {
+				return cache.match(url)
+					.then((response) => {
+						if (typeof response !== 'undefined')
+							return true;
+						else
+							return false;
+					});
+			}
+		)
+		.catch(error => console.error(error));
+}
+
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', function () {
 		navigator.serviceWorker.register('/sw.js').then(function (registration) {

@@ -13,7 +13,7 @@ namespace MLocker.WebApp.Services
     public interface IMusicService
     {
         Task<List<Song>> GetAllSongs();
-        string GetSongUrl(int fileID);
+        Task<string> GetSongUrl(int fileID);
         Task<bool> Upload(string fileName, Stream stream);
         Task<List<Album>> GetAlbums();
         Task IncrementPlayCount(int fileID);
@@ -71,9 +71,14 @@ namespace MLocker.WebApp.Services
             return _albums;
         }
 
-        public string GetSongUrl(int fileID)
+        public async Task<string> GetSongUrl(int fileID)
         {
-            return _songRepository.GetSongUrl(fileID);
+			// Why two different URL's? Because the cache API in the browser can't negotiate against the byte-range (HTTP 206) results
+			// that the "normal" API endpoint uses for the HTML <audio> element to stream in chunks. The /GetWholeSong endpoint fetches
+			// the entire thing and returns a 200, which the cache API is happy to tuck away in storage.
+			var cachedUrl = _songRepository.GetCachedSongUrl(fileID);
+			var isCached = await _songRepository.IsSongCached(cachedUrl);
+            return isCached ? cachedUrl : _songRepository.GetSongUrl(fileID);
         }
 
         public async Task<bool> Upload(string fileName, Stream stream)

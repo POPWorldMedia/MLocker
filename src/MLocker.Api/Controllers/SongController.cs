@@ -46,7 +46,7 @@ namespace MLocker.Api.Controllers
 	        var length = (int)stream.Length;
 	        var bytes = new byte[length];
 	        await stream.ReadAsync(bytes, 0, length);
-            return File(bytes, mediaType);
+            return File(bytes, mediaType, false);
         }
 
         [HttpGet(ApiPaths.GetImage)]
