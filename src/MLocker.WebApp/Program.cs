@@ -1,7 +1,6 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using MLocker.Core.Services;
@@ -16,8 +15,6 @@ namespace MLocker.WebApp
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
-
-            builder.Services.AddBlazoredLocalStorage();
 
             builder.Services.AddScoped<IConfig, Config>();
 
@@ -40,6 +37,7 @@ namespace MLocker.WebApp
             builder.Services.AddScoped<ISongRepository, SongRepository>();
             builder.Services.AddScoped<ITestRepository, TestRepository>();
             builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
+            builder.Services.AddScoped<ILocalStorageRepository, LocalStorageRepository>();
 
             await builder.Build().RunAsync();
         }

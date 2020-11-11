@@ -126,6 +126,14 @@ window.SetTitle = (song, imageUrl) => {
 	}
 }
 
+window.SetStorageItem = (key, value) => {
+	localStorage.setItem(key, value);
+}
+
+window.GetStorageItem = (key) => {
+	return localStorage.getItem(key);
+}
+
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', function () {
 		navigator.serviceWorker.register('/sw.js').then(function (registration) {

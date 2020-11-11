@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Blazored.LocalStorage;
+using MLocker.WebApp.Repositories;
 
 namespace MLocker.WebApp
 {
@@ -11,23 +11,23 @@ namespace MLocker.WebApp
 
     public class Config : IConfig
     {
-        private readonly ILocalStorageService _localStorageService;
-        private const string ApiKeyKey = "ApiKeyKey";
+	    private readonly ILocalStorageRepository _localStorageRepository;
+	    private const string ApiKeyKey = "ApiKeyKey";
 
-        public Config(ILocalStorageService localStorageService)
+        public Config(ILocalStorageRepository localStorageRepository)
         {
-            _localStorageService = localStorageService;
+	        _localStorageRepository = localStorageRepository;
         }
 
         public async Task<string> GetApiKey()
         {
-            var key = await _localStorageService.GetItemAsStringAsync(ApiKeyKey);
+            var key = await _localStorageRepository.GetItem(ApiKeyKey);
             return key ?? string.Empty;
         }
 
         public async Task SetApiKey(string baseApiUrl)
         {
-            await _localStorageService.SetItemAsync(ApiKeyKey, baseApiUrl);
+            await _localStorageRepository.SetItem(ApiKeyKey, baseApiUrl);
         }
     }
 }

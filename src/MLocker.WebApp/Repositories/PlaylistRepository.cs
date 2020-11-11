@@ -5,7 +5,6 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Blazored.LocalStorage;
 using MLocker.Core.Models;
 
 namespace MLocker.WebApp.Repositories
@@ -24,15 +23,15 @@ namespace MLocker.WebApp.Repositories
 	{
 		private readonly HttpClient _httpClient;
 		private readonly IConfig _config;
-		private readonly ILocalStorageService _localStorageService;
+		private readonly ILocalStorageRepository _localStorageRepository;
 		private static List<PlaylistDefinition> _allPlaylistDefinitions;
 		private const string PlaylistVersionKey = "PlaylistVersionKey";
 
-		public PlaylistRepository(HttpClient httpClient, IConfig config, ILocalStorageService localStorageService)
+		public PlaylistRepository(HttpClient httpClient, IConfig config, ILocalStorageRepository localStorageRepository)
 		{
 			_httpClient = httpClient;
 			_config = config;
-			_localStorageService = localStorageService;
+			_localStorageRepository = localStorageRepository;
 		}
 
 		public async Task UpdatePlaylists()
@@ -45,7 +44,7 @@ namespace MLocker.WebApp.Repositories
 		{
 			if (_allPlaylistDefinitions != null)
 				return _allPlaylistDefinitions;
-			var playlistVersion = await _localStorageService.GetItemAsStringAsync(PlaylistVersionKey);
+			var playlistVersion = await _localStorageRepository.GetItem(PlaylistVersionKey);
 			var remotePlaylistVersion = await GetRemotePlaylistVersion();
 			var isNewVersion = playlistVersion != remotePlaylistVersion;
 			_httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = isNewVersion };
@@ -55,7 +54,7 @@ namespace MLocker.WebApp.Repositories
 			var payload = JsonSerializer.Deserialize<PlaylistPayload>(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
 			_allPlaylistDefinitions = payload.PlaylistDefinitions.ToList();
 			if (isNewVersion)
-				await _localStorageService.SetItemAsync(PlaylistVersionKey, payload.Version);
+				await _localStorageRepository.SetItem(PlaylistVersionKey, payload.Version);
 			return _allPlaylistDefinitions;
 		}
 

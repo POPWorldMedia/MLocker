@@ -8,7 +8,6 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Blazored.LocalStorage;
 using MLocker.Core.Models;
 
 namespace MLocker.WebApp.Repositories
@@ -26,16 +25,16 @@ namespace MLocker.WebApp.Repositories
     {
         private readonly HttpClient _httpClient;
         private readonly IConfig _config;
-        private readonly ILocalStorageService _localStorageService;
+        private readonly ILocalStorageRepository _localStorageRepository;
         private static List<Song> _allSongs;
         private static SemaphoreSlim _updateLocker = new SemaphoreSlim(1, 1);
         private const string SongListVersionKey = "SongListVersionKey";
 
-        public SongRepository(HttpClient httpClient, IConfig config, ILocalStorageService localStorageService)
+        public SongRepository(HttpClient httpClient, IConfig config, ILocalStorageRepository localStorageRepository)
         {
             _httpClient = httpClient;
             _config = config;
-            _localStorageService = localStorageService;
+            _localStorageRepository = localStorageRepository;
         }
 
         public async Task UpdateSongs()
@@ -57,7 +56,7 @@ namespace MLocker.WebApp.Repositories
 	        {
 		        var stopwatch = new Stopwatch();
 		        stopwatch.Start();
-		        var songListVersion = await _localStorageService.GetItemAsStringAsync(SongListVersionKey);
+		        var songListVersion = await _localStorageRepository.GetItem(SongListVersionKey);
 		        var remoteSongListVersion = await GetRemoteSongListVersion();
 		        var isNewVersion = songListVersion != remoteSongListVersion;
 		        _httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue {NoCache = isNewVersion};
@@ -67,7 +66,7 @@ namespace MLocker.WebApp.Repositories
 		        var payload = JsonSerializer.Deserialize<SongListPayload>(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
 		        _allSongs = payload.Songs.ToList();
 		        if (isNewVersion)
-			        await _localStorageService.SetItemAsync(SongListVersionKey, payload.Version);
+			        await _localStorageRepository.SetItem(SongListVersionKey, payload.Version);
 		        stopwatch.Stop();
 		        Console.WriteLine($"Song fetch: {stopwatch.ElapsedMilliseconds}ms");
 	        }
