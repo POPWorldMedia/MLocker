@@ -45,7 +45,8 @@ namespace MLocker.WebApp.Repositories
         public async Task UpdateSongs()
         {
 	        _allSongs = null;
-	        await GetAllSongs();
+	        await _localStorageRepository.SetItem(SongListVersionKey, string.Empty);
+			await GetAllSongs();
         }
 
         public async Task<List<Song>> GetAllSongs()
