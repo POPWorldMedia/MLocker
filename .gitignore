@@ -349,3 +349,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 src/MLocker.Api/Properties/ServiceDependencies/
+src/MLocker.Api/.config/dotnet-tools.json

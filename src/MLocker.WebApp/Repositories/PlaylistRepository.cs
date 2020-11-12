@@ -89,6 +89,7 @@ namespace MLocker.WebApp.Repositories
 		{
 			var apiKey = await _config.GetApiKey();
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
+			_httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
 			var playlistVersion = await _httpClient.GetStringAsync(ApiPaths.GetPlaylistVersion);
 			return playlistVersion;
 		}

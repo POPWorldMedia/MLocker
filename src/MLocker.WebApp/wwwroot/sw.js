@@ -7,7 +7,7 @@ self.addEventListener('activate', event => event.waitUntil(onActivate(event)));
 const cacheNamePrefix = 'offline-cache-';
 const cacheName = `${cacheNamePrefix}${self.assetsManifest.version}`;
 const offlineAssetsInclude = [/\.dll$/, /\.pdb$/, /\.wasm/, /\.html/, /\.js$/, /\.json$/, /\.css$/, /\.woff$/, /\.png$/, /\.jpe?g$/, /\.gif$/, /\.ico$/, /\.blat$/, /\.dat$/];
-const offlineAssetsExclude = [/^service-worker\.js$/, /^sw\.js$/];
+const offlineAssetsExclude = [/^service-worker\.js$/, /^service-worker-assets\.js$/, /^sw\.js$/, /^manifest\.json$/];
 
 async function onInstall(event) {
 	self.skipWaiting();
