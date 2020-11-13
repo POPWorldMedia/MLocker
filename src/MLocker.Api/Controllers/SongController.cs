@@ -43,10 +43,8 @@ namespace MLocker.Api.Controllers
 	        if (stream == null || song == null)
 		        return StatusCode(404);
 	        var mediaType = song.FileName.EndsWith("mp3") ? "audio/mpeg" : "audio/mp4";
-	        var length = (int)stream.Length;
-	        var bytes = new byte[length];
-	        await stream.ReadAsync(bytes, 0, length);
-            return File(bytes, mediaType, false);
+	        stream.Position = 0;
+	        return File(stream, mediaType, false);
         }
 
         [HttpGet(ApiPaths.GetImage)]

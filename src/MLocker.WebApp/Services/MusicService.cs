@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using MLocker.Core.Models;
@@ -20,6 +21,8 @@ namespace MLocker.WebApp.Services
         Task<List<string>> GetAllArtists();
         Task<Tuple<List<Album>, List<Song>>> GetArtistDetail(string artist);
         Task UpdateSongs();
+        Task DownloadSongList(IEnumerable<Song> songs);
+        Task DeleteCache();
     }
 
     public class MusicService : IMusicService
@@ -179,5 +182,20 @@ namespace MLocker.WebApp.Services
 	        var songs = allSongs.Where(x => x.AlbumArtist == artist || x.Artist == artist).OrderBy(x => x.Title).ToList();
 	        return Tuple.Create(albums, songs);
         }
-    }
+
+        public async Task DownloadSongList(IEnumerable<Song> songs)
+        {
+	        foreach (var song in songs)
+			{
+				var cachedUrl = _songRepository.GetCachedSongUrl(song.FileID);
+				await _songRepository.CacheSong(cachedUrl);
+			}
+        }
+
+        public async Task DeleteCache()
+        {
+	        await _songRepository.DeleteCache();
+        }
+
+	}
 }

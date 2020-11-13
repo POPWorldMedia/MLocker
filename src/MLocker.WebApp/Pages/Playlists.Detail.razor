@@ -5,6 +5,7 @@
 @inject IPlayerService PlayerService
 @inject IPlaylistTransformer PlaylistTransformer
 @inject IPlaylistService PlaylistService
+@inject IMusicService MusicService
 
 <div class="my-3" style="text-align: right;">
 	<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#editModal" title="Edit playlist" id="editButton">
@@ -18,6 +19,7 @@
 <div>
 	<span id="playAlbumButton" @onclick="PlayPlaylist" title="Play playlist"></span>
 	<span class="playShuffleButton" @onclick="PlayShuffle" title="Shuffle playlist"></span>
+	<span class="downloadButton" @onclick="DownloadToggle" title="Download to device"></span>
 	<div class="songTitle text-truncate"><span class="text-truncate d-block">@Playlist.Title</span></div>
 	<SongListSummary SongList="_songList" />
 </div>
@@ -112,5 +114,10 @@
 		_songList = Playlist.Songs;
 		StateHasChanged();
 		PlaylistService.UpdatePlaylist(Playlist);
+	}
+
+	private async Task DownloadToggle()
+	{
+		await MusicService.DownloadSongList(_songList);
 	}
 }

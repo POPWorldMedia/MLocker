@@ -22,6 +22,8 @@ namespace MLocker.WebApp.Repositories
         Task IncrementPlayCount(int fileID);
         Task<string> GetRemoteSongListVersion();
         Task<bool> IsSongCached(string url);
+        Task CacheSong(string url);
+        Task DeleteCache();
     }
 
     public class SongRepository : ISongRepository
@@ -124,5 +126,15 @@ namespace MLocker.WebApp.Repositories
 	        var isCached = await _jsRuntime.InvokeAsync<bool>("IsUrlCached", url);
 	        return isCached;
         }
-    }
+
+        public async Task CacheSong(string url)
+        {
+	        await _jsRuntime.InvokeVoidAsync("AddToCache", url);
+		}
+
+        public async Task DeleteCache()
+        {
+	        await _jsRuntime.InvokeVoidAsync("ClearCache");
+        }
+	}
 }

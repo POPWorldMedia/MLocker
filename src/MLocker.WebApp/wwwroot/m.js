@@ -134,6 +134,15 @@ window.GetStorageItem = (key) => {
 	return localStorage.getItem(key);
 }
 
+window.AddToCache = (url) => {
+	return caches.open(CACHE_NAME)
+		.then((cache) => {
+				cache.add(url).catch(error => console.log('Song not cached: ' + error));
+			}
+		)
+		.catch(error => console.error(error));
+}
+
 window.IsUrlCached = (url) => {
 	return caches.open(CACHE_NAME)
 		.then((cache) => {
@@ -147,6 +156,13 @@ window.IsUrlCached = (url) => {
 			}
 		)
 		.catch(error => console.error(error));
+}
+
+window.ClearCache = () => {
+	return caches.delete(CACHE_NAME)
+		.then(() => {
+			console.log('Cache deleted');
+		});
 }
 
 if ('serviceWorker' in navigator) {

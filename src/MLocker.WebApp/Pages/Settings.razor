@@ -1,0 +1,16 @@
+﻿@page "/Settings"
+@using MLocker.WebApp.Services
+@inject IMusicService MusicService
+
+<div>
+	<p>Clearing the cache will free up space on your device, but you may incur significant data charges when you're not on wifi or an otherwise unmetered connection.</p>
+	<p class="text-center"><input type="button" @onclick="ClearCache" class="btn btn-dark" value="Clear Cache"/></p>
+</div>
+
+@code {
+
+	private async Task ClearCache()
+	{
+		await MusicService.DeleteCache();
+	}
+}
