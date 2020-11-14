@@ -135,12 +135,8 @@ window.GetStorageItem = (key) => {
 }
 
 window.AddToCache = (url) => {
-	return caches.open(CACHE_NAME)
-		.then((cache) => {
-				cache.add(url).catch(error => console.log('Song not cached: ' + error));
-			}
-		)
-		.catch(error => console.error(error));
+	return fetch(url)
+		.catch(error => console.log('Song not cached: ' + error));
 }
 
 window.IsUrlCached = (url) => {
@@ -167,7 +163,7 @@ window.ClearCache = () => {
 
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', function () {
-		navigator.serviceWorker.register('/sw.js').then(function (registration) {
+		navigator.serviceWorker.register('sw.js').then(function (registration) {
 			registration.update();
 			console.log('ServiceWorker registration successful with scope: ', registration.scope);
 		}, function (err) {
