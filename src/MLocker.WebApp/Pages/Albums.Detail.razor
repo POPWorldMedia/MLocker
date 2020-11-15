@@ -8,6 +8,7 @@
 <div>
 	<span id="playAlbumButton" @onclick="PlayAlbum" title="Play album"></span>
 	<span class="playShuffleButton" @onclick="PlayShuffle" title="Shuffle album"></span>
+	<SongListCacheButton SongList="_songList" />
 	<div class="songTitle text-truncate"><span class="text-truncate d-block">@Album.AlbumArtist - @Album.Title</span></div>
 	<SongListSummary SongList="_songList" />
 </div>
