@@ -1,0 +1,40 @@
+﻿@using MLocker.Core.Models
+@using MLocker.WebApp.Services
+@inject IMusicService MusicService
+
+<span class="@_cacheButtonClass" @onclick="DownloadToggle" title="Download to device"></span>
+
+@code {
+	[Parameter]
+	public List<Song> SongList { get; set; }
+
+	private string _cacheButtonClass;
+	private bool _isCached;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await CheckCacheStatus();
+	}
+
+	private async Task CheckCacheStatus()
+	{
+		_isCached = await MusicService.IsSongCachedAndCompleteCaching(SongList);
+		_cacheButtonClass = _isCached ? "cachedButton" : "downloadButton";
+	}
+
+	private async Task DownloadToggle()
+	{
+		if (_isCached)
+		{
+			await MusicService.RemoveSongsFromCache(SongList);
+			_isCached = false;
+			_cacheButtonClass = "downloadButton";
+		}
+		else
+		{
+			await MusicService.DownloadSongList(SongList);
+			_isCached = true;
+			_cacheButtonClass = "cachedButton";
+		}
+	}
+}
