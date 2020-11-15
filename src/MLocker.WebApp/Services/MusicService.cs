@@ -23,6 +23,8 @@ namespace MLocker.WebApp.Services
         Task UpdateSongs();
         Task DownloadSongList(IEnumerable<Song> songs);
         Task DeleteCache();
+        Task<bool> IsSongCachedAndCompleteCaching(IEnumerable<Song> songs);
+        Task RemoveSongsFromCache(IEnumerable<Song> songs);
     }
 
     public class MusicService : IMusicService
@@ -192,7 +194,35 @@ namespace MLocker.WebApp.Services
 			}
         }
 
-        public async Task DeleteCache()
+        public async Task<bool> IsSongCachedAndCompleteCaching(IEnumerable<Song> songs)
+        {
+	        bool isCached = false;
+	        var notCachedSongUrls = new List<string>();
+	        foreach (var song in songs)
+	        {
+		        var url = _songRepository.GetCachedSongUrl(song.FileID);
+		        var isSongCached = await _songRepository.IsSongCached(url);
+		        if (isSongCached)
+			        isCached = true;
+		        else
+			        notCachedSongUrls.Add(url);
+	        }
+			if (isCached)
+				foreach (var url in notCachedSongUrls)
+					await _songRepository.CacheSong(url);
+	        return isCached;
+		}
+
+        public async Task RemoveSongsFromCache(IEnumerable<Song> songs)
+        {
+	        foreach (var song in songs)
+			{
+				var url = _songRepository.GetCachedSongUrl(song.FileID);
+				await _songRepository.DeleteFromCache(url);
+			}
+        }
+
+		public async Task DeleteCache()
         {
 	        await _songRepository.DeleteCache();
         }

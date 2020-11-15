@@ -24,6 +24,7 @@ namespace MLocker.WebApp.Repositories
         Task<bool> IsSongCached(string url);
         Task CacheSong(string url);
         Task DeleteCache();
+        Task DeleteFromCache(string url);
     }
 
     public class SongRepository : ISongRepository
@@ -132,7 +133,12 @@ namespace MLocker.WebApp.Repositories
 	        await _jsRuntime.InvokeVoidAsync("AddToCache", url);
 		}
 
-        public async Task DeleteCache()
+        public async Task DeleteFromCache(string url)
+        {
+	        await _jsRuntime.InvokeVoidAsync("RemoveFromCache", url);
+        }
+
+		public async Task DeleteCache()
         {
 	        await _jsRuntime.InvokeVoidAsync("ClearCache");
         }

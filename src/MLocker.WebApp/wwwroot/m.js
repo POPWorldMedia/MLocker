@@ -139,6 +139,14 @@ window.AddToCache = (url) => {
 		.catch(error => console.log('Song not cached: ' + error));
 }
 
+window.RemoveFromCache = (url) => {
+	return caches.open(CACHE_NAME)
+		.then((cache) => {
+			return cache.delete(url);
+		})
+		.catch(error => console.log('Can\'t remove from cache: ' + error));
+}
+
 window.IsUrlCached = (url) => {
 	return caches.open(CACHE_NAME)
 		.then((cache) => {

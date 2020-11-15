@@ -19,7 +19,7 @@
 <div>
 	<span id="playAlbumButton" @onclick="PlayPlaylist" title="Play playlist"></span>
 	<span class="playShuffleButton" @onclick="PlayShuffle" title="Shuffle playlist"></span>
-	<span class="downloadButton" @onclick="DownloadToggle" title="Download to device"></span>
+	<span class="@_cacheButtonClass" @onclick="DownloadToggle" title="Download to device"></span>
 	<div class="songTitle text-truncate"><span class="text-truncate d-block">@Playlist.Title</span></div>
 	<SongListSummary SongList="_songList" />
 </div>
@@ -57,12 +57,21 @@
 	List<Song> _songList;
 	int _currentIndex;
 	private Timer _timer;
+	private string _cacheButtonClass;
+	private bool _isCached;
 
-	protected override void OnInitialized()
+	protected override async Task OnInitializedAsync()
 	{
 		_songList = Playlist.Songs;
 		_timer = new Timer(500) { AutoReset = false };
 		_timer.Elapsed += OnTimerFinish;
+		await CheckCacheStatus();
+	}
+
+	private async Task CheckCacheStatus()
+	{
+		_isCached = await MusicService.IsSongCachedAndCompleteCaching(_songList);
+		_cacheButtonClass = _isCached ? "cachedButton" : "downloadButton";
 	}
 
 	private void PlayPlaylist()
@@ -118,6 +127,17 @@
 
 	private async Task DownloadToggle()
 	{
-		await MusicService.DownloadSongList(_songList);
+		if (_isCached)
+		{
+			await MusicService.RemoveSongsFromCache(_songList);
+			_isCached = false;
+			_cacheButtonClass = "downloadButton";
+		}
+		else
+		{
+			await MusicService.DownloadSongList(_songList);
+			_isCached = true;
+			_cacheButtonClass = "cachedButton";
+		}
 	}
 }
