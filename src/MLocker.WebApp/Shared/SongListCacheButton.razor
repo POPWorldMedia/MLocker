@@ -7,6 +7,8 @@
 @code {
 	[Parameter]
 	public List<Song> SongList { get; set; }
+	[Parameter]
+	public bool IsAlbumMode { get; set; }
 
 	private string _cacheButtonClass;
 	private bool _isCached;
@@ -18,7 +20,7 @@
 
 	private async Task CheckCacheStatus()
 	{
-		_isCached = await MusicService.IsSongCachedAndCompleteCaching(SongList);
+		_isCached = await MusicService.IsSongCachedAndCompleteCaching(SongList, IsAlbumMode);
 		_cacheButtonClass = _isCached ? "cachedButton" : "downloadButton";
 	}
 

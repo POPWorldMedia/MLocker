@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using MLocker.Core.Models;
@@ -23,7 +22,7 @@ namespace MLocker.WebApp.Services
         Task UpdateSongs();
         Task DownloadSongList(IEnumerable<Song> songs);
         Task DeleteCache();
-        Task<bool> IsSongCachedAndCompleteCaching(IEnumerable<Song> songs);
+        Task<bool> IsSongCachedAndCompleteCaching(IEnumerable<Song> songs, bool isAlbumMode);
         Task RemoveSongsFromCache(IEnumerable<Song> songs);
     }
 
@@ -194,23 +193,34 @@ namespace MLocker.WebApp.Services
 			}
         }
 
-        public async Task<bool> IsSongCachedAndCompleteCaching(IEnumerable<Song> songs)
+		/// <summary>
+		/// Determines if at least one song of a playlist is cached, and if so, caches the rest. In album mode, determines
+		/// if the album is cached.
+		/// </summary>
+		/// <param name="songs"></param>
+		/// <param name="isAlbumMode"></param>
+		/// <returns></returns>
+        public async Task<bool> IsSongCachedAndCompleteCaching(IEnumerable<Song> songs, bool isAlbumMode)
         {
-	        bool isCached = false;
+	        bool isAtLeastOneSongCached = false;
+	        bool isAllSongsCached = true;
 	        var notCachedSongUrls = new List<string>();
 	        foreach (var song in songs)
 	        {
 		        var url = _songRepository.GetCachedSongUrl(song.FileID);
 		        var isSongCached = await _songRepository.IsSongCached(url);
 		        if (isSongCached)
-			        isCached = true;
+			        isAtLeastOneSongCached = true;
 		        else
+		        {
+			        isAllSongsCached = false;
 			        notCachedSongUrls.Add(url);
+		        }
 	        }
-			if (isCached)
+			if (isAtLeastOneSongCached && !isAlbumMode) // if this is a playlist, and one song is cached, fetch missing songs, but albums never change and should be all at once
 				foreach (var url in notCachedSongUrls)
 					await _songRepository.CacheSong(url);
-	        return isCached;
+	        return isAlbumMode ? isAllSongsCached : isAtLeastOneSongCached;
 		}
 
         public async Task RemoveSongsFromCache(IEnumerable<Song> songs)
