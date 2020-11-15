@@ -16,6 +16,10 @@ hr {
 	height: 4px !important;
 }
 
+.bg-dark, .btn-dark {
+	background-color: #00005c !important;
+}
+
 .table td {
 	vertical-align: middle;
 }
