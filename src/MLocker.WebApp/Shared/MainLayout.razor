@@ -1,8 +1,11 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
 <SongContextMenu />
 <Spinner />
 <div id="bodyContent" class="flex-column justify-content-center flex-grow-1 overflow-auto pt-2">
 	<div class="container">
+		<a id="topper"></a>
 		@Body
 	</div>
 </div>
@@ -11,3 +14,14 @@
 	<MainNav />
 </div>
 <AuthTest />
+
+@code
+{
+	protected override void OnInitialized()
+	{
+		NavigationManager.LocationChanged += (sender, args) =>
+		{
+			JsRuntime.InvokeVoidAsync("ScrollReset");
+		};
+	}
+}
