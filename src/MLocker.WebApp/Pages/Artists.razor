@@ -35,15 +35,17 @@ else
 		}
 	}
 
-	protected void LoadArtistDetail(string artist)
+	protected async Task LoadArtistDetail(string artist)
 	{
 		_currentArtist = artist;
 		_isDetail = true;
+		await MusicService.ScrollReset();
 	}
 
-	protected void BackToAll()
+	protected async Task BackToAll()
 	{
 		_isDetail = false;
 		_currentArtist = null;
+		await MusicService.ScrollReset();
 	}
 }

@@ -22,8 +22,8 @@ else
 
 @code {
 	List<Album> _albumList = new List<Album>();
-	Album _currentAlbum = null;
-	private bool _isDetail = false;
+	Album _currentAlbum;
+	private bool _isDetail;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -41,15 +41,17 @@ else
 		}
 	}
 
-	protected void LoadAlbum(Album album)
+	protected async Task LoadAlbum(Album album)
 	{
 		_currentAlbum = album;
 		_isDetail = true;
+		await MusicService.ScrollReset();
 	}
 
-	protected void BackToAll()
+	protected async Task BackToAll()
 	{
 		_isDetail = false;
 		_currentAlbum = null;
+		await MusicService.ScrollReset();
 	}
 }

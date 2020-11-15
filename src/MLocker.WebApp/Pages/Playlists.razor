@@ -2,6 +2,7 @@
 @using MLocker.WebApp.Services
 @using MLocker.Core.Models
 @inject IPlaylistService PlaylistService
+@inject IMusicService MusicService
 
 @if (_isDetail)
 {
@@ -33,15 +34,17 @@ else
 		await InvokeAsync(StateHasChanged);
 	}
 
-	protected void LoadPlaylist(Playlist playlist)
+	protected async Task LoadPlaylist(Playlist playlist)
 	{
 		_currentPlaylist = playlist;
 		_isDetail = true;
+		await MusicService.ScrollReset();
 	}
 
-	protected void BackToAll()
+	protected async Task BackToAll()
 	{
 		_isDetail = false;
 		_currentPlaylist = null;
+		await MusicService.ScrollReset();
 	}
 }

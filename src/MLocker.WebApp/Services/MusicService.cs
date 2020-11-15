@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.JSInterop;
 using MLocker.Core.Models;
 using MLocker.WebApp.Repositories;
 
@@ -24,6 +25,7 @@ namespace MLocker.WebApp.Services
         Task DeleteCache();
         Task<bool> IsSongCachedAndCompleteCaching(IEnumerable<Song> songs, bool isAlbumMode);
         Task RemoveSongsFromCache(IEnumerable<Song> songs);
+        Task ScrollReset();
     }
 
     public class MusicService : IMusicService
@@ -31,15 +33,17 @@ namespace MLocker.WebApp.Services
         private readonly ISongRepository _songRepository;
         private readonly IUploadRepository _uploadRepository;
         private readonly ISpinnerService _spinnerService;
+        private readonly IJSRuntime _jsRuntime;
         private static List<Album> _albums;
         private static List<string> _artists;
         private static SemaphoreSlim _updateLocker = new SemaphoreSlim(1, 1);
 
-		public MusicService(ISongRepository songRepository, IUploadRepository uploadRepository, ISpinnerService spinnerService)
+		public MusicService(ISongRepository songRepository, IUploadRepository uploadRepository, ISpinnerService spinnerService, IJSRuntime jsRuntime)
         {
             _songRepository = songRepository;
             _uploadRepository = uploadRepository;
             _spinnerService = spinnerService;
+            _jsRuntime = jsRuntime;
         }
 
         public async Task UpdateSongs()
@@ -237,5 +241,9 @@ namespace MLocker.WebApp.Services
 	        await _songRepository.DeleteCache();
         }
 
+		public async Task ScrollReset()
+		{
+			await _jsRuntime.InvokeVoidAsync("ScrollReset");
+		}
 	}
 }

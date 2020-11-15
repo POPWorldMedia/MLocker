@@ -80,21 +80,23 @@ else
 		_songList = _songs;
 	}
 
-	public void LoadAlbum(Album album)
+	public async Task LoadAlbum(Album album)
 	{
 		_currentAlbum = album;
 		_songList = album.Songs;
 		_showSearch = false;
 		_isAlbumMode = true;
 		StateHasChanged();
+		await MusicService.ScrollReset();
 	}
 
-	public void BackToAllAlbums()
+	public async Task BackToAllAlbums()
 	{
 		_showSearch = true;
 		_songList = _songs;
 		_isAlbumMode = false;
 		StateHasChanged();
+		await MusicService.ScrollReset();
 	}
 
 	private void PlayAlbum()
