@@ -1,0 +1,24 @@
+﻿@using MLocker.Core.Models
+@using MLocker.WebApp.Services
+@inject IPlayerService PlayerService
+
+<span class="@_queueButtonClass" @onclick="EnqueueList" title="Add to queue"></span>
+
+@code {
+	[Parameter]
+	public List<Song> SongList { get; set; }
+
+	private string _queueButtonClass;
+
+	protected override void OnParametersSet()
+	{
+		_queueButtonClass = "addToQueueButton";
+	}
+
+	private void EnqueueList()
+	{
+		_queueButtonClass = "doneAddToQueueButton";
+		foreach (var song in SongList)
+			PlayerService.EnqueueSong(song);
+	}
+}
