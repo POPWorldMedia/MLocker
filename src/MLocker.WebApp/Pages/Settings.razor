@@ -7,6 +7,9 @@
 	<p class="text-center"><input type="button" @onclick="ClearCache" class="btn btn-dark" value="Clear Cache"/></p>
 </div>
 
+<footer>
+	<p class="text-center">v@(System.Reflection.Assembly.Load("MLocker.WebApp").GetName().Version)</p>
+</footer>
 @code {
 
 	private async Task ClearCache()
