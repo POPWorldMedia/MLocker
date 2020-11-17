@@ -34,9 +34,9 @@
 		}
 		else
 		{
-			await MusicService.DownloadSongList(SongList);
 			_isCached = true;
 			_cacheButtonClass = "cachedButton";
+			await MusicService.DownloadSongList(SongList);
 		}
 	}
 }
