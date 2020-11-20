@@ -23,7 +23,7 @@ namespace MLocker.WebApp.Services
         Task UpdateSongs();
         Task DownloadSongList(IEnumerable<Song> songs);
         Task DeleteCache();
-        Task<bool> IsSongCachedAndCompleteCaching(IEnumerable<Song> songs, bool isAlbumMode);
+        Task<bool> IsAllSongsCached(IEnumerable<Song> songs);
         Task RemoveSongsFromCache(IEnumerable<Song> songs);
         Task ScrollReset();
     }
@@ -197,34 +197,20 @@ namespace MLocker.WebApp.Services
 			}
         }
 
-		/// <summary>
-		/// Determines if at least one song of a playlist is cached, and if so, caches the rest. In album mode, determines
-		/// if the album is cached.
-		/// </summary>
-		/// <param name="songs"></param>
-		/// <param name="isAlbumMode"></param>
-		/// <returns></returns>
-        public async Task<bool> IsSongCachedAndCompleteCaching(IEnumerable<Song> songs, bool isAlbumMode)
-        {
-	        bool isAtLeastOneSongCached = false;
+        public async Task<bool> IsAllSongsCached(IEnumerable<Song> songs)
+		{
+			var list = songs.ToList();
+			if (!list.Any())
+				return false;
 	        bool isAllSongsCached = true;
-	        var notCachedSongUrls = new List<string>();
-	        foreach (var song in songs)
+	        foreach (var song in list)
 	        {
 		        var url = _songRepository.GetCachedSongUrl(song.FileID);
 		        var isSongCached = await _songRepository.IsSongCached(url);
-		        if (isSongCached)
-			        isAtLeastOneSongCached = true;
-		        else
-		        {
+		        if (!isSongCached)
 			        isAllSongsCached = false;
-			        notCachedSongUrls.Add(url);
-		        }
 	        }
-			if (isAtLeastOneSongCached && !isAlbumMode) // if this is a playlist, and one song is cached, fetch missing songs, but albums never change and should be all at once
-				foreach (var url in notCachedSongUrls)
-					await _songRepository.CacheSong(url);
-	        return isAlbumMode ? isAllSongsCached : isAtLeastOneSongCached;
+	        return isAllSongsCached;
 		}
 
         public async Task RemoveSongsFromCache(IEnumerable<Song> songs)

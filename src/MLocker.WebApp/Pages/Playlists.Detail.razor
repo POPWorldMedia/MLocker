@@ -19,7 +19,7 @@
 	<span id="playAlbumButton" @onclick="PlayPlaylist" title="Play playlist"></span>
 	<span class="playShuffleButton" @onclick="PlayShuffle" title="Shuffle playlist"></span>
 	<AddListToQueueButton SongList="_songList"/>
-	<SongListCacheButton SongList="_songList" IsAlbumMode="false" />
+	<SongListCacheButton SongList="_songList" />
 	<div class="songTitle text-truncate"><span class="text-truncate d-block">@Playlist.Title</span></div>
 	<SongListSummary SongList="_songList" />
 </div>
