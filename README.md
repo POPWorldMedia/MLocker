@@ -6,7 +6,19 @@ The app uses an aspnetcore API, storing the music files in Azure Storage and the
 ![image](https://user-images.githubusercontent.com/2114255/98284863-bdbc5780-1f6f-11eb-9aa0-7c563d78b1f0.png)
 
 ## Roadmap
-This is really an exercise in experimentation, but using it myself daily, I do want to formally make some releases. I think v1 will nail down the local caching of music, to save on data transfer (especially when mobile), then it will be "done" enough for use.
+This is really an exercise in experimentation, but using it myself daily, I do want to formally make some releases. I think v1 is close, as there aren't any major features I want to add. About 2,000 tracks played back so far on my instance!
+
+## Features
+* Loads all library metadata up front, caches it if it hasn't changed. Navigating music and searching in lists is instantaneous because you have all the data! Tested with library of about 8k songs. Normal data hit for start with no new content is about 11kb.
+* Download playlists and albums to your device while on wifi, to reduce data use on cellular.
+* Album art automatically cached on your device.
+* Supports `MediaSession` API, so controls and current track appear in Android lock screen and Windows media controls. (iOS support, not so much.)
+* From any song list, context menu allows you to add song to most recent playlist, another playlist, play the song next, add it to the queue, go to the album or artist.
+* Add entire albums or playlists to the queue.
+* Shuffle all the things, instantly.
+* Artist view shows all the albums, and all the songs (you can shuffle those, too).
+* Responsive view works in your desktop browser and your mobile device.
+* Install it as a progressive web app, with an icon in your taskbar or launcher. Works great with Chrome/Edge and Firefox, on Android and Windows. (iOS, not so much.)
 
 ## Getting started
 * First off, I'm not a lawyer, and this isn't legal advice, but existing case law seems to suggest that you can store your own music that you own in the cloud, so this shouldn't be materially different than doing so with Amazon or Google. That said, don't share it and give your API key to everyone. Also, there is no defensive coding against concurrency issues, so your playlists will get written over by another user if you're editing them at the same time.
