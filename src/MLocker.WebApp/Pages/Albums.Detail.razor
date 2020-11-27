@@ -17,8 +17,8 @@
 <SongList Songs="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="false" ShowTrack="true" />
 
 @code {
-	[CascadingParameter]
-	protected Album Album { get; set; }
+	[Parameter]
+	public Album Album { get; set; }
 
 	List<Song> _songList;
 

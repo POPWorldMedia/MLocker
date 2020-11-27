@@ -7,15 +7,11 @@
 @if (_isDetail)
 {
 	<p @onclick="@BackToAll"><span class="backButton"></span> all playlists</p>
-	<CascadingValue Value="_currentPlaylist">
-		<Playlists_Detail/>
-	</CascadingValue>
+	<Playlists_Detail Playlist="_currentPlaylist"/>
 }
 else
 {
-	<CascadingValue Value="_playlistList">
-		<Playlists_All OnClick="@LoadPlaylist" OnNew="@RefreshList" />
-	</CascadingValue>
+	<Playlists_All OnClick="@LoadPlaylist" OnNew="@RefreshList" PlaylistList="_playlistList" />
 }
 
 @code {

@@ -9,20 +9,16 @@
 @if (_isDetail)
 {
 	<p @onclick="@BackToAll"><span class="backButton"></span> all albums</p>
-	<CascadingValue Value="_currentAlbum">
-		<Albums_Detail/>
-	</CascadingValue>
+	<Albums_Detail Album="_currentAlbum" />
 }
 else
 {
-	<CascadingValue Value="_albumList">
-		<Albums_All OnClick="@LoadAlbum"/>
-	</CascadingValue>
+	<Albums_All OnClick="@LoadAlbum" AlbumList="_albumList"/>
 }
 
 @code {
-	List<Album> _albumList = new List<Album>();
-	Album _currentAlbum;
+	private List<Album> _albumList = new List<Album>();
+	private Album _currentAlbum;
 	private bool _isDetail;
 
 	protected override async Task OnInitializedAsync()

@@ -9,9 +9,7 @@
 }
 else
 {
-	<CascadingValue Value="_artistList">
-		<Artists_All OnClick="@LoadArtistDetail" />
-	</CascadingValue>
+	<Artists_All OnClick="@LoadArtistDetail" ArtistList="_artistList" />
 }
 
 @code {

@@ -72,8 +72,8 @@
 
 @code
 {
-	[CascadingParameter]
-	protected List<Playlist> PlaylistList { get; set; }
+	[Parameter]
+	public List<Playlist> PlaylistList { get; set; }
 	[Parameter]
 	public EventCallback<Playlist> OnClick { get; set; }
 	[Parameter]

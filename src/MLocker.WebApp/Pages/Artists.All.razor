@@ -22,8 +22,8 @@
 
 @code
 {
-	[CascadingParameter]
-	protected List<string> ArtistList { get; set; }
+	[Parameter]
+	public List<string> ArtistList { get; set; }
 	[Parameter]
 	public EventCallback<string> OnClick { get; set; }
 

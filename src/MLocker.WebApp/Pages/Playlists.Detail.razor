@@ -51,11 +51,11 @@
 <SongList Songs="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="false" ShowTrack="false" />
 
 @code {
-	[CascadingParameter]
-	protected Playlist Playlist { get; set; }
+	[Parameter]
+	public Playlist Playlist { get; set; }
 
-	List<Song> _songList;
-	int _currentIndex;
+	private List<Song> _songList;
+	private int _currentIndex;
 	private Timer _timer;
 
 	protected override void OnInitialized()
