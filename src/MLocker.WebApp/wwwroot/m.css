@@ -38,7 +38,7 @@ hr {
 .songList .row:hover, .albumList .row:hover, .artistList .row:hover {
 	background-color: rgba(0,0,0,0.075);
 }
-.songList .header:hover {
+.header:hover {
 	background: none !important;
 }
 

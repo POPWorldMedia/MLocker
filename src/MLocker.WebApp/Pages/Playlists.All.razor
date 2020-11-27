@@ -54,24 +54,20 @@
 		<span class="input-group-text" @onclick="ClearSearch"><button type="button" class="btn-close" aria-label="Close"></button></span>
 	</div>
 
-	<table class="table table-hover">
-		<thead>
-			<tr>
-				<th>Playlist</th>
-				<th class="text-right">Songs</th>
-				<th class="songLengthPlayCell"></th>
-			</tr>
-		</thead>
-		<tbody>
-			<Virtualize Context="item" Items="@_filteredList" TItem="Playlist">
-				<tr>
-					<td @onclick="@(() => OnClick.InvokeAsync(item))" class="clickyText">@item.Title</td>
-					<td class="text-right">@item.Songs.Count</td>
-					<td><span class="trashCan" data-toggle="modal" data-target="#deleteModal" @onclick="(() => SetupDelete(item))"></span></td>
-				</tr>
-			</Virtualize>
-		</tbody>
-	</table>
+	<div class="songList">
+		<div class="row py-2 flex-nowrap fw-bold header">
+			<div class="col">Playlist</div>
+			<div class="col songLengthPlayCell text-right">Songs</div>
+			<div class="col songLengthPlayCell"></div>
+		</div>
+		<Virtualize Context="item" Items="@_filteredList" TItem="Playlist">
+			<div class="row py-2 flex-nowrap">
+				<div class="col clickyText" @onclick="@(() => OnClick.InvokeAsync(item))">@item.Title</div>
+				<div class="col songLengthPlayCell text-right">@item.Songs.Count</div>
+				<div class="col songLengthPlayCell text-right"><span class="trashCan" data-toggle="modal" data-target="#deleteModal" @onclick="(() => SetupDelete(item))"></span></div>
+			</div>
+		</Virtualize>
+	</div>
 }
 
 @code
