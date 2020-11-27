@@ -50,6 +50,8 @@ namespace MLocker.WebApp.Services
         {
 	        await _songRepository.UpdateSongs();
             await PopulateAlbums();
+            _artists = null;
+            await GetAllArtists();
         }
 
         public async Task<List<Song>> GetAllSongs()

@@ -35,7 +35,7 @@ namespace MLocker.WebApp.Repositories
         private readonly IJSRuntime _jsRuntime;
         private static List<Song> _allSongs;
         private static SemaphoreSlim _updateLocker = new SemaphoreSlim(1, 1);
-        private const string SongListVersionKey = "SongListVersionKey";
+        public const string SongListVersionKey = "SongListVersionKey";
 
         public SongRepository(HttpClient httpClient, IConfig config, ILocalStorageRepository localStorageRepository, IJSRuntime jsRuntime)
         {

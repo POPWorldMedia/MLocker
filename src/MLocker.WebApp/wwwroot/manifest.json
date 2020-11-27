@@ -1,6 +1,6 @@
 {
 	"name": "MLocker",
-	"version": "0.11",
+	"version": "0.14",
 	"short_name": "MLocker",
 	"start_url": "./",
 	"display": "standalone",

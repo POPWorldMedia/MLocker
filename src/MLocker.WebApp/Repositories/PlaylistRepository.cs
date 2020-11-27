@@ -67,6 +67,7 @@ namespace MLocker.WebApp.Repositories
 			var responsePayload = await response.Content.ReadAsStringAsync();
 			var playlistDefinition = JsonSerializer.Deserialize<PlaylistDefinition>(responsePayload);
 			_allPlaylistDefinitions?.Add(playlistDefinition);
+			await _localStorageRepository.SetItem(PlaylistVersionKey, string.Empty);
 			return playlistDefinition;
 		}
 
@@ -75,6 +76,7 @@ namespace MLocker.WebApp.Repositories
 			var apiKey = await _config.GetApiKey();
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
 			await _httpClient.PostAsJsonAsync(ApiPaths.UpdatePlaylist, playlistDefinition);
+			await _localStorageRepository.SetItem(PlaylistVersionKey, string.Empty);
 		}
 
 		public async Task DeletePlaylist(int playlistID)
@@ -83,6 +85,7 @@ namespace MLocker.WebApp.Repositories
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
 			string uri = $"{ApiPaths.DeletePlaylist}/{playlistID}";
 			await _httpClient.DeleteAsync(uri);
+			await _localStorageRepository.SetItem(PlaylistVersionKey, string.Empty);
 		}
 
 		public async Task<string> GetRemotePlaylistVersion()

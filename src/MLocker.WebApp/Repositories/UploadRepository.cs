@@ -16,11 +16,13 @@ namespace MLocker.WebApp.Repositories
     {
         private readonly HttpClient _httpClient;
         private readonly IConfig _config;
+        private readonly ILocalStorageRepository _localStorageRepository;
 
-        public UploadRepository(HttpClient httpClient, IConfig config)
+        public UploadRepository(HttpClient httpClient, IConfig config, ILocalStorageRepository localStorageRepository)
         {
             _httpClient = httpClient;
             _config = config;
+            _localStorageRepository = localStorageRepository;
         }
 
         public async Task<bool> UploadFile(string fileName, Stream stream)
@@ -39,6 +41,7 @@ namespace MLocker.WebApp.Repositories
             content.Dispose();
             var result = response.IsSuccessStatusCode;
             response.Dispose();
+            await _localStorageRepository.SetItem(SongRepository.SongListVersionKey, string.Empty);
             return result;
         }
     }
