@@ -65,7 +65,7 @@ namespace MLocker.WebApp.Repositories
 			var payload = new PlaylistDefinition {Title = title};
 			var response = await _httpClient.PostAsJsonAsync(ApiPaths.CreatePlaylist, payload);
 			var responsePayload = await response.Content.ReadAsStringAsync();
-			var playlistDefinition = JsonSerializer.Deserialize<PlaylistDefinition>(responsePayload);
+			var playlistDefinition = JsonSerializer.Deserialize<PlaylistDefinition>(responsePayload, new JsonSerializerOptions(JsonSerializerDefaults.Web));
 			_allPlaylistDefinitions?.Add(playlistDefinition);
 			await _localStorageRepository.SetItem(PlaylistVersionKey, string.Empty);
 			return playlistDefinition;

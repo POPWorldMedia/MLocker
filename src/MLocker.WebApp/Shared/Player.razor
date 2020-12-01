@@ -5,6 +5,7 @@
 @inject IFileParsingService FileParsingService
 @inject IPlayerService PlayerService
 @inject IMusicService MusicService
+@inject IPlaylistService PlaylistService
 
 <div id="playerInfo">
 	@if (PlayerService.CurrentSong != null)
@@ -43,7 +44,34 @@
 <div id="queueList" class="container collapse" aria-labelledby="queueButton" data-parent="#queueButton">
 	@if (PlayerService.Queue != null && PlayerService.Queue.Count > 0)
 	{
+		<div class="my-3 text-right">
+			<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#convertModal" title="Save queue to new playlist">
+				<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+				</svg>
+			</button>
+		</div>
+
 		<SongList Songs="_songList" WillClearQueueOnPlay="false" WillQueueListOnPlay="false" ShowSearch="false" />
+
+		<div class="modal fade" id="convertModal" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Save queue to new playlist</h5>
+						<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3">
+							<input type="text" class="form-control" @bind-value="_newPlaylistName" placeholder="Playlist name">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-dark" data-dismiss="modal" @onclick="SaveNewPlaylist">Create</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	}
 	else
 	{
@@ -56,13 +84,14 @@
 @code
 {
 	private List<Song> _songList;
-	string _source;
-	string _imageClass;
-	string _titleClass;
-	string _nextClass;
-	string _previousClass;
-	string _playClass;
-	bool _isBig = false;
+	private string _source;
+	private string _imageClass;
+	private string _titleClass;
+	private string _nextClass;
+	private string _previousClass;
+	private string _playClass;
+	private bool _isBig = false;
+	private string _newPlaylistName;
 
 	protected override void OnInitialized()
 	{
@@ -168,5 +197,13 @@
 	public static void SongPrevious()
 	{
 		_previousSongAction.Invoke();
+	}
+
+	private async Task SaveNewPlaylist()
+	{
+		if (string.IsNullOrEmpty(_newPlaylistName))
+			return;
+		await PlaylistService.CreateNewPlaylistDefinition(_newPlaylistName, _songList);
+		_newPlaylistName = string.Empty;
 	}
 }
