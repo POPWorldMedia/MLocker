@@ -352,7 +352,7 @@ hr {
 	z-index: 10000;
 }
 
-#songContextMenu[data-show] {
+#songContextMenu[data-bs-show] {
 	display: block;
 }
 

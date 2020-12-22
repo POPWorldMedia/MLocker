@@ -5,7 +5,7 @@
 	<BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
 	<InvariantGlobalization>true</InvariantGlobalization>
 	<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-	<AssemblyVersion>0.16</AssemblyVersion>
+	<AssemblyVersion>0.17</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

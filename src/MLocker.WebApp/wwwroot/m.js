@@ -83,12 +83,12 @@ window.OpenSongContext = (contextMenuId) => {
 			}
 		]
 	});
-	menu.setAttribute('data-show', '');
+	menu.setAttribute('data-bs-show', '');
 	var hideEvents = ['mouseleave', 'blur', 'click'];
 	hideEvents.forEach(event => {
 		menu.addEventListener(event, () => {
 			if (menu)
-				menu.removeAttribute('data-show');
+				menu.removeAttribute('data-bs-show');
 			if (instance)
 				instance.destroy();
 			instance = null;

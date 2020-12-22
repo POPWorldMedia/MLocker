@@ -27,8 +27,8 @@
 <audio id="player" src="@_source"></audio>
 <div class="container">
 	<div class="row">
-		<div class="col"><span id="queueButton" class="playerButton" data-toggle="collapse" data-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></span></div>
-		<div class="col text-right"><span class="@_previousClass playerButton" @onclick="PlayPrevious"></span></div>
+		<div class="col"><span id="queueButton" class="playerButton" data-bs-toggle="collapse" data-bs-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></span></div>
+		<div class="col text-end"><span class="@_previousClass playerButton" @onclick="PlayPrevious"></span></div>
 		<div class="col text-center"><span class="@_playClass playerButton" @onclick="PlayPause"></span></div>
 		<div class="col"><span class="@_nextClass playerButton" @onclick="PlayNext"></span></div>
 		<div class="col"></div>
@@ -36,16 +36,16 @@
 </div>
 
 <div id="timeValues" class="mx-3">
-	<span id="duration" class="float-right">0:00</span>
+	<span id="duration" class="float-end">0:00</span>
 	<span id="currentTime">0:00</span>
 	<input type="range" class="form-range" id="songRange" value="0" disabled="disabled">
 </div>
 
-<div id="queueList" class="container collapse" aria-labelledby="queueButton" data-parent="#queueButton">
+<div id="queueList" class="container collapse" aria-labelledby="queueButton" data-bs-parent="#queueButton">
 	@if (PlayerService.Queue != null && PlayerService.Queue.Count > 0)
 	{
-		<div class="my-3 text-right">
-			<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#convertModal" title="Save queue to new playlist">
+		<div class="my-3 text-end">
+			<button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#convertModal" title="Save queue to new playlist">
 				<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 					<path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
 				</svg>
@@ -59,7 +59,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalLabel">Save queue to new playlist</h5>
-						<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
 						<div class="mb-3">
@@ -67,7 +67,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-dark" data-dismiss="modal" @onclick="SaveNewPlaylist">Create</button>
+						<button type="button" class="btn btn-dark" data-bs-dismiss="modal" @onclick="SaveNewPlaylist">Create</button>
 					</div>
 				</div>
 			</div>
