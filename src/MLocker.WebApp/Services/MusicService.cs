@@ -161,7 +161,7 @@ namespace MLocker.WebApp.Services
 			        .Select(x => x.AlbumArtist ?? x.Artist)
 			        .Distinct()
 			        .OrderBy(x => x).ToList();
-		        if (string.IsNullOrEmpty(artists[0]))
+		        if (artists.Any() && string.IsNullOrEmpty(artists[0]))
 			        artists.RemoveAt(0); // remove anything that came back with no data in Artist or AlbumArtist
 		        _artists = artists;
 		        stopwatch.Stop();
