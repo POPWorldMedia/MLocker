@@ -38,6 +38,7 @@ namespace MLocker.Api
             services.AddTransient<IFileParsingService, FileParsingService>();
             services.AddTransient<ISongService, SongService>();
             services.AddTransient<IPlaylistService, PlaylistService>();
+            services.AddTransient<IFileNameParsingService, FileNameParsingService>();
 
             services.AddTransient<ISongRepository, SongRepository>();
             services.AddTransient<IFileRepository, FileRepository>();

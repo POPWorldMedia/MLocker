@@ -3,7 +3,7 @@
 @using MLocker.Core.Services
 @using MLocker.WebApp.Services
 @using System.Timers
-@inject IFileParsingService FileParsingService
+@inject IFileNameParsingService FileNameParsingService
 @inject IPlayerService PlayerService
 
 @if (_filteredList != null)
@@ -25,7 +25,7 @@
 				<div class="col songImageCell" @onclick="@(() => OnClick.InvokeAsync(item))">
 					@if (item.FirstSong != null)
 					{
-						<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
+						<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileNameParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
 					}
 					else
 					{

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using MLocker.Api.Repositories;
@@ -26,13 +25,15 @@ namespace MLocker.Api.Services
         private readonly IFileRepository _fileRepository;
         private readonly IFileParsingService _fileParsingService;
         private readonly IVersionRepository _versionRepository;
+        private readonly IFileNameParsingService _fileNameParsingService;
 
-        public SongService(ISongRepository songRepository, IFileRepository fileRepository, IFileParsingService fileParsingService, IVersionRepository versionRepository)
+        public SongService(ISongRepository songRepository, IFileRepository fileRepository, IFileParsingService fileParsingService, IVersionRepository versionRepository, IFileNameParsingService fileNameParsingService)
         {
             _songRepository = songRepository;
             _fileRepository = fileRepository;
             _fileParsingService = fileParsingService;
             _versionRepository = versionRepository;
+            _fileNameParsingService = fileNameParsingService;
         }
 
         public async Task PersistSong(SongData songData, byte[] bytes)
@@ -49,7 +50,7 @@ namespace MLocker.Api.Services
             await _fileRepository.SaveFile(fileName, bytes, contentType);
             if (songData.Picture != null && songData.Picture.Length > 0)
             {
-                var imageFileName = _fileParsingService.ParseImageFileName(songData);
+                var imageFileName = _fileNameParsingService.ParseImageFileName(songData);
                 await _fileRepository.SaveFile(imageFileName, songData.Picture, songData.PictureMimeType);
             }
 

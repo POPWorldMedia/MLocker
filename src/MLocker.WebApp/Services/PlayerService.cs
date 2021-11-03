@@ -26,15 +26,15 @@ namespace MLocker.WebApp.Services
     public class PlayerService : IPlayerService
     {
         private readonly IJSRuntime _jsRuntime;
-        private readonly IFileParsingService _fileParsingService;
+        private readonly IFileNameParsingService _fileNameParsingService;
         private List<Song> _queue = new List<Song>();
         private int _queueIndex;
         private Song _currentSong;
 
-        public PlayerService(IJSRuntime jsRuntime, IFileParsingService fileParsingService)
+        public PlayerService(IJSRuntime jsRuntime, IFileNameParsingService fileNameParsingService)
         {
 	        _jsRuntime = jsRuntime;
-	        _fileParsingService = fileParsingService;
+	        _fileNameParsingService = fileNameParsingService;
         }
 
         public Song CurrentSong => _currentSong;
@@ -46,7 +46,7 @@ namespace MLocker.WebApp.Services
         private void CallPlayerAndUpdateTitle()
         {
 	        _jsRuntime.InvokeAsync<string>("StartPlayer", $"{ApiPaths.GetWholeSong}/{_currentSong.FileID}");
-	        var imageUrl = QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", _fileParsingService.ParseImageFileName(_currentSong));
+	        var imageUrl = QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", _fileNameParsingService.ParseImageFileName(_currentSong));
             _jsRuntime.InvokeAsync<string>("SetTitle", _currentSong, imageUrl);
 	        Notify();
         }

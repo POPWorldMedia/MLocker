@@ -25,7 +25,7 @@ namespace MLocker.WebApp
 
             // services
             builder.Services.AddTransient<IMusicService, MusicService>();
-            builder.Services.AddTransient<IFileParsingService, FileParsingService>();
+            builder.Services.AddTransient<IFileNameParsingService, FileNameParsingService>();
             builder.Services.AddSingleton<IPlayerService, PlayerService>();
             builder.Services.AddTransient<IPlaylistTransformer, PlaylistTransformer>();
             builder.Services.AddTransient<IPlaylistService, PlaylistService>();
