@@ -26,6 +26,7 @@ namespace MLocker.WebApp.Repositories
 		private readonly ILocalStorageRepository _localStorageRepository;
 		private static List<PlaylistDefinition> _allPlaylistDefinitions;
 		private const string PlaylistVersionKey = "PlaylistVersionKey";
+        private const string PlaylistKey = "PlaylistKey";
 
 		public PlaylistRepository(HttpClient httpClient, IConfig config, ILocalStorageRepository localStorageRepository)
 		{
@@ -47,18 +48,36 @@ namespace MLocker.WebApp.Repositories
 			var playlistVersion = await _localStorageRepository.GetItem(PlaylistVersionKey);
 			var remotePlaylistVersion = await GetRemotePlaylistVersion();
 			var isNewVersion = playlistVersion != remotePlaylistVersion;
-			_httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = isNewVersion };
-			var apiKey = await _config.GetApiKey();
-			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
-			var response = await _httpClient.GetStringAsync(ApiPaths.GetAllPlaylistDefinitions);
-			var payload = JsonSerializer.Deserialize<PlaylistPayload>(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-			_allPlaylistDefinitions = payload.PlaylistDefinitions.ToList();
-			if (isNewVersion)
-				await _localStorageRepository.SetItem(PlaylistVersionKey, payload.Version);
+
+            if (isNewVersion)
+            {
+                await FetchPlaylists();
+            }
+            else
+			{
+				var rawObject = await _localStorageRepository.GetItem(PlaylistKey);
+                if (rawObject == null)
+                    await FetchPlaylists();
+                else
+                    _allPlaylistDefinitions = JsonSerializer.Deserialize<List<PlaylistDefinition>>(rawObject);
+			}
+			
 			return _allPlaylistDefinitions;
 		}
 
-		public async Task<PlaylistDefinition> CreateNewPlaylistDefinition(string title)
+        private async Task FetchPlaylists()
+        {
+            var apiKey = await _config.GetApiKey();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
+            var response = await _httpClient.GetStringAsync(ApiPaths.GetAllPlaylistDefinitions);
+            var payload = JsonSerializer.Deserialize<PlaylistPayload>(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            var serializedList = JsonSerializer.Serialize(payload.PlaylistDefinitions);
+            await _localStorageRepository.SetItem(PlaylistKey, serializedList);
+            await _localStorageRepository.SetItem(PlaylistVersionKey, payload.Version);
+			_allPlaylistDefinitions = payload.PlaylistDefinitions.ToList();
+        }
+
+        public async Task<PlaylistDefinition> CreateNewPlaylistDefinition(string title)
 		{
 			var apiKey = await _config.GetApiKey();
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);

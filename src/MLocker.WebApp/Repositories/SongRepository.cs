@@ -36,6 +36,7 @@ namespace MLocker.WebApp.Repositories
         private static List<Song> _allSongs;
         private static SemaphoreSlim _updateLocker = new SemaphoreSlim(1, 1);
         public const string SongListVersionKey = "SongListVersionKey";
+        public const string SongListKey = "SongList";
 
         public SongRepository(HttpClient httpClient, IConfig config, ILocalStorageRepository localStorageRepository, IJSRuntime jsRuntime)
         {
@@ -67,14 +68,20 @@ namespace MLocker.WebApp.Repositories
 		        var songListVersion = await _localStorageRepository.GetItem(SongListVersionKey);
 		        var remoteSongListVersion = await GetRemoteSongListVersion();
 		        var isNewVersion = songListVersion != remoteSongListVersion;
-		        _httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue {NoCache = isNewVersion};
-		        var apiKey = await _config.GetApiKey();
-		        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
-		        var response = await _httpClient.GetStringAsync(ApiPaths.GetAllSongs);
-		        var payload = JsonSerializer.Deserialize<SongListPayload>(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-		        _allSongs = payload.Songs.ToList();
-		        if (isNewVersion)
-			        await _localStorageRepository.SetItem(SongListVersionKey, payload.Version);
+
+                if (isNewVersion)
+                {
+                    await FetchSongList();
+                }
+                else
+                {
+                    var rawObject = await _localStorageRepository.GetItem(SongListKey);
+                    if (rawObject == null)
+                        await FetchSongList();
+                    else
+                        _allSongs = JsonSerializer.Deserialize<List<Song>>(rawObject);
+                }
+
 		        stopwatch.Stop();
 		        Console.WriteLine($"Song fetch: {stopwatch.ElapsedMilliseconds}ms");
 	        }
@@ -88,6 +95,18 @@ namespace MLocker.WebApp.Repositories
 	        }
 
 	        return _allSongs;
+        }
+
+        private async Task FetchSongList()
+        {
+            var apiKey = await _config.GetApiKey();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
+            var response = await _httpClient.GetStringAsync(ApiPaths.GetAllSongs);
+            var payload = JsonSerializer.Deserialize<SongListPayload>(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            var serializedList = JsonSerializer.Serialize(payload.Songs);
+            await _localStorageRepository.SetItem(SongListKey, serializedList);
+            await _localStorageRepository.SetItem(SongListVersionKey, payload.Version);
+            _allSongs = payload.Songs.ToList();
         }
 
         public string GetSongUrl(int fileID)

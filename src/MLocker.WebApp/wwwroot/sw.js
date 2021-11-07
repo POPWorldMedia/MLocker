@@ -14,8 +14,6 @@ self.addEventListener('fetch', event => {
 				return cache.delete(event.request.url);
 			});
 	if (event.request.url.includes('GetImage')
-		|| event.request.url.includes('GetAllSongs')
-		|| event.request.url.includes('GetAllPlaylistDefinitions')
 		|| event.request.url.includes('GetWholeSong')) {
 		event.respondWith(
 			caches.open(CACHE_NAME).then(function (cache) {
