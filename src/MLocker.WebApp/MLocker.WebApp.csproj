@@ -4,6 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
 	<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
 	<AssemblyVersion>0.21</AssemblyVersion>
+	<InvariantGlobalization>true</InvariantGlobalization>
+	<BlazorWebAssemblyLoadAllGlobalizationData>false</BlazorWebAssemblyLoadAllGlobalizationData>
   </PropertyGroup>
 
   <ItemGroup>
