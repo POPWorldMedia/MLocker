@@ -28,12 +28,14 @@ This is really an exercise in experimentation, but using it myself daily, I do w
   * `StorageConnectionString`: the connection string to your Azure storage. You get this from the Azure portal. Use `UseDevelopmentStorage=true` for the local emulator.
   * `ApiKey`: A string that the client needs to connect.
 * Your storage account needs a container called `music`, and the app won't create this for you.
+* If you want to emulate storage locally, you should use Azurerite in a docker container. You can then see what's in it with Azure Storage Explorer.
 * Change the startup properties of the `MLocker.Database` project to point to a database with a connection string, then run it. Remember this is a command line, so if your connection string has spaces, surround it in quotes. The default in source is looking for a database called `MLocker` on `localhost`. This uses `dbup` to keep the schema updated.
 
 ## Notes and observations
 * The client will ask you for an API key if you run it and it doesn't have one saved. The one stored in the API's config is `123`, but of course you can change it.
 * Running under IIS requires changing max request size for uploads. This is not the case for Linux or Linux app services.
 * There's probably a cleaner way to add the API key header to requests from the client, though there aren't many calls anyway.
+* The quality and consistency of MP3 tagging is poor, and I kinda understand why so many music players suck for sorting and grouping. What it really comes down to is the `AlbumArtist` field, which is used for grouping albums *with* the `Album` field (since countless artists have an album called "Greatest Hits"). So a soundtrack, for example, would have "Various Artists" or something simliar in that field, while the `Artist` field may have a variety of values. (See the USB music player in Tesla cars for an example of how not to handle this.) This app, when it uploads, will populate `AlbumArtist` with the `Artist` value if there's nothing there. Albums are grouped this way, and it's the underlying mechanism for the song context menu to "go to artist" and "go to album." If you have soundtracks, I would encourage you to check the `AlbumArtist` fields with an app like Mp3tag and edit before uploading.
 * Fun fact: I'm loading the entire song index on start. For 8k songs, this is around 2.5 MB, but it's worth the two or three seconds to make everything else nearly instant when searching for music. The playlists, albums and artists are collectively populated based on the song data in under 300ms on my machine for 8k songs.
 * Related fact: Initially I had compression on to squeeze that initial load, but because it then has to compress the output before streaming it out, this is actually slower.
 * The browser cache API is very cool. Combined with a Javascript service worker, the app caches all of your album art. If you scroll through all of your songs, they'll all be stored for you.
