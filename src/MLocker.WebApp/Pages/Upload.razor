@@ -39,7 +39,7 @@
 		var files = e.GetMultipleFiles(1000000);
 		foreach (var file in files)
 		{
-			// if (file.ContentType == "audio/mpeg" || file.ContentType == "audio/mp4")
+			if (file.Name.ToLower().EndsWith(".mp3") || file.Name.ToLower().EndsWith(".m4a"))
 			{
 				_percentage = Convert.ToInt32(Math.Round((decimal)current / count * 100, MidpointRounding.ToPositiveInfinity));
 				await using var stream = file.OpenReadStream(100000000);
