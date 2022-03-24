@@ -18,11 +18,12 @@ public class FileParsingService : IFileParsingService
         byte[] pictureData = file.Tag.Pictures.Length > 0 ? file.Tag.Pictures?[0]?.Data?.Data : null;
         string pictureMimeTime = (file.Tag.Pictures.Length > 0 && pictureData?.Length > 0) ? file.Tag.Pictures?[0]?.MimeType : null;
         var fileType = Path.GetExtension(fileName);
+        var albumArtist = string.IsNullOrEmpty(file.Tag.FirstAlbumArtist) ? file.Tag.FirstPerformer : file.Tag.FirstAlbumArtist;
         var fileData = new SongData
         {
             Title = file.Tag.Title ?? fileName,
             Artist = file.Tag.FirstPerformer,
-            AlbumArtist = file.Tag.FirstAlbumArtist,
+            AlbumArtist = albumArtist,
             Album = file.Tag.Album,
             Composer = file.Tag.FirstComposer,
             Genre = file.Tag.FirstGenre,
