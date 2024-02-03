@@ -362,6 +362,7 @@ hr {
 
 #bottomTabs {
 	--bs-gutter-x: 0;
+	padding: .5em;
 }
 #bottomTabs a {
 	text-align: center;
