@@ -32,6 +32,7 @@ namespace MLocker.WebApp.Repositories
             using var content = new MultipartFormDataContent();
             content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
             using var streamContent = new StreamContent(stream, Convert.ToInt32(stream.Length));
+            fileName = fileName.Replace("\"", String.Empty);
             content.Add(streamContent, "file", fileName);
 
             var apiKey = await _config.GetApiKey();

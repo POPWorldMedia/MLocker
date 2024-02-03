@@ -353,3 +353,7 @@ src/MLocker.Api/.config/dotnet-tools.json
 src/MLocker.WebApp/wwwroot/lib/bootstrap/
 src/MLocker.WebApp/wwwroot/lib/popperjs/
 src/MLocker.WebApp/package-lock.json
+
+src/MLocker.Api/appsettings.Development.json
+
+.idea
