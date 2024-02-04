@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using MLocker.Core.Models;
 
 namespace MLocker.Api.Controllers
@@ -9,6 +10,11 @@ namespace MLocker.Api.Controllers
 		[HttpGet(ApiPaths.Test)]
 		public IActionResult Index()
 		{
+			if (HttpContext.Items.ContainsKey("IsGuest"))
+			{
+				HttpContext.Response.Headers["X-Is-Guest"] = "true";
+				return Ok("Guest!");
+			}
 			return Ok();
 		}
 	}

@@ -7,6 +7,7 @@ using MLocker.Core.Services;
 
 namespace MLocker.Api.Controllers
 {
+    [NoGuestAuth]
     [ApiAuth]
     [ApiController]
     public class UploadController : ControllerBase

@@ -26,6 +26,8 @@ namespace MLocker.WebApp.Services
         Task<bool> IsAllSongsCached(IEnumerable<Song> songs);
         Task RemoveSongsFromCache(IEnumerable<Song> songs);
         Task ScrollReset();
+        bool IsGuest { get; set; }
+        event Action OnIsGuestChange;
     }
 
     public class MusicService : IMusicService
@@ -44,6 +46,19 @@ namespace MLocker.WebApp.Services
             _uploadRepository = uploadRepository;
             _spinnerService = spinnerService;
             _jsRuntime = jsRuntime;
+        }
+
+        public event Action OnIsGuestChange;
+
+        private bool _isGuest;
+        public bool IsGuest
+        {
+	        get => _isGuest;
+	        set
+	        {
+		        _isGuest = value;
+		        OnIsGuestChange?.Invoke();
+	        }
         }
 
         public async Task UpdateSongs()

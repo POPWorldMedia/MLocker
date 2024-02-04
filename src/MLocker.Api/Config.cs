@@ -7,6 +7,7 @@ namespace MLocker.Api
         string ConnectionString { get; }
         string StorageConnectionString { get; }
         string ApiKey { get; }
+        string GuestApiKey { get; }
     }
 
     public class Config : IConfig
@@ -21,5 +22,6 @@ namespace MLocker.Api
         public string ConnectionString => _configuration["ConnectionString"];
         public string StorageConnectionString => _configuration["StorageConnectionString"];
         public string ApiKey => _configuration["ApiKey"];
+        public string GuestApiKey => _configuration["GuestApiKey"] ?? string.Empty;
     }
 }

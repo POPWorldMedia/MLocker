@@ -18,7 +18,7 @@ builder.Services.AddSingleton(sp => new HttpClient
 });
 
 // services
-builder.Services.AddTransient<IMusicService, MusicService>();
+builder.Services.AddSingleton<IMusicService, MusicService>();
 builder.Services.AddTransient<IFileNameParsingService, FileNameParsingService>();
 builder.Services.AddSingleton<IPlayerService, PlayerService>();
 builder.Services.AddTransient<IPlaylistTransformer, PlaylistTransformer>();

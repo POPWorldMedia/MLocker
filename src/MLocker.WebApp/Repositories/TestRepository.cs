@@ -9,7 +9,7 @@ namespace MLocker.WebApp.Repositories
 {
 	public interface ITestRepository
 	{
-		Task<Tuple<bool, HttpStatusCode>> IsTestSuccess();
+		Task<Tuple<bool, HttpStatusCode, bool>> IsTestSuccess();
 	}
 
 	public class TestRepository : ITestRepository
@@ -23,14 +23,15 @@ namespace MLocker.WebApp.Repositories
 			_config = config;
 		}
 
-		public async Task<Tuple<bool, HttpStatusCode>> IsTestSuccess()
+		public async Task<Tuple<bool, HttpStatusCode, bool>> IsTestSuccess()
 		{
 			var apiKey = await _config.GetApiKey();
 			if (string.IsNullOrEmpty(apiKey))
-				return Tuple.Create(false, HttpStatusCode.Unauthorized);
+				return Tuple.Create(false, HttpStatusCode.Unauthorized, false);
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
 			var response = await _httpClient.GetAsync(ApiPaths.Test);
-			return Tuple.Create(response.IsSuccessStatusCode, response.StatusCode);
+			var isGuest = response.Headers.Contains("X-Is-Guest");
+			return Tuple.Create(response.IsSuccessStatusCode, response.StatusCode, isGuest);
 		}
 	}
 }

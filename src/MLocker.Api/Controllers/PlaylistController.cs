@@ -14,6 +14,7 @@ namespace MLocker.Api.Controllers
 			_playlistService = playlistService;
 		}
 
+		[NoGuestAuth]
 		[ApiAuth]
 		[HttpPost(ApiPaths.CreatePlaylist)]
 		public async Task<IActionResult> CreatePlaylist([FromBody] PlaylistDefinition playlistDefinition)
@@ -32,6 +33,7 @@ namespace MLocker.Api.Controllers
 			return Json(payload);
 		}
 
+		[NoGuestAuth]
 		[ApiAuth]
 		[HttpPost(ApiPaths.UpdatePlaylist)]
 		public async Task<IActionResult> UpdatePlaylist([FromBody] PlaylistDefinition playlistDefinition)
@@ -40,6 +42,7 @@ namespace MLocker.Api.Controllers
 			return Ok();
 		}
 
+		[NoGuestAuth]
 		[ApiAuth]
 		[HttpDelete(ApiPaths.DeletePlaylist + "/{id}")]
 		public async Task<IActionResult> DeletePlaylist(int id)

@@ -1,7 +1,9 @@
 ﻿@using MLocker.WebApp.Repositories
+@using MLocker.WebApp.Services
 @inject IConfig Config
 @inject ITestRepository TestRepository
 @inject IJSRuntime JsRuntime
+@inject IMusicService MusicService
 
 <div class="modal fade" id="apiModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -28,7 +30,7 @@
 	protected override async Task OnInitializedAsync()
 	{
 		CurrentApiKey = await Config.GetApiKey();
-		var (isSuccess, statusCode) = await TestRepository.IsTestSuccess();
+		var (isSuccess, statusCode, isGuest) = await TestRepository.IsTestSuccess();
 		if (!isSuccess)
 		{
 			AlertClass = "alert-danger";
@@ -40,7 +42,7 @@
 	private async Task Save()
 	{
 		await Config.SetApiKey(CurrentApiKey);
-		var (isSuccess, statusCode) = await TestRepository.IsTestSuccess();
+		var (isSuccess, statusCode, isGuest) = await TestRepository.IsTestSuccess();
 		if (!isSuccess)
 			TestResult = statusCode.ToString();
 		else
