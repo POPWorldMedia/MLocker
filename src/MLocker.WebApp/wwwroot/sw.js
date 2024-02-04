@@ -1,13 +1,13 @@
-﻿var CACHE_NAME = 'music-image-cache';
+﻿const CACHE_NAME = 'music-image-cache';
 
 self.addEventListener('install', event => event.waitUntil(onInstall(event)));
 
 async function onInstall(event) {
-	self.skipWaiting();
+	await self.skipWaiting();
 }
 
 self.addEventListener('fetch', event => {
-	var cacheControl = event.request.headers.get('cache-control');
+	let cacheControl = event.request.headers.get('cache-control');
 	if (cacheControl === 'no-cache')
 		caches.open(CACHE_NAME)
 			.then((cache) => {

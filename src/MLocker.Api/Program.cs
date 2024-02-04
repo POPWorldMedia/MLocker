@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -47,7 +49,19 @@ app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponseAsync = context =>
+    {
+        if (context.File.Name == "blazor.boot.json")
+        {
+            context.Context.Response.Headers["Cache-Control"] = "no-cache, no-store";
+            context.Context.Response.Headers["Pragma"] = "no-cache";
+            context.Context.Response.Headers["Expires"] = "-1";
+        }
+        return Task.CompletedTask;
+    }
+});
 
 app.UseBlazorFrameworkFiles();
 
