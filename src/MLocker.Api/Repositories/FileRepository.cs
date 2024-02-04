@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
 
 namespace MLocker.Api.Repositories
 {
@@ -38,9 +39,8 @@ namespace MLocker.Api.Repositories
             var serviceClient = new BlobServiceClient(_config.StorageConnectionString);
             var containerClient = serviceClient.GetBlobContainerClient(ContainerName);
             var blobClient = containerClient.GetBlobClient(fileName);
-            var memoryStream = new MemoryStream();
-            await blobClient.DownloadToAsync(memoryStream);
-            return memoryStream;
+            var stream = await blobClient.OpenReadAsync();
+            return stream;
         }
 
         public async Task<Tuple<Stream, string>> GetFileWithContentType(string fileName)
@@ -51,8 +51,9 @@ namespace MLocker.Api.Repositories
             var exists = await blobClient.ExistsAsync();
             if (!exists)
                 return Tuple.Create<Stream, string>(null, null);
-            var response = await blobClient.DownloadAsync();
-            return Tuple.Create(response.Value.Content, response.Value.ContentType);
+            var stream = await blobClient.OpenReadAsync();
+            var contentType = (await blobClient.GetPropertiesAsync()).Value.ContentType;
+            return Tuple.Create(stream, contentType);
         }
     }
 }
