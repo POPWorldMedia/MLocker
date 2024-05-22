@@ -39,7 +39,10 @@ namespace MLocker.Api.Repositories
             var serviceClient = new BlobServiceClient(_config.StorageConnectionString);
             var containerClient = serviceClient.GetBlobContainerClient(ContainerName);
             var blobClient = containerClient.GetBlobClient(fileName);
-            var stream = await blobClient.OpenReadAsync();
+            var stream = await blobClient.OpenReadAsync(options: new BlobOpenReadOptions(true)
+            {
+                BufferSize = 1024 * 1024
+            });
             return stream;
         }
 

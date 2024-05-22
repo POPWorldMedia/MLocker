@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
 	<!--<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>-->
-	<AssemblyVersion>0.37</AssemblyVersion>
+	<AssemblyVersion>0.38</AssemblyVersion>
 <!--    <RunAOTCompilation>true</RunAOTCompilation>-->
   </PropertyGroup>
 
