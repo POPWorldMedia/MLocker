@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
+using MLocker.Api.Models;
 using MLocker.Api.Repositories;
 using MLocker.Core.Models;
 using MLocker.Core.Services;
@@ -13,8 +13,8 @@ namespace MLocker.Api.Services
         Task PersistSong(SongData songData, byte[] bytes);
         string ParseStorageFileName(Song songData);
         Task<IEnumerable<Song>> GetAll();
-        Task<Tuple<Stream, Song>> GetSong(int songID);
-        Task<Tuple<Stream, string>> GetImage(string imageName);
+        Task<Tuple<StreamResult, Song>> GetSong(int songID);
+        Task<Tuple<StreamResult, string>> GetImage(string imageName);
         Task IncrementPlayCount(int fileID);
         Task<string> GetSongListVersion();
     }
@@ -23,15 +23,13 @@ namespace MLocker.Api.Services
     {
         private readonly ISongRepository _songRepository;
         private readonly IFileRepository _fileRepository;
-        private readonly IFileParsingService _fileParsingService;
         private readonly IVersionRepository _versionRepository;
         private readonly IFileNameParsingService _fileNameParsingService;
 
-        public SongService(ISongRepository songRepository, IFileRepository fileRepository, IFileParsingService fileParsingService, IVersionRepository versionRepository, IFileNameParsingService fileNameParsingService)
+        public SongService(ISongRepository songRepository, IFileRepository fileRepository, IVersionRepository versionRepository, IFileNameParsingService fileNameParsingService)
         {
             _songRepository = songRepository;
             _fileRepository = fileRepository;
-            _fileParsingService = fileParsingService;
             _versionRepository = versionRepository;
             _fileNameParsingService = fileNameParsingService;
         }
@@ -69,7 +67,7 @@ namespace MLocker.Api.Services
             return await _songRepository.GetAll();
         }
 
-        public async Task<Tuple<Stream, Song>> GetSong(int songID)
+        public async Task<Tuple<StreamResult, Song>> GetSong(int songID)
         {
             var song = await _songRepository.GetSong(songID);
             if (song == null)
@@ -79,7 +77,7 @@ namespace MLocker.Api.Services
             return Tuple.Create(stream, song);
         }
 
-        public async Task<Tuple<Stream, string>> GetImage(string imageName)
+        public async Task<Tuple<StreamResult, string>> GetImage(string imageName)
         {
             // if this were a real production thing where you didn't want people poking around your container, you would parse this
             var stream = await _fileRepository.GetFileWithContentType(imageName);

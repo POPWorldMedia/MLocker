@@ -3,15 +3,15 @@ using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Azure.Storage.Blobs.Specialized;
+using MLocker.Api.Models;
 
 namespace MLocker.Api.Repositories
 {
     public interface IFileRepository
     {
         Task SaveFile(string fileName, byte[] bytes, string contentType);
-        Task<Stream> GetFile(string fileName);
-        Task<Tuple<Stream, string>> GetFileWithContentType(string fileName);
+        Task<StreamResult> GetFile(string fileName);
+        Task<Tuple<StreamResult, string>> GetFileWithContentType(string fileName);
     }
 
     public class FileRepository : IFileRepository
@@ -34,7 +34,7 @@ namespace MLocker.Api.Repositories
             await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders {ContentType = contentType});
         }
 
-        public async Task<Stream> GetFile(string fileName)
+        public async Task<StreamResult> GetFile(string fileName)
         {
             var serviceClient = new BlobServiceClient(_config.StorageConnectionString);
             var containerClient = serviceClient.GetBlobContainerClient(ContainerName);
@@ -43,20 +43,20 @@ namespace MLocker.Api.Repositories
             {
                 BufferSize = 1024 * 1024
             });
-            return stream;
+            return new StreamResult(stream);
         }
 
-        public async Task<Tuple<Stream, string>> GetFileWithContentType(string fileName)
+        public async Task<Tuple<StreamResult, string>> GetFileWithContentType(string fileName)
         {
             var serviceClient = new BlobServiceClient(_config.StorageConnectionString);
             var containerClient = serviceClient.GetBlobContainerClient(ContainerName);
             var blobClient = containerClient.GetBlobClient(fileName);
             var exists = await blobClient.ExistsAsync();
             if (!exists)
-                return Tuple.Create<Stream, string>(null, null);
+                return Tuple.Create<StreamResult, string>(null, null);
             var stream = await blobClient.OpenReadAsync();
             var contentType = (await blobClient.GetPropertiesAsync()).Value.ContentType;
-            return Tuple.Create(stream, contentType);
+            return Tuple.Create(new StreamResult(stream), contentType);
         }
     }
 }

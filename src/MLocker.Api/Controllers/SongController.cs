@@ -29,31 +29,34 @@ namespace MLocker.Api.Controllers
         [HttpGet(ApiPaths.GetSong + "/{id}")]
         public async Task<IActionResult> GetSong(int id)
         {
-            var (stream, song) = await _songService.GetSong(id);
-            if (stream == null || song == null)
+            var (streamResult, song) = await _songService.GetSong(id);
+            if (streamResult == null || song == null)
                 return StatusCode(404);
             var mediaType = song.FileName.EndsWith("mp3") ? "audio/mpeg" : "audio/mp4";
-            return File(stream, mediaType, true);
+            Response.RegisterForDispose(streamResult);
+            return File(streamResult.Stream, mediaType, true);
         }
 
         [HttpGet(ApiPaths.GetWholeSong + "/{id}")]
         public async Task<IActionResult> GetWholeSong(int id)
         {
-	        var (stream, song) = await _songService.GetSong(id);
-	        if (stream == null || song == null)
+	        var (streamResult, song) = await _songService.GetSong(id);
+	        if (streamResult == null || song == null)
 		        return StatusCode(404);
 	        var mediaType = song.FileName.EndsWith("mp3") ? "audio/mpeg" : "audio/mp4";
-	        stream.Position = 0;
-	        return File(stream, mediaType, false);
+	        streamResult.Stream.Position = 0;
+            Response.RegisterForDispose(streamResult);
+	        return File(streamResult.Stream, mediaType, false);
         }
 
         [HttpGet(ApiPaths.GetImage)]
         public async Task<IActionResult> GetImage(string fileName)
         {
-            var (stream, contentType) = await _songService.GetImage(fileName);
-            if (stream == null || contentType == null)
+            var (streamResult, contentType) = await _songService.GetImage(fileName);
+            if (streamResult == null || contentType == null)
                 return StatusCode(404);
-            return File(stream, contentType);
+            Response.RegisterForDispose(streamResult);
+            return File(streamResult.Stream, contentType);
         }
 
         [ApiAuth]
