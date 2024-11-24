@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {},
   "dependencies": {
-    "bootstrap": "5.3.2",
+    "bootstrap": "5.3.3",
     "@popperjs/core": "2.11.8"
   },
   "devDependencies": {
