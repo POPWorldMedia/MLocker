@@ -75,7 +75,7 @@ hr {
 
 #playerInfo {
 	min-height: 50px;
-	border-top: black solid 4px;
+	border-top: var(--bs-body-color) solid 4px;
 	padding: 10px;
 }
 
