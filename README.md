@@ -1,4 +1,7 @@
 # MLocker
+
+Now with dark mode!
+
 This project takes an experimental shot at building a browser-based personal music locker. All of the services are shifting to subscriber models that don't care about the library that you've purchased and built. Those services don't have all the music you do, and when it's "free" there are ads. Amazon shutdown their locker service a few years ago, and now Google has forced YouTube Music on to us, and it's a trainwreck. So what does one do? Builds their own service, of course.  
 
 The app uses an aspnetcore API, storing the music files in Azure Storage and the metadata and playlists in SQL. (I was going to use something else, but I have a wholly underutilized SQL pool. I was going to use Azure Functions for the API, but I have a wholly underutilized app service, too.) The front-end is a Blazor client.
@@ -9,6 +12,7 @@ The app uses an aspnetcore API, storing the music files in Azure Storage and the
 This is really an exercise in experimentation, but using it myself daily, I suppose after this long I should do a proper release. I've made well over 50,000 plays from all over the Internets with this app with a library of about 8,500 songs.
 
 ## Features
+* Dark mode, so you don't annoy your partner when grooving in bed in the dark.
 * Loads all library metadata up front, caches it if it hasn't changed. Navigating music and searching in lists is instantaneous because you have all the data! Tested with library of about 8k songs. Normal data hit for start with no new content is about 11kb.
 * Download playlists and albums to your device while on wifi, to reduce data use on cellular.
 * Album art automatically cached on your device.
