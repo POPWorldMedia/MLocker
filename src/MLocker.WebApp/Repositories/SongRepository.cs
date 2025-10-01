@@ -129,7 +129,14 @@ namespace MLocker.WebApp.Repositories
 	        var apiKey = await _config.GetApiKey();
 	        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
 	        var data = new {FileID = fileID};
-	        await _httpClient.PostAsJsonAsync(ApiPaths.IncrementPlayCount, data);
+	        try
+	        {
+		        await _httpClient.PostAsJsonAsync(ApiPaths.IncrementPlayCount, data);
+	        }
+	        catch (Exception ex)
+	        {
+		        Console.WriteLine($"Error incrementing play count: {ex.Message}");
+	        }
         }
 
         public async Task<string> GetRemoteSongListVersion()
