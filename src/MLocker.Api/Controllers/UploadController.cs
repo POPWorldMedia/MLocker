@@ -10,17 +10,9 @@ namespace MLocker.Api.Controllers
     [NoGuestAuth]
     [ApiAuth]
     [ApiController]
-    public class UploadController : ControllerBase
+    public class UploadController(IFileParsingService fileParsingService, ISongService songService)
+        : ControllerBase
     {
-        private readonly IFileParsingService _fileParsingService;
-        private readonly ISongService _songService;
-
-        public UploadController(IFileParsingService fileParsingService, ISongService songService)
-        {
-            _fileParsingService = fileParsingService;
-            _songService = songService;
-        }
-
         [HttpPost(ApiPaths.Upload)]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Upload(IFormFile file)
@@ -30,9 +22,9 @@ namespace MLocker.Api.Controllers
             var stream = file.OpenReadStream();
             var length = (int)stream.Length;
             var fileData = new byte[length];
-            await stream.ReadAsync(fileData, 0, length);
-            var songData = _fileParsingService.ReadFileData(file.FileName, fileData);
-            await _songService.PersistSong(songData, fileData);
+            await stream.ReadExactlyAsync(fileData, 0, length);
+            var songData = fileParsingService.ReadFileData(file.FileName, fileData);
+            await songService.PersistSong(songData, fileData);
             return Ok();
         }
     }
