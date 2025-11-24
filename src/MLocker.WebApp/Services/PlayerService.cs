@@ -60,7 +60,7 @@ namespace MLocker.WebApp.Services
         public void PlaySong(Song song, List<Song> list, int index)
         {
             _currentSong = song;
-            _queue = list;
+            _queue = new List<Song>(list);
             _queueIndex = index;
             CallPlayerAndUpdateTitle();
         }
