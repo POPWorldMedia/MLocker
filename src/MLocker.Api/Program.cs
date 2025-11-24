@@ -1,9 +1,7 @@
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using MLocker.Api;
 using MLocker.Api.Repositories;
 using MLocker.Api.Services;
@@ -15,7 +13,6 @@ var services = builder.Services;
 
 services.AddCors();
 services.AddControllers();
-services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "MLocker.Api", Version = "v1"}); });
 
 services.AddTransient<IConfig, Config>();
 
@@ -34,8 +31,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MLocker.Api v1"));
 
     app.UseWebAssemblyDebugging();
 }

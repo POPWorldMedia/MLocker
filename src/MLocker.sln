@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{E27DB0FE
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
 		..\README.md = ..\README.md
+		CLAUDE.md = CLAUDE.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLocker.WebApp", "MLocker.WebApp\MLocker.WebApp.csproj", "{1F9C483F-3238-4F3C-8565-1CA494D5CCCB}"

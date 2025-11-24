@@ -10,7 +10,7 @@ using MLocker.WebApp.Services;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 
-builder.Services.AddScoped<IConfig, Config>();
+builder.Services.AddSingleton<IConfig, Config>();
 
 builder.Services.AddSingleton(sp => new HttpClient
 {
@@ -27,10 +27,10 @@ builder.Services.AddTransient<ISongContextStateService, SongContextStateService>
 builder.Services.AddSingleton<ISpinnerService, SpinnerService>();
 
 // repos
-builder.Services.AddScoped<IUploadRepository, UploadRepository>();
-builder.Services.AddScoped<ISongRepository, SongRepository>();
-builder.Services.AddScoped<ITestRepository, TestRepository>();
-builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
-builder.Services.AddScoped<ILocalStorageRepository, LocalStorageRepository>();
+builder.Services.AddSingleton<IUploadRepository, UploadRepository>();
+builder.Services.AddSingleton<ISongRepository, SongRepository>();
+builder.Services.AddSingleton<ITestRepository, TestRepository>();
+builder.Services.AddSingleton<IPlaylistRepository, PlaylistRepository>();
+builder.Services.AddSingleton<ILocalStorageRepository, LocalStorageRepository>();
 
 await builder.Build().RunAsync();
