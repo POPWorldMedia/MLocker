@@ -9,7 +9,7 @@ The app uses an aspnetcore API, storing the music files in Azure Storage and the
 ![image](https://user-images.githubusercontent.com/2114255/98284863-bdbc5780-1f6f-11eb-9aa0-7c563d78b1f0.png)
 
 ## Roadmap
-This is really an exercise in experimentation, but using it myself daily, I suppose after this long I should do a proper release. I've made well over 50,000 plays from all over the Internets with this app with a library of about 8,500 songs.
+This is really an exercise in experimentation, but using it myself daily, I suppose after this long I should do a proper release. I've made well over 90,000 plays from all over the Internets with this app with a library of about 9,000 songs.
 
 ## Features
 * Dark mode, so you don't annoy your partner when grooving in bed in the dark.
@@ -21,6 +21,7 @@ This is really an exercise in experimentation, but using it myself daily, I supp
 * Add entire albums or playlists to the queue.
 * Shuffle all the things, instantly.
 * Artist view shows all the albums, and all the songs (you can shuffle those, too).
+* Song info modal to view the metadata.
 * Responsive view works in your desktop browser and your mobile device.
 * Install it as a quasi-progressive web app, with an icon in your taskbar or launcher. Works great with Chrome/Edge, Safari and Firefox, on Android and Windows. (On iOS, lists won't continue to play if you launch from a start screen icon, but it will work in Safari.)
 
