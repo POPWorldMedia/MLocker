@@ -114,6 +114,11 @@ window.OpenAddToPlaylistModal = () => {
 	myModal.show();
 }
 
+window.OpenSongInfoModal = () => {
+	var myModal = new bootstrap.Modal(document.getElementById('songInfoModal'));
+	myModal.show();
+}
+
 window.SetTitle = (song, imageUrl) => {
 	document.title = song.title + ' - ' + song.artist + ' - MLocker';
 	var player = document.getElementById('player');

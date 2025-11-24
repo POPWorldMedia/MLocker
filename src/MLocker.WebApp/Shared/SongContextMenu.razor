@@ -1,9 +1,12 @@
 ﻿@using MLocker.WebApp.Services
 @using MLocker.Core.Models
+@using MLocker.Core.Services
+@using Microsoft.AspNetCore.WebUtilities
 @inject ISongContextStateService SongContextStateService
 @inject IPlayerService PlayerService
 @inject IJSRuntime JsRuntime
 @inject IPlaylistService PlaylistService
+@inject IFileNameParsingService FileNameParsingService
 @inject NavigationManager NavigationManager
 
 <div id="songContextMenu">
@@ -17,6 +20,7 @@
 		<a class="list-group-item list-group-item-action" @onclick="PlayNext">Play next</a>
 		<a class="list-group-item list-group-item-action" @onclick="GoToAlbum">Go to album</a>
 		<a class="list-group-item list-group-item-action" @onclick="GoToArtist">Go to artist</a>
+		<a class="list-group-item list-group-item-action" @onclick="OpenSongInfo">Song info</a>
 	</ul>
 </div>
 
@@ -43,6 +47,95 @@
 				else
 				{
 					<p>You don't have any playlists</p>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="songInfoModal" tabindex="-1" aria-labelledby="songInfoLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="songInfoLabel">Song Information</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				@if (SongContextStateService.Song != null)
+				{
+					var song = SongContextStateService.Song;
+					<div class="text-center mb-3">
+						<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileNameParsingService.ParseImageFileName(song)))"
+							 class="img-fluid"
+							 style="max-width: 300px; max-height: 300px;"
+							 alt="Album art" />
+					</div>
+					<table class="table table-sm">
+						<tbody>
+							<tr>
+								<th scope="row">Title</th>
+								<td>@song.Title</td>
+							</tr>
+							<tr>
+								<th scope="row">Artist</th>
+								<td>@song.Artist</td>
+							</tr>
+							@if (!string.IsNullOrEmpty(song.AlbumArtist) && song.AlbumArtist != song.Artist)
+							{
+								<tr>
+									<th scope="row">Album Artist</th>
+									<td>@song.AlbumArtist</td>
+								</tr>
+							}
+							<tr>
+								<th scope="row">Album</th>
+								<td>@song.Album</td>
+							</tr>
+							@if (!string.IsNullOrEmpty(song.Composer))
+							{
+								<tr>
+									<th scope="row">Composer</th>
+									<td>@song.Composer</td>
+								</tr>
+							}
+							@if (!string.IsNullOrEmpty(song.Genre))
+							{
+								<tr>
+									<th scope="row">Genre</th>
+									<td>@song.Genre</td>
+								</tr>
+							}
+							@if (song.Year.HasValue)
+							{
+								<tr>
+									<th scope="row">Year</th>
+									<td>@song.Year</td>
+								</tr>
+							}
+							@if (song.Track.HasValue)
+							{
+								<tr>
+									<th scope="row">Track</th>
+									<td>@song.Track@(song.TrackCount.HasValue ? $" of {song.TrackCount}" : "")</td>
+								</tr>
+							}
+							@if (song.Disc.HasValue && song.Disc > 1)
+							{
+								<tr>
+									<th scope="row">Disc</th>
+									<td>@song.Disc@(song.DiscCount.HasValue ? $" of {song.DiscCount}" : "")</td>
+								</tr>
+							}
+							<tr>
+								<th scope="row">Duration</th>
+								<td>@TimeSpan.FromTicks(song.Ticks).ToString(@"mm\:ss")</td>
+							</tr>
+							<tr>
+								<th scope="row">Play Count</th>
+								<td>@song.PlayCount</td>
+							</tr>
+						</tbody>
+					</table>
 				}
 			</div>
 		</div>
@@ -92,5 +185,10 @@
 	{
 		SongContextStateService.IsToArtistLoad = true;
 		NavigationManager.NavigateTo("/Artists");
+	}
+
+	protected async Task OpenSongInfo()
+	{
+		await JsRuntime.InvokeAsync<string>("OpenSongInfoModal");
 	}
 }
