@@ -13,6 +13,11 @@ window.addEventListener('load', function() {
 	}
 });
 
+window.PlayAudio = () => {
+	var player = document.getElementById('player');
+	player.play();
+}
+
 window.StartPlayer = (wholepath) => {
 	var player = document.getElementById('player');
 	var songRange = document.getElementById('songRange');
