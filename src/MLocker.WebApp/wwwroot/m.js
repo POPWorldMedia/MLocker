@@ -30,12 +30,10 @@ window.StartPlayer = (wholepath) => {
 		player.play();
 	};
 	player.onended = (e) => {
-		songRange.disabled = true;
 		DotNet.invokeMethodAsync('MLocker.WebApp', 'SongEnded');
 	};
 	player.ontimeupdate = () => {
 		songRange.value = player.currentTime;
-		songRange.disabled = false;
 		currentTime.innerHTML = FormatSeconds(player.currentTime);
 	};
 	songRange.oninput = (e) => {

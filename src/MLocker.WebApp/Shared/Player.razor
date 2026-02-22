@@ -39,7 +39,7 @@
 <div id="timeValues" class="mx-3">
 	<span id="duration" class="float-end">0:00</span>
 	<span id="currentTime">0:00</span>
-	<input type="range" class="form-range" id="songRange" value="0" disabled="disabled">
+	<input type="range" class="form-range" id="songRange" value="0" disabled="@_sliderDisabled">
 </div>
 
 <div id="queueList" class="container collapse" aria-labelledby="queueButton" data-bs-parent="#queueButton">
@@ -87,6 +87,7 @@
 	private List<Song> _songList;
 	private string _source;
 	private bool _shouldPlay;
+	private bool _sliderDisabled = true;
 	private string _imageClass;
 	private string _titleClass;
 	private string _nextClass;
@@ -113,6 +114,7 @@
 			}
 			if (_source != previousSource && !string.IsNullOrEmpty(_source))
 				_shouldPlay = true;
+			_sliderDisabled = PlayerService.CurrentSong == null;
 			_previousClass = PlayerService.CurrentSong == null
 							 || PlayerService.Queue.Count <= 1
 							 || PlayerService.QueueIndex == 0
