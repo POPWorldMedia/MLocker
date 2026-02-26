@@ -15,7 +15,12 @@ window.addEventListener('load', function() {
 
 window.PlayAudio = () => {
 	var player = document.getElementById('player');
-	player.play();
+	var playPromise = player.play();
+	if (playPromise !== undefined) {
+		playPromise.catch(() => {
+			setTimeout(() => player.play().catch(() => {}), 500);
+		});
+	}
 }
 
 window.StartPlayer = (wholepath) => {
