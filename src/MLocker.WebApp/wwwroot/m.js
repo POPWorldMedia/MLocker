@@ -15,12 +15,15 @@ window.addEventListener('load', function() {
 
 window.PlayAudio = () => {
 	var player = document.getElementById('player');
-	var playPromise = player.play();
-	if (playPromise !== undefined) {
-		playPromise.catch(() => {
-			setTimeout(() => player.play().catch(() => {}), 500);
-		});
-	}
+	player.play().catch(() => {});
+	var attempts = 0;
+	var interval = setInterval(() => {
+		if (!player.paused || ++attempts >= 10) {
+			clearInterval(interval);
+			return;
+		}
+		player.play().catch(() => {});
+	}, 750);
 }
 
 window.StartPlayer = (wholepath) => {
