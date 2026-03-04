@@ -14,16 +14,16 @@ window.addEventListener('load', function() {
 });
 
 window.PlayAudio = () => {
-	var player = document.getElementById('player');
-	player.play().catch(() => {});
-	var attempts = 0;
-	var interval = setInterval(() => {
-		if (!player.paused || ++attempts >= 10) {
-			clearInterval(interval);
-			return;
-		}
-		player.play().catch(() => {});
-	}, 750);
+	let player = document.getElementById('player');
+	var promise = player.play();
+
+	if (promise !== undefined) {
+		promise.then(_ => {
+			console.log('Audio play successful.');
+		}).catch(error => {
+			console.error(error);
+		});
+	}
 }
 
 window.StartPlayer = (wholepath) => {
