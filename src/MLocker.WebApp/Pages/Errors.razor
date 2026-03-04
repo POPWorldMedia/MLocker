@@ -1,0 +1,85 @@
+@page "/Errors"
+@inject IJSRuntime JSRuntime
+
+<div class="d-flex justify-content-between align-items-center my-3">
+    <h4>Play Errors (@_errors.Count)</h4>
+    @if (_errors.Count > 0)
+    {
+        <button class="btn btn-dark btn-sm" @onclick="ClearErrors">Clear</button>
+    }
+</div>
+
+@if (_errors.Count == 0)
+{
+    <div class="alert" role="alert">No errors logged.</div>
+}
+else
+{
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Error</th>
+                <th>Message</th>
+                <th>Ready</th>
+                <th>Network</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in _errors)
+            {
+                <tr>
+                    <td class="text-nowrap">@e.Time</td>
+                    <td>@e.Error</td>
+                    <td>@e.Message</td>
+                    <td title="@ReadyStateLabel(e.ReadyState)">@e.ReadyState</td>
+                    <td title="@NetworkStateLabel(e.NetworkState)">@e.NetworkState</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<PlayError> _errors = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _errors = await JSRuntime.InvokeAsync<List<PlayError>>("GetPlayErrors");
+    }
+
+    private async Task ClearErrors()
+    {
+        await JSRuntime.InvokeVoidAsync("ClearPlayErrors");
+        _errors.Clear();
+    }
+
+    private static string ReadyStateLabel(int state) => state switch
+    {
+        0 => "HAVE_NOTHING",
+        1 => "HAVE_METADATA",
+        2 => "HAVE_CURRENT_DATA",
+        3 => "HAVE_FUTURE_DATA",
+        4 => "HAVE_ENOUGH_DATA",
+        _ => "UNKNOWN"
+    };
+
+    private static string NetworkStateLabel(int state) => state switch
+    {
+        0 => "EMPTY",
+        1 => "IDLE",
+        2 => "LOADING",
+        3 => "NO_SOURCE",
+        _ => "UNKNOWN"
+    };
+
+    private class PlayError
+    {
+        public string Time { get; set; }
+        public string Error { get; set; }
+        public string Message { get; set; }
+        public string Src { get; set; }
+        public int ReadyState { get; set; }
+        public int NetworkState { get; set; }
+    }
+}

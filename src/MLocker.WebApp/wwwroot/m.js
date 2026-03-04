@@ -13,6 +13,28 @@ window.addEventListener('load', function() {
 	}
 });
 
+window.GetPlayErrors = () => {
+	return JSON.parse(localStorage.getItem('playErrors') || '[]');
+}
+
+window.ClearPlayErrors = () => {
+	localStorage.removeItem('playErrors');
+}
+
+window.LogPlayError = (error, player) => {
+	const log = JSON.parse(localStorage.getItem('playErrors') || '[]');
+	log.push({
+		time: new Date().toISOString(),
+		error: error.name,
+		message: error.message,
+		src: player.src,
+		readyState: player.readyState,
+		networkState: player.networkState
+	});
+	if (log.length > 50) log.splice(0, log.length - 50);
+	localStorage.setItem('playErrors', JSON.stringify(log));
+}
+
 window.PlayAudio = () => {
 	let player = document.getElementById('player');
 	var promise = player.play();
@@ -21,6 +43,7 @@ window.PlayAudio = () => {
 		promise.then(_ => {
 			console.log('Audio play successful.');
 		}).catch(error => {
+			LogPlayError(error, player);
 			console.error(error);
 		});
 	}
@@ -205,7 +228,7 @@ window.ScrollReset = () => {
 
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', function () {
-		navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (registration) {
+		navigator.serviceWorker.register('sw.js?v=54', { updateViaCache: 'none' }).then(function (registration) {
 			registration.update();
 			console.log('ServiceWorker registration successful with scope: ', registration.scope);
 		}, function (err) {
