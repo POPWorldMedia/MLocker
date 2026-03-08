@@ -25,7 +25,7 @@
 		</div>
 	}
 </div>
-<audio id="player"></audio>
+<audio id="player" src="@_source"></audio>
 <div class="container">
 	<div class="row">
 		<div class="col"><span id="queueButton" class="playerButton" data-bs-toggle="collapse" data-bs-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></span></div>
@@ -85,6 +85,8 @@
 @code
 {
 	private List<Song> _songList;
+	private string _source;
+	private bool _shouldPlay;
 	private bool _sliderDisabled = true;
 	private string _imageClass;
 	private string _titleClass;
@@ -102,16 +104,16 @@
 		_playClass = "activePlayButtonOff";
 		PlayerService.OnChange += async () =>
 		{
+			var previousSource = _source;
 			if (PlayerService.CurrentSong == null)
+				_source = string.Empty;
+			if (PlayerService.CurrentSong != null)
 			{
-				await JSRuntime.InvokeVoidAsync("StopAudio");
-			}
-			else
-			{
-				var url = await MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
-				await JSRuntime.InvokeVoidAsync("LoadAndPlay", url);
+				_source = await MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
 				await MusicService.IncrementPlayCount(PlayerService.CurrentSong.FileID);
 			}
+			if (_source != previousSource && !string.IsNullOrEmpty(_source))
+				_shouldPlay = true;
 			_sliderDisabled = PlayerService.CurrentSong == null;
 			_previousClass = PlayerService.CurrentSong == null
 							 || PlayerService.Queue.Count <= 1
@@ -130,6 +132,15 @@
 		_nextSongAction = PlayNext;
 		_previousSongAction = PlayPrevious;
 		_isPlayingAction = UpdatePlayerButton;
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (_shouldPlay)
+		{
+			_shouldPlay = false;
+			await JSRuntime.InvokeVoidAsync("PlayAudio");
+		}
 	}
 
 	private void ShrinkToggle()

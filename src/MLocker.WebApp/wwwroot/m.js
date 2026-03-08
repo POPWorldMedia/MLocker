@@ -37,11 +37,11 @@ window.LogPlayError = (error, player) => {
 	localStorage.setItem('playErrors', JSON.stringify(log));
 }
 
-window.LoadAndPlay = (url) => {
-	var player = document.getElementById('player');
-	player.src = url;
+window.PlayAudio = () => {
+	let player = document.getElementById('player');
 	_shouldBePlaying = true;
 	var promise = player.play();
+
 	if (promise !== undefined) {
 		promise.then(_ => {
 			console.log('Audio play successful.');
@@ -50,17 +50,6 @@ window.LoadAndPlay = (url) => {
 			console.error(error);
 		});
 	}
-}
-
-window.StopAudio = () => {
-	_shouldBePlaying = false;
-	if (_pauseTimeout) {
-		clearTimeout(_pauseTimeout);
-		_pauseTimeout = null;
-	}
-	var player = document.getElementById('player');
-	player.pause();
-	player.src = '';
 }
 
 window.StartPlayer = (wholepath) => {
@@ -267,7 +256,7 @@ window.ScrollReset = () => {
 
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', function () {
-		navigator.serviceWorker.register('sw.js?v=57', { updateViaCache: 'none' }).then(function (registration) {
+		navigator.serviceWorker.register('sw.js?v=56', { updateViaCache: 'none' }).then(function (registration) {
 			registration.update();
 			console.log('ServiceWorker registration successful with scope: ', registration.scope);
 		}, function (err) {
