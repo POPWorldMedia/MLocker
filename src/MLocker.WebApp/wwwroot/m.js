@@ -58,7 +58,12 @@ window.StartPlayer = (wholepath) => {
 		songRange.min = 0;
 		songRange.max = player.duration;
 		duration.innerHTML = FormatSeconds(player.duration);
-		player.play();
+	};
+	player.onerror = (e) => {
+		LogPlayError({ name: 'MediaError', message: player.error?.message || 'unknown', code: player.error?.code }, player);
+	};
+	player.onstalled = (e) => {
+		LogPlayError({ name: 'Stalled', message: 'audio stalled', code: 0 }, player);
 	};
 	player.onended = (e) => {
 		DotNet.invokeMethodAsync('MLocker.WebApp', 'SongEnded');
@@ -228,7 +233,7 @@ window.ScrollReset = () => {
 
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', function () {
-		navigator.serviceWorker.register('sw.js?v=54', { updateViaCache: 'none' }).then(function (registration) {
+		navigator.serviceWorker.register('sw.js?v=55', { updateViaCache: 'none' }).then(function (registration) {
 			registration.update();
 			console.log('ServiceWorker registration successful with scope: ', registration.scope);
 		}, function (err) {
