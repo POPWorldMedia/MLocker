@@ -1,4 +1,6 @@
 ﻿var CACHE_NAME = 'music-image-cache';
+var _shouldBePlaying = false;
+var _pauseTimeout = null;
 
 window.addEventListener('load', function() {
 	const htmlElement = document.querySelector("html")
@@ -37,6 +39,7 @@ window.LogPlayError = (error, player) => {
 
 window.PlayAudio = () => {
 	let player = document.getElementById('player');
+	_shouldBePlaying = true;
 	var promise = player.play();
 
 	if (promise !== undefined) {
@@ -50,6 +53,11 @@ window.PlayAudio = () => {
 }
 
 window.StartPlayer = (wholepath) => {
+	_shouldBePlaying = false;
+	if (_pauseTimeout) {
+		clearTimeout(_pauseTimeout);
+		_pauseTimeout = null;
+	}
 	var player = document.getElementById('player');
 	var songRange = document.getElementById('songRange');
 	var duration = document.getElementById('duration');
@@ -65,7 +73,18 @@ window.StartPlayer = (wholepath) => {
 	player.onstalled = (e) => {
 		LogPlayError({ name: 'Stalled', message: 'audio stalled', code: 0 }, player);
 	};
+	player.onpause = () => {
+		if (!_shouldBePlaying || player.ended) return;
+		if (_pauseTimeout) clearTimeout(_pauseTimeout);
+		_pauseTimeout = setTimeout(() => {
+			_pauseTimeout = null;
+			if (player.paused && !player.ended && _shouldBePlaying) {
+				player.play().catch(error => LogPlayError(error, player));
+			}
+		}, 500);
+	};
 	player.onended = (e) => {
+		_shouldBePlaying = false;
 		DotNet.invokeMethodAsync('MLocker.WebApp', 'SongEnded');
 	};
 	player.ontimeupdate = () => {
@@ -80,9 +99,11 @@ window.StartPlayer = (wholepath) => {
 window.TogglePlayer = () => {
 	var player = document.getElementById('player');
 	if (player.paused) {
+		_shouldBePlaying = true;
 		player.play();
 		return true;
 	} else {
+		_shouldBePlaying = false;
 		player.pause();
 		return false;
 	}
@@ -171,10 +192,12 @@ window.SetTitle = (song, imageUrl) => {
 			]
 		});
 		navigator.mediaSession.setActionHandler('play', () => {
+			_shouldBePlaying = true;
 			player.play();
 			DotNet.invokeMethodAsync('MLocker.WebApp', 'IsPlaying', true);
 		});
 		navigator.mediaSession.setActionHandler('pause', () => {
+			_shouldBePlaying = false;
 			player.pause();
 			DotNet.invokeMethodAsync('MLocker.WebApp', 'IsPlaying', false);
 		});
@@ -233,7 +256,7 @@ window.ScrollReset = () => {
 
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', function () {
-		navigator.serviceWorker.register('sw.js?v=55', { updateViaCache: 'none' }).then(function (registration) {
+		navigator.serviceWorker.register('sw.js?v=56', { updateViaCache: 'none' }).then(function (registration) {
 			registration.update();
 			console.log('ServiceWorker registration successful with scope: ', registration.scope);
 		}, function (err) {
