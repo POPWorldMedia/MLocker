@@ -177,8 +177,13 @@
 
 	public void GoToAlbum()
 	{
-		SongContextStateService.IsToAlbumLoad = true;
-		NavigationManager.NavigateTo("/Albums");
+		var song = SongContextStateService.Song;
+		var url = QueryHelpers.AddQueryString("/Albums", new Dictionary<string, string>
+		{
+			["artist"] = song.AlbumArtist ?? "",
+			["title"] = song.Album ?? ""
+		});
+		NavigationManager.NavigateTo(url);
 	}
 
 	public void GoToArtist()

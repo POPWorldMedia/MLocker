@@ -1,14 +1,12 @@
 ﻿@page "/Albums"
 @using MLocker.WebApp.Services
-@using MLocker.Core.Services
 @using MLocker.Core.Models
+@using Microsoft.AspNetCore.WebUtilities
 @inject IMusicService MusicService
-@inject IFileNameParsingService FileNameParsingService
-@inject ISongContextStateService SongContextStateService
+@inject NavigationManager NavigationManager
 
-@if (_isDetail)
+@if (_currentAlbum != null)
 {
-	<p @onclick="@BackToAll"><span class="backButton"></span> all albums</p>
 	<Albums_Detail Album="_currentAlbum" />
 }
 else
@@ -17,37 +15,35 @@ else
 }
 
 @code {
+	[SupplyParameterFromQuery(Name = "artist")] public string ArtistParam { get; set; }
+	[SupplyParameterFromQuery(Name = "title")] public string TitleParam { get; set; }
+
 	private List<Album> _albumList = new List<Album>();
 	private Album _currentAlbum;
-	private bool _isDetail;
 
 	protected override async Task OnInitializedAsync()
 	{
 		_albumList = await MusicService.GetAlbums();
-		if (SongContextStateService.IsToAlbumLoad)
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if (_albumList.Count > 0)
 		{
-			var song = SongContextStateService.Song;
-			var album = _albumList.SingleOrDefault(x => x.Title == song.Album && x.AlbumArtist == song.AlbumArtist);
-			if (album != null)
-			{
-				_currentAlbum = album;
-				_isDetail = true;
-			}
-			SongContextStateService.IsToAlbumLoad = false;
+			_currentAlbum = !string.IsNullOrEmpty(TitleParam)
+				? _albumList.SingleOrDefault(x => (x.AlbumArtist ?? "") == (ArtistParam ?? "") && (x.Title ?? "") == TitleParam)
+				: null;
+			await MusicService.ScrollReset();
 		}
 	}
 
-	protected async Task LoadAlbum(Album album)
+	protected void LoadAlbum(Album album)
 	{
-		_currentAlbum = album;
-		_isDetail = true;
-		await MusicService.ScrollReset();
-	}
-
-	protected async Task BackToAll()
-	{
-		_isDetail = false;
-		_currentAlbum = null;
-		await MusicService.ScrollReset();
+		var url = QueryHelpers.AddQueryString("/Albums", new Dictionary<string, string>
+		{
+			["artist"] = album.AlbumArtist ?? "",
+			["title"] = album.Title ?? ""
+		});
+		NavigationManager.NavigateTo(url);
 	}
 }
