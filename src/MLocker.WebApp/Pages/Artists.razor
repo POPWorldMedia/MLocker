@@ -1,11 +1,11 @@
 ﻿@page "/Artists"
 @using MLocker.WebApp.Services
 @inject IMusicService MusicService
-@inject ISongContextStateService SongContextStateService
+@inject NavigationManager NavigationManager
 
-@if (_isDetail)
+@if (_currentArtist != null)
 {
-	<Artists_Detail CurrentArtist="@_currentArtist" OnClick="@BackToAll" />
+	<Artists_Detail CurrentArtist="@_currentArtist" />
 }
 else
 {
@@ -13,37 +13,26 @@ else
 }
 
 @code {
+	[SupplyParameterFromQuery(Name = "artist")] public string ArtistParam { get; set; }
+
 	List<string> _artistList = new List<string>();
-	string _currentArtist = null;
-	private bool _isDetail = false;
+	string _currentArtist;
 
 	protected override async Task OnInitializedAsync()
 	{
 		_artistList = await MusicService.GetAllArtists();
-		if (SongContextStateService.IsToArtistLoad)
-		{
-			var song = SongContextStateService.Song;
-			var artist = _artistList.SingleOrDefault(x => x == song.AlbumArtist);
-			if (artist != null)
-			{
-				_currentArtist = artist;
-				_isDetail = true;
-			}
-			SongContextStateService.IsToArtistLoad = false;
-		}
 	}
 
-	protected async Task LoadArtistDetail(string artist)
+	protected override async Task OnParametersSetAsync()
 	{
-		_currentArtist = artist;
-		_isDetail = true;
-		await MusicService.ScrollReset();
+		if (_artistList.Count > 0)
+			_currentArtist = !string.IsNullOrEmpty(ArtistParam)
+				? _artistList.SingleOrDefault(x => x == ArtistParam)
+				: null;
 	}
 
-	protected async Task BackToAll()
+	protected void LoadArtistDetail(string artist)
 	{
-		_isDetail = false;
-		_currentArtist = null;
-		await MusicService.ScrollReset();
+		NavigationManager.NavigateTo($"/Artists?artist={Uri.EscapeDataString(artist ?? "")}");
 	}
 }

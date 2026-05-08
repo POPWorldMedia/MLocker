@@ -188,8 +188,8 @@
 
 	public void GoToArtist()
 	{
-		SongContextStateService.IsToArtistLoad = true;
-		NavigationManager.NavigateTo("/Artists");
+		var song = SongContextStateService.Song;
+		NavigationManager.NavigateTo($"/Artists?artist={Uri.EscapeDataString(song.AlbumArtist ?? "")}");
 	}
 
 	protected async Task OpenSongInfo()

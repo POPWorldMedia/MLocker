@@ -29,12 +29,9 @@ else
 	protected override async Task OnParametersSetAsync()
 	{
 		if (_albumList.Count > 0)
-		{
 			_currentAlbum = !string.IsNullOrEmpty(TitleParam)
 				? _albumList.SingleOrDefault(x => (x.AlbumArtist ?? "") == (ArtistParam ?? "") && (x.Title ?? "") == TitleParam)
 				: null;
-			await MusicService.ScrollReset();
-		}
 	}
 
 	protected void LoadAlbum(Album album)

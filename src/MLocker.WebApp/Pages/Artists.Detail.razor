@@ -6,104 +6,67 @@
 @inject IMusicService MusicService
 @inject IFileNameParsingService FileNameParsingService
 @inject IPlaylistTransformer PlaylistTransformer
+@inject NavigationManager NavigationManager
 
-@if (_isAlbumMode)
-{
-	<p @onclick="@BackToAllAlbums"><span class="backButton"></span> all @_currentAlbum.AlbumArtist albums</p>
-	<div>
-		<span id="playAlbumButton" @onclick="PlayAlbum" title="Play album"></span>
-		<span class="playShuffleButton" @onclick="PlayShuffle" title="Shuffle album"></span>
-		<AddListToQueueButton SongList="_songList"/>
-		<SongListCacheButton SongList="_songList" />
-		<div class="songTitle text-truncate"><span class="text-truncate d-block">@_currentAlbum.AlbumArtist - @_currentAlbum.Title</span></div>
-		<SongListSummary SongList="_songList" />
+<h2>@CurrentArtist</h2>
+<h3>Albums</h3>
+
+<div class="albumList">
+	<div class="row font-weight-bold header py-2 flex-nowrap">
+		<div class="col songImageCell"></div>
+		<div class="col">Album</div>
 	</div>
-}
-else
-{
-	<p @onclick="@(() => OnClick.InvokeAsync())"><span class="backButton"></span> all artists</p>
-	<h2>@CurrentArtist</h2>
-	<h3>Albums</h3>
-	
-	<div class="albumList">
-		<div class="row font-weight-bold header py-2 flex-nowrap">
-			<div class="col songImageCell"></div>
-			<div class="col">Album</div>
-		</div>
-		<Virtualize Context="item" Items="@_albums" TItem="Album">
-			<div class="row py-2 flex-nowrap">
-				<div class="col songImageCell" @onclick="@(() => LoadAlbum(item))">
-					@if (item.FirstSong != null)
-					{
-						<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileNameParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
-					}
-					else
-					{
-						<div class="coverPlaceholder songImage"> </div>
-					}
-				</div>
-				<div @onclick="@(() => LoadAlbum(item))" class="col align-self-center clickyText wrapTruncate">
-					<div class="songTitle text-truncate"><span class="text-truncate d-block">@item.Title</span></div>
-				</div>
+	<Virtualize Context="item" Items="@_albums" TItem="Album">
+		<div class="row py-2 flex-nowrap">
+			<div class="col songImageCell" @onclick="@(() => LoadAlbum(item))">
+				@if (item.FirstSong != null)
+				{
+					<img src="@(QueryHelpers.AddQueryString("/GetImage", "fileName", FileNameParsingService.ParseImageFileName(item.FirstSong)))" class="songImage" />
+				}
+				else
+				{
+					<div class="coverPlaceholder songImage"> </div>
+				}
 			</div>
-		</Virtualize>
-	</div>
+			<div @onclick="@(() => LoadAlbum(item))" class="col align-self-center clickyText wrapTruncate">
+				<div class="songTitle text-truncate"><span class="text-truncate d-block">@item.Title</span></div>
+			</div>
+		</div>
+	</Virtualize>
+</div>
 
-	<h3 class="mt-3">
-		<span class="playShuffleButton shuffleAllButton" @onclick="PlayShuffle"></span>
-		Songs
-	</h3>
-}
+<h3 class="mt-3">
+	<span class="playShuffleButton shuffleAllButton" @onclick="PlayShuffle"></span>
+	Songs
+</h3>
 
 @if (_songList != null && _songList.Count > 0)
 {
-	<SongList Songs="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="_showSearch" ShowTrack="_isAlbumMode" />
+	<SongList Songs="_songList" WillClearQueueOnPlay="true" WillQueueListOnPlay="true" ShowSearch="true" ShowTrack="false" />
 }
 
 @code {
 	[Parameter]
 	public string CurrentArtist { get; set; }
-	[Parameter]
-	public EventCallback OnClick { get; set; }
 
 	List<Song> _songList;
 	List<Album> _albums;
-	List<Song> _songs;
-	bool _showSearch = true;
-	bool _isAlbumMode = false;
-	Album _currentAlbum;
 
 	protected override async Task OnParametersSetAsync()
 	{
 		var (albums, songs) = await MusicService.GetArtistDetail(CurrentArtist);
 		_albums = albums;
-		_songs = songs;
-		_songList = _songs;
+		_songList = songs;
 	}
 
-	public async Task LoadAlbum(Album album)
+	private void LoadAlbum(Album album)
 	{
-		_currentAlbum = album;
-		_songList = album.Songs;
-		_showSearch = false;
-		_isAlbumMode = true;
-		StateHasChanged();
-		await MusicService.ScrollReset();
-	}
-
-	public async Task BackToAllAlbums()
-	{
-		_showSearch = true;
-		_songList = _songs;
-		_isAlbumMode = false;
-		StateHasChanged();
-		await MusicService.ScrollReset();
-	}
-
-	private void PlayAlbum()
-	{
-		PlayerService.PlaySong(_songList[0], _songList, 0);
-		StateHasChanged();
+		var url = QueryHelpers.AddQueryString("/Albums", new Dictionary<string, string>
+		{
+			["artist"] = album.AlbumArtist ?? "",
+			["title"] = album.Title ?? ""
+		});
+		NavigationManager.NavigateTo(url);
 	}
 
 	private void PlayShuffle()

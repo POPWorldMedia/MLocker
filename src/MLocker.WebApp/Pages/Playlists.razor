@@ -25,7 +25,6 @@ else
 	{
 		_playlistList = await PlaylistService.GetAllPlaylists();
 		_currentPlaylist = PlaylistId > 0 ? _playlistList.FirstOrDefault(p => p.PlaylistID == PlaylistId) : null;
-		await MusicService.ScrollReset();
 	}
 
 	protected async Task RefreshList()
