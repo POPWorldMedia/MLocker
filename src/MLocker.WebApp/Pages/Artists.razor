@@ -21,14 +21,21 @@ else
 	protected override async Task OnInitializedAsync()
 	{
 		_artistList = await MusicService.GetAllArtists();
+		ResolveArtist();
 	}
 
-	protected override async Task OnParametersSetAsync()
+	protected override Task OnParametersSetAsync()
 	{
-		if (_artistList.Count > 0)
-			_currentArtist = !string.IsNullOrEmpty(ArtistParam)
-				? _artistList.SingleOrDefault(x => x == ArtistParam)
-				: null;
+		ResolveArtist();
+		return Task.CompletedTask;
+	}
+
+	private void ResolveArtist()
+	{
+		if (_artistList.Count == 0) return;
+		_currentArtist = !string.IsNullOrEmpty(ArtistParam)
+			? _artistList.SingleOrDefault(x => x == ArtistParam)
+			: null;
 	}
 
 	protected void LoadArtistDetail(string artist)

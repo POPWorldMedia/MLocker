@@ -50,7 +50,7 @@
 	public string CurrentArtist { get; set; }
 
 	List<Song> _songList;
-	List<Album> _albums;
+	List<Album> _albums = new();
 
 	protected override async Task OnParametersSetAsync()
 	{
