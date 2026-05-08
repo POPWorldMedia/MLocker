@@ -1,12 +1,13 @@
 ﻿@page "/"
+@page "/playlist/{PlaylistId:int}"
 @using MLocker.WebApp.Services
 @using MLocker.Core.Models
 @inject IPlaylistService PlaylistService
 @inject IMusicService MusicService
+@inject NavigationManager NavigationManager
 
-@if (_isDetail)
+@if (_currentPlaylist != null)
 {
-	<p @onclick="@BackToAll"><span class="backButton"></span> all playlists</p>
 	<Playlists_Detail Playlist="_currentPlaylist"/>
 }
 else
@@ -15,13 +16,16 @@ else
 }
 
 @code {
+	[Parameter] public int PlaylistId { get; set; }
+
 	List<Playlist> _playlistList = new List<Playlist>();
 	Playlist _currentPlaylist = null;
-	private bool _isDetail = false;
 
 	protected override async Task OnParametersSetAsync()
 	{
 		_playlistList = await PlaylistService.GetAllPlaylists();
+		_currentPlaylist = PlaylistId > 0 ? _playlistList.FirstOrDefault(p => p.PlaylistID == PlaylistId) : null;
+		await MusicService.ScrollReset();
 	}
 
 	protected async Task RefreshList()
@@ -30,17 +34,8 @@ else
 		await InvokeAsync(StateHasChanged);
 	}
 
-	protected async Task LoadPlaylist(Playlist playlist)
+	protected void LoadPlaylist(Playlist playlist)
 	{
-		_currentPlaylist = playlist;
-		_isDetail = true;
-		await MusicService.ScrollReset();
-	}
-
-	protected async Task BackToAll()
-	{
-		_isDetail = false;
-		_currentPlaylist = null;
-		await MusicService.ScrollReset();
+		NavigationManager.NavigateTo($"/playlist/{playlist.PlaylistID}");
 	}
 }
