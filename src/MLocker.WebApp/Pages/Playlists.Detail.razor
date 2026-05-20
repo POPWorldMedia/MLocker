@@ -34,13 +34,14 @@
 			</div>
 			<div class="modal-body">
 				<input class="form-control my-2" type="text" placeholder="Playlist name required" @bind-value="Playlist.Title" @bind-value:event="oninput" @onkeyup="HandleKeyUp" />
-				<ul class="list-group list-group-flush" ondragover="event.preventDefault();">
+				<ul class="list-group list-group-flush">
 					@foreach (var item in Playlist.Songs)
 					{
-						<li class="list-group-item draggable" draggable="true" @ondrop="@(() => OnDrop(item))" @ondrag="@(() => OnDrag(item))">
-							<span class="gripper"></span>
-							@item.Title, @(item.Artist ?? item.AlbumArtist)
-							<span class="trashCan" @onclick="(() => Delete(item))"></span>
+						<li class="list-group-item d-flex align-items-center gap-2">
+							<span class="chevronUp flex-shrink-0" @onclick="(() => MoveUp(item))"></span>
+							<span class="chevronDown flex-shrink-0" @onclick="(() => MoveDown(item))"></span>
+							<span class="flex-grow-1 mx-3">@item.Title, @(item.Artist ?? item.AlbumArtist)</span>
+							<span class="trashCan flex-shrink-0" @onclick="(() => Delete(item))"></span>
 						</li>
 					}
 				</ul>
@@ -56,7 +57,6 @@
 	public Playlist Playlist { get; set; }
 
 	private List<Song> _songList;
-	private int _currentIndex;
 	private Timer _timer;
 
 	protected override void OnInitialized()
@@ -81,18 +81,23 @@
 		}
 	}
 
-	void OnDrag(Song item)
-	{
-		_currentIndex = Playlist.Songs.FindIndex(x => x.FileID == item.FileID);
-	}
-
-	private void OnDrop(Song item)
+	private void MoveUp(Song item)
 	{
 		var index = Playlist.Songs.FindIndex(x => x.FileID == item.FileID);
-		var current = Playlist.Songs[_currentIndex];
-		Playlist.Songs.RemoveAt(_currentIndex);
-		Playlist.Songs.Insert(index, current);
-		_currentIndex = index;
+		if (index <= 0) return;
+		Playlist.Songs.RemoveAt(index);
+		Playlist.Songs.Insert(index - 1, item);
+		_songList = Playlist.Songs;
+		StateHasChanged();
+		PlaylistService.UpdatePlaylist(Playlist);
+	}
+
+	private void MoveDown(Song item)
+	{
+		var index = Playlist.Songs.FindIndex(x => x.FileID == item.FileID);
+		if (index >= Playlist.Songs.Count - 1) return;
+		Playlist.Songs.RemoveAt(index);
+		Playlist.Songs.Insert(index + 1, item);
 		_songList = Playlist.Songs;
 		StateHasChanged();
 		PlaylistService.UpdatePlaylist(Playlist);

@@ -18,4 +18,8 @@
     <ServiceWorker Include="wwwroot\sw.js" PublishedContent="wwwroot\sw.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\lib\drag-drop-touch\DragDropTouch.js" />
+  </ItemGroup>
+
 </Project>
