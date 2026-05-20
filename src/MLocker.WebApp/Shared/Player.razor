@@ -13,11 +13,11 @@
 	{
 		if (PlayerService.CurrentSong.PictureMimeType != null)
 		{
-			<img src="@(QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", FileNameParsingService.ParseImageFileName(PlayerService.CurrentSong)))" class="nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)" />
+			<img src="@(QueryHelpers.AddQueryString(ApiPaths.GetImage, "fileName", FileNameParsingService.ParseImageFileName(PlayerService.CurrentSong)))" class="nowPlayingImage @_imageClass" @onclick="ShrinkToggle" @ontouchend="ShrinkToggle" @ontouchend:preventDefault="true" @oncontextmenu:preventDefault="true" />
 		}
 		else
 		{
-			<div class="coverPlaceholder nowPlayingImage @_imageClass" @onclick="@(ShrinkToggle)"> </div>
+			<div class="coverPlaceholder nowPlayingImage @_imageClass" @onclick="ShrinkToggle" @ontouchend="ShrinkToggle" @ontouchend:preventDefault="true" @oncontextmenu:preventDefault="true"> </div>
 		}
 		<div class="songDetails @_titleClass">
 			<h3 class="text-truncate d-block">@PlayerService.CurrentSong.Title</h3>
