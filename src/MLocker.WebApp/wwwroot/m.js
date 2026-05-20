@@ -254,6 +254,12 @@ window.ClearCache = () => {
 		});
 }
 
+window.startViewTransition = (dotNetRef) => {
+    if (document.startViewTransition)
+        return document.startViewTransition(() => dotNetRef.invokeMethodAsync('CommitMove'));
+    return dotNetRef.invokeMethodAsync('CommitMove');
+}
+
 window.ScrollReset = () => {
 	var topper = document.getElementById('topper');
 	topper.scrollIntoView();

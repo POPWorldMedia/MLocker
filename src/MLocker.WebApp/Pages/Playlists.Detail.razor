@@ -2,10 +2,12 @@
 @using MLocker.Core.Services
 @using MLocker.WebApp.Services
 @using System.Timers
+@implements IDisposable
 @inject IPlayerService PlayerService
 @inject IPlaylistTransformer PlaylistTransformer
 @inject IPlaylistService PlaylistService
 @inject IMusicService MusicService
+@inject IJSRuntime JsRuntime
 
 <div>
 	@if (!MusicService.IsGuest)
@@ -37,7 +39,7 @@
 				<ul class="list-group list-group-flush">
 					@foreach (var item in Playlist.Songs)
 					{
-						<li class="list-group-item d-flex align-items-center gap-2">
+						<li class="list-group-item d-flex align-items-center gap-2" style="view-transition-name: song-@item.FileID">
 							<span class="chevronUp flex-shrink-0" @onclick="(() => MoveUp(item))"></span>
 							<span class="chevronDown flex-shrink-0" @onclick="(() => MoveDown(item))"></span>
 							<span class="flex-grow-1 mx-3">@item.Title, @(item.Artist ?? item.AlbumArtist)</span>
@@ -58,12 +60,15 @@
 
 	private List<Song> _songList;
 	private Timer _timer;
+	private Action _pendingMove;
+	private DotNetObjectReference<Playlists_Detail> _dotNetRef;
 
 	protected override void OnInitialized()
 	{
 		_songList = Playlist.Songs;
 		_timer = new Timer(500) { AutoReset = false };
 		_timer.Elapsed += OnTimerFinish;
+		_dotNetRef = DotNetObjectReference.Create(this);
 	}
 
 	private void PlayPlaylist()
@@ -81,26 +86,38 @@
 		}
 	}
 
-	private void MoveUp(Song item)
+	private async Task MoveUp(Song item)
 	{
 		var index = Playlist.Songs.FindIndex(x => x.FileID == item.FileID);
 		if (index <= 0) return;
-		Playlist.Songs.RemoveAt(index);
-		Playlist.Songs.Insert(index - 1, item);
-		_songList = Playlist.Songs;
-		StateHasChanged();
-		PlaylistService.UpdatePlaylist(Playlist);
+		_pendingMove = () =>
+		{
+			Playlist.Songs.RemoveAt(index);
+			Playlist.Songs.Insert(index - 1, item);
+		};
+		await JsRuntime.InvokeVoidAsync("startViewTransition", _dotNetRef);
 	}
 
-	private void MoveDown(Song item)
+	private async Task MoveDown(Song item)
 	{
 		var index = Playlist.Songs.FindIndex(x => x.FileID == item.FileID);
 		if (index >= Playlist.Songs.Count - 1) return;
-		Playlist.Songs.RemoveAt(index);
-		Playlist.Songs.Insert(index + 1, item);
+		_pendingMove = () =>
+		{
+			Playlist.Songs.RemoveAt(index);
+			Playlist.Songs.Insert(index + 1, item);
+		};
+		await JsRuntime.InvokeVoidAsync("startViewTransition", _dotNetRef);
+	}
+
+	[JSInvokable]
+	public async Task CommitMove()
+	{
+		_pendingMove?.Invoke();
+		_pendingMove = null;
 		_songList = Playlist.Songs;
-		StateHasChanged();
-		PlaylistService.UpdatePlaylist(Playlist);
+		await PlaylistService.UpdatePlaylist(Playlist);
+		await InvokeAsync(StateHasChanged);
 	}
 
 	private void OnTimerFinish(Object source, ElapsedEventArgs e)
@@ -121,4 +138,6 @@
 		StateHasChanged();
 		PlaylistService.UpdatePlaylist(Playlist);
 	}
+
+	public void Dispose() => _dotNetRef?.Dispose();
 }
