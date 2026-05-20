@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,19 +44,21 @@ app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseStaticFiles(new StaticFileOptions
+app.Use(async (context, next) =>
 {
-    OnPrepareResponseAsync = context =>
+    var path = context.Request.Path.Value ?? "";
+    var fileName = Path.GetFileName(path);
+    if (fileName == "manifest.json" || fileName == "blazor.boot.json" ||
+        fileName == "dotnet.js")
     {
-        if (context.File.Name == "blazor.boot.json")
-        {
-            context.Context.Response.Headers["Cache-Control"] = "no-cache, no-store";
-            context.Context.Response.Headers["Pragma"] = "no-cache";
-            context.Context.Response.Headers["Expires"] = "-1";
-        }
-        return Task.CompletedTask;
+        context.Response.Headers["Cache-Control"] = "no-cache, no-store";
+        context.Response.Headers["Pragma"] = "no-cache";
+        context.Response.Headers["Expires"] = "-1";
     }
+    await next(context);
 });
+
+app.UseStaticFiles();
 
 app.UseBlazorFrameworkFiles();
 
