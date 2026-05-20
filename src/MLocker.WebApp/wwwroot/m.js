@@ -157,16 +157,21 @@ window.OpenSongContext = (contextMenuId) => {
 		]
 	});
 	menu.setAttribute('data-bs-show', '');
-	var hideEvents = ['mouseleave', 'blur', 'click'];
-	hideEvents.forEach(event => {
-		menu.addEventListener(event, () => {
-			if (menu)
-				menu.removeAttribute('data-bs-show');
-			if (instance)
-				instance.destroy();
-			instance = null;
-		});
-	});
+
+	function hide() {
+		if (menu) menu.removeAttribute('data-bs-show');
+		if (instance) { instance.destroy(); instance = null; }
+		document.removeEventListener('click', outsideClickHandler, true);
+	}
+
+	['mouseleave', 'blur', 'click'].forEach(event => menu.addEventListener(event, hide));
+
+	function outsideClickHandler(e) {
+		if (!menu.contains(e.target) && e.target !== button)
+			hide();
+	}
+
+	setTimeout(() => document.addEventListener('click', outsideClickHandler, true), 0);
 }
 
 window.OpenAddToPlaylistModal = () => {
