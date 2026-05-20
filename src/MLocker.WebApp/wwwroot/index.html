@@ -16,7 +16,14 @@
 </head>
 
 <body>
-    <div id="app" class="h-100 d-flex flex-column">Loading...</div>
+<div id="app" class="h-100 d-flex flex-column">
+	<div class="vh-100 flex-column d-flex align-items-center justify-content-center">
+		<div>Your tunes are on the way...</div>
+		<div class="progress w-75 mt-2">
+			<div class="progress-bar progress-bar-striped" role="progressbar" style="width: var(--blazor-load-percentage)"></div>
+		</div>
+	</div>
+</div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
