@@ -21,6 +21,8 @@ namespace MLocker.WebApp.Services
         void SkipToSong(int index);
         void PlaySongNext(Song song);
         Task<bool> TogglePlayer();
+        bool Repeat { get; }
+        void ToggleRepeat();
     }
 
     public class PlayerService : IPlayerService
@@ -30,6 +32,7 @@ namespace MLocker.WebApp.Services
         private List<Song> _queue = new List<Song>();
         private int _queueIndex;
         private Song _currentSong;
+        private bool _repeat;
 
         public PlayerService(IJSRuntime jsRuntime, IFileNameParsingService fileNameParsingService)
         {
@@ -42,6 +45,14 @@ namespace MLocker.WebApp.Services
         public List<Song> Queue => _queue;
 
         public int QueueIndex => _queueIndex;
+
+        public bool Repeat => _repeat;
+
+        public void ToggleRepeat()
+        {
+            _repeat = !_repeat;
+            Notify();
+        }
 
         private void CallPlayerAndUpdateTitle()
         {
@@ -77,6 +88,13 @@ namespace MLocker.WebApp.Services
 	        _queueIndex++;
 	        if (_queue == null || _queueIndex >= _queue.Count)
 	        {
+		        if (_repeat && _queue != null && _queue.Count > 0)
+		        {
+			        _queueIndex = 0;
+			        _currentSong = _queue[0];
+			        CallPlayerAndUpdateTitle();
+			        return;
+		        }
 		        _queue = new List<Song>();
 		        _queueIndex = 0;
 		        _currentSong = null;

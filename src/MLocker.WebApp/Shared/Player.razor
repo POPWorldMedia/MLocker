@@ -32,7 +32,7 @@
 		<div class="col text-end"><span class="@_previousClass playerButton" @onclick="PlayPrevious"></span></div>
 		<div class="col text-center"><span class="@_playClass playerButton" @onclick="PlayPause"></span></div>
 		<div class="col"><span class="@_nextClass playerButton" @onclick="PlayNext"></span></div>
-		<div class="col"></div>
+		<div class="col text-end"><span class="repeatButton playerButton @(PlayerService.Repeat ? "active" : "")" @onclick="ToggleRepeat"></span></div>
 	</div>
 </div>
 
@@ -178,6 +178,11 @@
 	private void PlayPrevious()
 	{
 		PlayerService.PlayPreviousSong();
+	}
+
+	private void ToggleRepeat()
+	{
+		PlayerService.ToggleRepeat();
 	}
 
 	private static Action _updateAction;
