@@ -6,7 +6,7 @@ This project takes an experimental shot at building a browser-based personal mus
 
 The app uses an aspnetcore API, storing the music files in Azure Storage and the metadata and playlists in SQL. (I was going to use something else, but I have a wholly underutilized SQL pool. I was going to use Azure Functions for the API, but I have a wholly underutilized app service, too.) The front-end is a Blazor client.
 
-![image](https://user-images.githubusercontent.com/2114255/98284863-bdbc5780-1f6f-11eb-9aa0-7c563d78b1f0.png)
+![image](https://github.com/user-attachments/assets/06b2e504-bd35-44e6-8016-d79cc610a85c)
 
 ## Roadmap
 This is really an exercise in experimentation, but using it myself daily, I suppose after this long I should do a proper release. I've made well over 100,000 plays from all over the Internets with this app with a library of about 9,000 songs.
