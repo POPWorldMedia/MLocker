@@ -25,7 +25,7 @@
 		</div>
 	}
 </div>
-<audio id="player" src="@_source"></audio>
+<audio id="player" src="@(string.IsNullOrEmpty(_source) ? null : _source)"></audio>
 <div class="container">
 	<div class="row">
 		<div class="col"><span id="queueButton" class="playerButton" data-bs-toggle="collapse" data-bs-target="#queueList" aria-expanded="true" aria-controls="queueList" title="Show queue"></span></div>
