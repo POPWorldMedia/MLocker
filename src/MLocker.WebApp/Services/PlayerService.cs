@@ -85,6 +85,8 @@ namespace MLocker.WebApp.Services
 
         public void PlayNextSong()
         {
+	        if (!_repeat && (_queue == null || _queueIndex >= _queue.Count - 1))
+		        return;
 	        _queueIndex++;
 	        if (_queue == null || _queueIndex >= _queue.Count)
 	        {
@@ -110,6 +112,12 @@ namespace MLocker.WebApp.Services
         {
 	        if (_queueIndex == 0)
 	        {
+		        if (_repeat && _queue != null && _queue.Count > 0)
+		        {
+			        _queueIndex = _queue.Count - 1;
+			        _currentSong = _queue[_queueIndex];
+			        CallPlayerAndUpdateTitle();
+		        }
 		        return;
 	        }
 
