@@ -37,13 +37,15 @@
 			<div class="modal-body">
 				<input class="form-control my-2" type="text" placeholder="Playlist name required" @bind-value="Playlist.Title" @bind-value:event="oninput" @onkeyup="HandleKeyUp" />
 				<ul class="list-group list-group-flush">
-					@foreach (var item in Playlist.Songs)
+					@for (var i = 0; i < Playlist.Songs.Count; i++)
 					{
-						<li class="list-group-item d-flex align-items-center gap-2" style="view-transition-name: song-@item.FileID">
-							<span class="chevronUp flex-shrink-0" @onclick="(() => MoveUp(item))"></span>
-							<span class="chevronDown flex-shrink-0" @onclick="(() => MoveDown(item))"></span>
+						var item = Playlist.Songs[i];
+						var index = i;
+						<li class="list-group-item d-flex align-items-center gap-2" style="view-transition-name: song-@(index)-@item.FileID">
+							<span class="chevronUp flex-shrink-0" @onclick="(() => MoveUp(index))"></span>
+							<span class="chevronDown flex-shrink-0" @onclick="(() => MoveDown(index))"></span>
 							<span class="flex-grow-1 mx-3">@item.Title, @(item.Artist ?? item.AlbumArtist)</span>
-							<span class="trashCan flex-shrink-0" @onclick="(() => Delete(item))"></span>
+							<span class="trashCan flex-shrink-0" @onclick="(() => Delete(index))"></span>
 						</li>
 					}
 				</ul>
@@ -86,10 +88,10 @@
 		}
 	}
 
-	private async Task MoveUp(Song item)
+	private async Task MoveUp(int index)
 	{
-		var index = Playlist.Songs.FindIndex(x => x.FileID == item.FileID);
 		if (index <= 0) return;
+		var item = Playlist.Songs[index];
 		_pendingMove = () =>
 		{
 			Playlist.Songs.RemoveAt(index);
@@ -98,10 +100,10 @@
 		await JsRuntime.InvokeVoidAsync("startViewTransition", _dotNetRef);
 	}
 
-	private async Task MoveDown(Song item)
+	private async Task MoveDown(int index)
 	{
-		var index = Playlist.Songs.FindIndex(x => x.FileID == item.FileID);
 		if (index >= Playlist.Songs.Count - 1) return;
+		var item = Playlist.Songs[index];
 		_pendingMove = () =>
 		{
 			Playlist.Songs.RemoveAt(index);
@@ -131,9 +133,9 @@
 		_timer.Start();
 	}
 
-	private void Delete(Song item)
+	private void Delete(int index)
 	{
-		Playlist.Songs.Remove(item);
+		Playlist.Songs.RemoveAt(index);
 		_songList = Playlist.Songs;
 		StateHasChanged();
 		PlaylistService.UpdatePlaylist(Playlist);
