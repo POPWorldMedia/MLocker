@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using MLocker.Core.Models;
+using MLocker.WebApp.Services;
 
 namespace MLocker.WebApp.Repositories
 {
@@ -24,15 +25,17 @@ namespace MLocker.WebApp.Repositories
 		private readonly HttpClient _httpClient;
 		private readonly IConfig _config;
 		private readonly ILocalStorageRepository _localStorageRepository;
+		private readonly IConnectivityService _connectivityService;
 		private static List<PlaylistDefinition> _allPlaylistDefinitions;
 		private const string PlaylistVersionKey = "PlaylistVersionKey";
         private const string PlaylistKey = "PlaylistKey";
 
-		public PlaylistRepository(HttpClient httpClient, IConfig config, ILocalStorageRepository localStorageRepository)
+		public PlaylistRepository(HttpClient httpClient, IConfig config, ILocalStorageRepository localStorageRepository, IConnectivityService connectivityService)
 		{
 			_httpClient = httpClient;
 			_config = config;
 			_localStorageRepository = localStorageRepository;
+			_connectivityService = connectivityService;
 		}
 
 		public async Task UpdatePlaylists()
@@ -45,24 +48,48 @@ namespace MLocker.WebApp.Repositories
 		{
 			if (_allPlaylistDefinitions != null)
 				return _allPlaylistDefinitions;
-			var playlistVersion = await _localStorageRepository.GetItem(PlaylistVersionKey);
-			var remotePlaylistVersion = await GetRemotePlaylistVersion();
-			var isNewVersion = playlistVersion != remotePlaylistVersion;
 
-            if (isNewVersion)
-            {
-                await FetchPlaylists();
-            }
-            else
+			if (_connectivityService.IsOnline)
 			{
-				var rawObject = await _localStorageRepository.GetItem(PlaylistKey);
-                if (rawObject == null)
-                    await FetchPlaylists();
-                else
-                    _allPlaylistDefinitions = JsonSerializer.Deserialize<List<PlaylistDefinition>>(rawObject);
+				try
+				{
+					var playlistVersion = await _localStorageRepository.GetItem(PlaylistVersionKey);
+					var remotePlaylistVersion = await GetRemotePlaylistVersion();
+					var isNewVersion = playlistVersion != remotePlaylistVersion;
+
+					if (isNewVersion)
+						await FetchPlaylists();
+					else
+						await LoadCachedPlaylists();
+				}
+				catch (HttpRequestException)
+				{
+					// Reachable per the OS, but the API couldn't be reached - fall back to whatever's cached locally.
+					await LoadCachedPlaylists();
+				}
 			}
-			
+			else
+			{
+				await LoadCachedPlaylists();
+			}
+
 			return _allPlaylistDefinitions;
+		}
+
+		private async Task LoadCachedPlaylists()
+		{
+			var rawObject = await _localStorageRepository.GetItem(PlaylistKey);
+			if (rawObject == null)
+			{
+				if (_connectivityService.IsOnline)
+					await FetchPlaylists();
+				else
+					_allPlaylistDefinitions = new List<PlaylistDefinition>();
+			}
+			else
+			{
+				_allPlaylistDefinitions = JsonSerializer.Deserialize<List<PlaylistDefinition>>(rawObject);
+			}
 		}
 
         private async Task FetchPlaylists()

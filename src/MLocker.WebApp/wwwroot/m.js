@@ -69,6 +69,7 @@ window.StartPlayer = (wholepath) => {
 	};
 	player.onerror = (e) => {
 		LogPlayError({ name: 'MediaError', message: player.error?.message || 'unknown', code: player.error?.code }, player);
+		DotNet.invokeMethodAsync('MLocker.WebApp', 'SongPlaybackFailed');
 	};
 	player.onstalled = (e) => {
 		LogPlayError({ name: 'Stalled', message: 'audio stalled', code: 0 }, player);
@@ -122,6 +123,11 @@ window.FormatSeconds = (s) => {
 
 window.OpenApiModal = () => {
 	var myModal = new bootstrap.Modal(document.getElementById('apiModal'), { keyboard: false, backdrop: 'static' });
+	myModal.show();
+}
+
+window.OpenOfflineModal = () => {
+	var myModal = new bootstrap.Modal(document.getElementById('offlineModal'));
 	myModal.show();
 }
 
@@ -211,6 +217,15 @@ window.SetTitle = (song, imageUrl) => {
 	}
 }
 
+window.IsOnline = () => navigator.onLine;
+
+window.RegisterConnectivityListener = () => {
+	if (window._connectivityListenerRegistered) return;
+	window._connectivityListenerRegistered = true;
+	window.addEventListener('online', () => DotNet.invokeMethodAsync('MLocker.WebApp', 'NotifyConnectivityChanged', true));
+	window.addEventListener('offline', () => DotNet.invokeMethodAsync('MLocker.WebApp', 'NotifyConnectivityChanged', false));
+}
+
 window.SetStorageItem = (key, value) => {
 	localStorage.setItem(key, value);
 }
@@ -268,7 +283,7 @@ window.ScrollReset = () => {
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', function () {
 		navigator.serviceWorker.register('sw.js?v=1.0.3', { updateViaCache: 'none' }).then(function (registration) {
-			registration.update();
+			registration.update().catch(() => {}); // fails harmlessly when offline - nothing to check against
 			console.log('ServiceWorker registration successful with scope: ', registration.scope);
 		}, function (err) {
 			console.log('ServiceWorker registration failed: ', err);

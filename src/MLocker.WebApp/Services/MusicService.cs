@@ -36,16 +36,18 @@ namespace MLocker.WebApp.Services
         private readonly IUploadRepository _uploadRepository;
         private readonly ISpinnerService _spinnerService;
         private readonly IJSRuntime _jsRuntime;
+        private readonly IConnectivityService _connectivityService;
         private static List<Album> _albums;
         private static List<string> _artists;
         private static SemaphoreSlim _updateLocker = new SemaphoreSlim(1, 1);
 
-		public MusicService(ISongRepository songRepository, IUploadRepository uploadRepository, ISpinnerService spinnerService, IJSRuntime jsRuntime)
+		public MusicService(ISongRepository songRepository, IUploadRepository uploadRepository, ISpinnerService spinnerService, IJSRuntime jsRuntime, IConnectivityService connectivityService)
         {
             _songRepository = songRepository;
             _uploadRepository = uploadRepository;
             _spinnerService = spinnerService;
             _jsRuntime = jsRuntime;
+            _connectivityService = connectivityService;
         }
 
         public event Action OnIsGuestChange;
@@ -103,7 +105,14 @@ namespace MLocker.WebApp.Services
 			// the entire thing and returns a 200, which the cache API is happy to tuck away in storage.
 			var cachedUrl = _songRepository.GetCachedSongUrl(fileID);
 			var isCached = await _songRepository.IsSongCached(cachedUrl);
-            return isCached ? cachedUrl : _songRepository.GetSongUrl(fileID);
+			if (isCached)
+				return cachedUrl;
+
+			// Not cached and no network to stream it - nothing to play.
+			if (!_connectivityService.IsOnline)
+				return null;
+
+			return _songRepository.GetSongUrl(fileID);
         }
 
         public async Task<bool> Upload(string fileName, Stream stream)

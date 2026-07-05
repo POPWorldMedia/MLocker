@@ -1,4 +1,18 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto&display=swap');
+﻿@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('fonts/open-sans-v44-latin-400.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('fonts/roboto-v51-latin-400.woff2') format('woff2');
+}
 
 html, body {
 	height: 100%;

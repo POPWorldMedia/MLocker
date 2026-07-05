@@ -25,6 +25,7 @@ builder.Services.AddTransient<IPlaylistTransformer, PlaylistTransformer>();
 builder.Services.AddTransient<IPlaylistService, PlaylistService>();
 builder.Services.AddTransient<ISongContextStateService, SongContextStateService>();
 builder.Services.AddSingleton<ISpinnerService, SpinnerService>();
+builder.Services.AddSingleton<IConnectivityService, ConnectivityService>();
 
 // repos
 builder.Services.AddSingleton<IUploadRepository, UploadRepository>();

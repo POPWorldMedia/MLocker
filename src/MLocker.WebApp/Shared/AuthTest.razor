@@ -30,7 +30,7 @@
 	protected override async Task OnInitializedAsync()
 	{
 		CurrentApiKey = await Config.GetApiKey();
-		var (isSuccess, statusCode, isGuest) = await TestRepository.IsTestSuccess();
+		var (isSuccess, statusCode, isGuest, wasOffline) = await TestRepository.IsTestSuccess();
 		if (!isSuccess)
 		{
 			AlertClass = "alert-danger";
@@ -42,7 +42,7 @@
 	private async Task Save()
 	{
 		await Config.SetApiKey(CurrentApiKey);
-		var (isSuccess, statusCode, isGuest) = await TestRepository.IsTestSuccess();
+		var (isSuccess, statusCode, isGuest, wasOffline) = await TestRepository.IsTestSuccess();
 		if (!isSuccess)
 			TestResult = statusCode.ToString();
 		else
