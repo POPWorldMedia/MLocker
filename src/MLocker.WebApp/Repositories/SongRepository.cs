@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using MLocker.Core.Models;
+using MLocker.WebApp.Services;
 
 namespace MLocker.WebApp.Repositories
 {
@@ -33,17 +34,19 @@ namespace MLocker.WebApp.Repositories
         private readonly IConfig _config;
         private readonly ILocalStorageRepository _localStorageRepository;
         private readonly IJSRuntime _jsRuntime;
+        private readonly IConnectivityService _connectivityService;
         private static List<Song> _allSongs;
         private static SemaphoreSlim _updateLocker = new SemaphoreSlim(1, 1);
         public const string SongListVersionKey = "SongListVersionKey";
         public const string SongListKey = "SongList";
 
-        public SongRepository(HttpClient httpClient, IConfig config, ILocalStorageRepository localStorageRepository, IJSRuntime jsRuntime)
+        public SongRepository(HttpClient httpClient, IConfig config, ILocalStorageRepository localStorageRepository, IJSRuntime jsRuntime, IConnectivityService connectivityService)
         {
             _httpClient = httpClient;
             _config = config;
             _localStorageRepository = localStorageRepository;
             _jsRuntime = jsRuntime;
+            _connectivityService = connectivityService;
         }
 
         public async Task UpdateSongs()
@@ -65,29 +68,33 @@ namespace MLocker.WebApp.Repositories
 	        {
 		        var stopwatch = new Stopwatch();
 		        stopwatch.Start();
-		        var songListVersion = await _localStorageRepository.GetItem(SongListVersionKey);
-		        var remoteSongListVersion = await GetRemoteSongListVersion();
-		        var isNewVersion = songListVersion != remoteSongListVersion;
 
-                if (isNewVersion)
-                {
-                    await FetchSongList();
-                }
-                else
-                {
-                    var rawObject = await _localStorageRepository.GetItem(SongListKey);
-                    if (rawObject == null)
-                        await FetchSongList();
-                    else
-                        _allSongs = JsonSerializer.Deserialize<List<Song>>(rawObject);
-                }
+		        if (_connectivityService.IsOnline)
+		        {
+			        try
+			        {
+				        var songListVersion = await _localStorageRepository.GetItem(SongListVersionKey);
+				        var remoteSongListVersion = await GetRemoteSongListVersion();
+				        var isNewVersion = songListVersion != remoteSongListVersion;
+
+				        if (isNewVersion)
+					        await FetchSongList();
+				        else
+					        await LoadCachedSongList();
+			        }
+			        catch (HttpRequestException)
+			        {
+				        // Reachable per the OS, but the API couldn't be reached - fall back to whatever's cached locally.
+				        await LoadCachedSongList();
+			        }
+		        }
+		        else
+		        {
+			        await LoadCachedSongList();
+		        }
 
 		        stopwatch.Stop();
 		        Console.WriteLine($"Song fetch: {stopwatch.ElapsedMilliseconds}ms");
-	        }
-	        catch
-	        {
-		        throw; // TODO: error handling
 	        }
 	        finally
 	        {
@@ -95,6 +102,22 @@ namespace MLocker.WebApp.Repositories
 	        }
 
 	        return _allSongs;
+        }
+
+        private async Task LoadCachedSongList()
+        {
+	        var rawObject = await _localStorageRepository.GetItem(SongListKey);
+	        if (rawObject == null)
+	        {
+		        if (_connectivityService.IsOnline)
+			        await FetchSongList();
+		        else
+			        _allSongs = new List<Song>();
+	        }
+	        else
+	        {
+		        _allSongs = JsonSerializer.Deserialize<List<Song>>(rawObject);
+	        }
         }
 
         private async Task FetchSongList()

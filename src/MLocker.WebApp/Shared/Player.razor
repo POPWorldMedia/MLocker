@@ -82,6 +82,23 @@
 	}
 </div>
 
+<div class="modal fade" id="offlineModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">You're offline</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				This song hasn't been downloaded, so it can't play without a connection.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-dark" data-bs-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 @code
 {
 	private List<Song> _songList;
@@ -110,6 +127,11 @@
 			if (PlayerService.CurrentSong != null)
 			{
 				_source = await MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
+				if (string.IsNullOrEmpty(_source))
+				{
+					await HandlePlaybackUnavailable();
+					return;
+				}
 				await MusicService.IncrementPlayCount(PlayerService.CurrentSong.FileID);
 			}
 			if (_source != previousSource && !string.IsNullOrEmpty(_source))
@@ -132,6 +154,7 @@
 		_nextSongAction = PlayNext;
 		_previousSongAction = PlayPrevious;
 		_isPlayingAction = UpdatePlayerButton;
+		_playbackFailedAction = HandlePlaybackUnavailable;
 	}
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -189,11 +212,19 @@
 	private static Action _nextSongAction;
 	private static Action _previousSongAction;
 	private static Action<bool> _isPlayingAction;
+	private static Func<Task> _playbackFailedAction;
 
 	private void UpdateMessage()
 	{
 		PlayerService.PlayNextSong();
 		_playClass = PlayerService.CurrentSong != null ? "pauseButton" : "activePlayButtonOff";
+	}
+
+	private async Task HandlePlaybackUnavailable()
+	{
+		await JSRuntime.InvokeVoidAsync("OpenOfflineModal");
+		_playClass = "activePlayButton";
+		StateHasChanged();
 	}
 
 	[JSInvokable]
@@ -206,6 +237,12 @@
 	public static void SongEnded()
 	{
 		_updateAction.Invoke();
+	}
+
+	[JSInvokable]
+	public static Task SongPlaybackFailed()
+	{
+		return _playbackFailedAction.Invoke();
 	}
 
 	[JSInvokable]

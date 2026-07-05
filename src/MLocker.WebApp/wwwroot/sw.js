@@ -1,23 +1,72 @@
-﻿const CACHE_NAME = 'music-image-cache';
+importScripts('./service-worker-assets.js');
+
+const CACHE_NAME = 'music-image-cache';
+const APP_SHELL_CACHE_PREFIX = 'app-shell-cache-';
+const APP_SHELL_CACHE_NAME = `${APP_SHELL_CACHE_PREFIX}${self.assetsManifest.version}`;
 
 self.addEventListener('install', event => event.waitUntil(onInstall(event)));
+self.addEventListener('activate', event => event.waitUntil(onActivate(event)));
 
 async function onInstall(event) {
+	const cache = await caches.open(APP_SHELL_CACHE_NAME);
+	const assets = self.assetsManifest.assets.filter(asset => !asset.url.match(/\.gz$/));
+
+	// cache.addAll() is all-or-nothing - one unexpectedly-missing asset (e.g. a stray
+	// npm package file that isn't actually served) would otherwise sink the whole precache
+	// and leave the app shell with no offline fallback at all. Cache what we can instead.
+	await Promise.all(assets.map(async asset => {
+		try {
+			const response = await fetch(new Request(asset.url, { integrity: asset.hash, cache: 'no-cache' }));
+			if (response.ok)
+				await cache.put(asset.url, response);
+		} catch (err) {
+			console.warn(`Service worker: failed to precache ${asset.url}`, err);
+		}
+	}));
+
 	await self.skipWaiting();
 }
 
+async function onActivate(event) {
+	const cacheKeys = await caches.keys();
+	await Promise.all(cacheKeys
+		.filter(key => key.startsWith(APP_SHELL_CACHE_PREFIX) && key !== APP_SHELL_CACHE_NAME)
+		.map(key => caches.delete(key)));
+	await self.clients.claim();
+}
+
 self.addEventListener('fetch', event => {
+	if (event.request.method !== 'GET')
+		return;
+
 	let cacheControl = event.request.headers.get('cache-control');
 	if (cacheControl === 'no-cache')
 		caches.open(CACHE_NAME)
 			.then((cache) => {
 				return cache.delete(event.request.url);
 			});
+
 	if (event.request.url.includes('GetImage')
 		|| event.request.url.includes('GetWholeSong')) {
 		event.respondWith(handleCacheableRequest(event.request));
+		return;
 	}
+
+	event.respondWith(handleAppShellRequest(event.request));
 });
+
+async function handleAppShellRequest(request) {
+	const cache = await caches.open(APP_SHELL_CACHE_NAME);
+	if (request.mode === 'navigate') {
+		const shell = await cache.match('index.html');
+		if (shell)
+			return shell;
+	}
+	// Precached asset keys don't carry the cache-busting "?v=" query strings that
+	// index.html requests them with, so ignore the query string when matching.
+	const cached = await cache.match(request, { ignoreSearch: true });
+	return cached || fetch(request);
+}
 
 async function handleCacheableRequest(request) {
 	const cache = await caches.open(CACHE_NAME);

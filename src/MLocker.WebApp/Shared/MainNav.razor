@@ -68,7 +68,7 @@
 	
 	protected override async Task OnInitializedAsync()
 	{
-		var (_, _, isGuest) = await TestRepository.IsTestSuccess();
+		var (_, _, isGuest, _) = await TestRepository.IsTestSuccess();
 		MusicService.IsGuest = isGuest;
 		_isGuest = isGuest;
 		MusicService.OnIsGuestChange += delegate()
