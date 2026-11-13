@@ -13,10 +13,10 @@ MLocker is a browser-based personal music locker built with ASP.NET Core and Bla
 The solution consists of 5 projects:
 
 - **MLocker.Core** (.NET Standard 2.1): Shared models and service interfaces used by both API and WebApp
-- **MLocker.Api** (.NET 10): ASP.NET Core API backend that handles song uploads, streaming, playlist management, and serves the Blazor WebAssembly app
-- **MLocker.WebApp** (.NET 10): Blazor WebAssembly client providing the music player interface
-- **MLocker.Database** (.NET 10): Console app for database migrations using DbUp with embedded SQL scripts
-- **MLocker.Bulk** (.NET 10): Console app for bulk uploading songs (workaround for browser memory limitations)
+- **MLocker.Api** (.NET 11): ASP.NET Core API backend that handles song uploads, streaming, playlist management, and serves the Blazor WebAssembly app
+- **MLocker.WebApp** (.NET 11): Blazor WebAssembly client providing the music player interface
+- **MLocker.Database** (.NET 11): Console app for database migrations using DbUp with embedded SQL scripts
+- **MLocker.Bulk** (.NET 11): Console app for bulk uploading songs (workaround for browser memory limitations)
 
 ## Common Commands
 
@@ -111,7 +111,7 @@ The storage account requires a container named `music`.
 
 ## Development Notes
 
-- **WebApp serves from API**: In development, the API project has `UseWebAssemblyDebugging()` enabled and serves the Blazor app, so only run MLocker.Api
+- **WebApp serves from API**: In development, the API project serves the Blazor app (WASM debugging is launched directly by the IDE as of .NET 11), so only run MLocker.Api
 - **Album metadata**: The AlbumArtist field is critical for proper album grouping. Soundtracks should have "Various Artists" in AlbumArtist while individual artists go in Artist field
 - **Bulk upload workaround**: Browsers have memory limitations when uploading thousands of songs via HTTP. Use MLocker.Bulk console app for large batches
 - **No AOT compilation**: AOT is disabled for the WebApp as it breaks serialization in iOS Safari
