@@ -126,12 +126,13 @@
 				_source = string.Empty;
 			if (PlayerService.CurrentSong != null)
 			{
-				_source = await MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
-				if (string.IsNullOrEmpty(_source))
+				var (isAvailable, url) = await MusicService.GetSongUrl(PlayerService.CurrentSong.FileID);
+				if (!isAvailable)
 				{
 					await HandlePlaybackUnavailable();
 					return;
 				}
+				_source = url;
 				await MusicService.IncrementPlayCount(PlayerService.CurrentSong.FileID);
 			}
 			if (_source != previousSource && !string.IsNullOrEmpty(_source))
